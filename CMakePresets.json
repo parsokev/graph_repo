@@ -7,10 +7,10 @@
             "hidden": false,
             "generator": "Unix Makefiles",
             "description": "Default Settings for CMake Program",
-            "binaryDir": "${sourceDir}/build",
+            "binaryDir": "graph_repo/build",
             "cacheVariables": {
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install",
+                "CMAKE_INSTALL_PREFIX": "graph_repo/install",
                 "CMAKE_C_COMPILER": "/usr/bin/gcc",
                 "CMAKE_CXX_COMPILER": "/usr/bin/g++",
                 "CMAKE_BUILD_TYPE": "Debug"
