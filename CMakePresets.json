@@ -5,7 +5,7 @@
             "name": "default",
             "displayName": "BUILD_DIR",
             "description": "Using compilers: C = /usr/bin/gcc, CXX = /usr/bin/g++",
-            "binaryDir": "./${sourceDir}/build",
+            "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
                 "CMAKE_INSTALL_PREFIX": "${sourceDir}/install",
