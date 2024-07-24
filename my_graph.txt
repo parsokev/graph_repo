@@ -1,0 +1,7 @@
+San Francisco, San Diego, 6.0
+San Francisco, Cupertino, 1.0
+San Diego, Cupertino, 2.0
+San Diego, Santa Cruz, 3.0
+San Diego, San Jose, 5.0
+Santa Cruz, San Jose, 5.0
+Santa Cruz, Cupertino, 1.0

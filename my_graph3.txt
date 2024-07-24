@@ -1,0 +1,15 @@
+San Francisco, Santa Cruz, 2.0
+San Francisco, Los Angeles, 15.0
+San Francisco, Cupertino, 9.0
+San Francisco, San Jose, 17.0
+San Francisco, San Diego, 8.0
+San Francisco, Redding, 12.0
+Santa Cruz, Cupertino, 6.0
+Santa Cruz, Redding, 7.0
+Redding, San Diego, 10.0
+Redding, San Jose, 15.0
+Redding, Los Angeles, 8.0
+Los Angeles, San Diego, 20.0
+Los Angeles, Cupertino, 12.0
+Cupertino, San Jose, 10.0
+San Jose, San Diego, 13.0

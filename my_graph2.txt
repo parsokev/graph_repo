@@ -1,0 +1,12 @@
+San Francisco, San Diego, 8.0
+San Francisco, San Jose, 10.0
+San Diego, San Jose, 10.0
+San Diego, Cupertino, 2.0
+San Diego, Santa Cruz, 18.0
+San Jose, Cupertino, 3.0
+San Jose, Santa Barbara, 16.0
+Cupertino, Santa Cruz, 12.0
+Cupertino, Santa Barbara, 30.0
+Cupertino, Los Angeles, 14.0
+Santa Cruz, Los Angeles, 4.0
+Santa Barbara, Los Angeles, 26.0

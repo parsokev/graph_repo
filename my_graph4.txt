@@ -1,0 +1,21 @@
+San Diego, Las Vegas, 0.7
+San Diego, Cupertino, 0.9
+Cupertino, Sacramento, 0.6
+Las Vegas, Sacramento, 0.8
+San Francisco, Cupertino, 0.7
+San Francisco, Santa Barbara, 0.7
+Las Vegas, Fresno, 0.6
+Las Vegas, Redding, 0.3
+Fresno, Redding, 0.5
+Sacramento, Redding, 0.8
+Medford, Redding, 0.2
+Medford, Sacramento, 0.1
+Redding, Los Angeles, 0.3
+Los Angeles, Sacramento, 0.5
+Medford, San Jose, 0.5
+Los Angeles, San Jose, 0.5
+Los Angeles, Santa Barbara, 0.4
+Los Angeles, Santa Cruz, 0.3
+Santa Barbara, Santa Cruz, 0.7
+Santa Cruz, San Jose, 0.9
+Santa Barbara, San Jose, 0.8
