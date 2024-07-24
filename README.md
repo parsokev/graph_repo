@@ -1,0 +1,1 @@
+NOTE: To toggle default printing, set C_MAKE_BUILD_TYPE = "Release" to disable debug printing or "Debug" to enable print debugging
