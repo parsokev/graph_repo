@@ -10,7 +10,7 @@
             "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/build",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install",
                 "CMAKE_C_COMPILER": "/usr/bin/gcc",
                 "CMAKE_CXX_COMPILER": "/usr/bin/g++",
                 "CMAKE_BUILD_TYPE": "Debug"
