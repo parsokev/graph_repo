@@ -14,4 +14,4 @@ cd ..
 cd ./debug
 cmake -DCMAKE_BUILD_TYPE=Debug ../../
 make
-cd ../..
+cd ../../
