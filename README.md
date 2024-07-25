@@ -12,4 +12,4 @@ setup.sh builds both a "Release" and "Debug" configurations of the cmake project
 
 # GoogleTest Unit Testing Suite
 - After setup.sh has completed, the file 'tests.cc' can be executed to run any tests defined within by entering:
-    - `./build/debug/Graph_TIProject/tests` OR `./build/release/Graph_TI_Project/tests`
+    - `./build/debug/tests` OR `./build/release/tests`
