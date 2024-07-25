@@ -1,6 +1,5 @@
 #!/bin/bash
 
-cd ./graph_repo
 mkdir build
 mkdir ./build/release
 mkdir ./build/debug
@@ -11,4 +10,3 @@ cd ..
 cd ./debug
 cmake -DCMAKE_BUILD_TYPE=Debug ../../
 make
-cd ../../
