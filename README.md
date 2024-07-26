@@ -8,14 +8,15 @@ After cloning this repository in your preferred text editor, enter the command i
 
 `source ./graph_repo/setup.sh`
 
-The bash shell script `setup.sh` will build both a "Release" and "Debug" configuration of the cmake project "Graph_TIProject"
+`setup.sh` will build a "Release" and "Debug" configuration of the project "Graph_TIProject"
 
 # Executing Project Configurations
-- After `setup.sh` has completed, execute the main program in Debug mode by entering the following in the terminal:
+After `setup.sh` has completed, execute the main program in Debug mode by entering:
 `./build/debug/Graph_TIProject`
-- To execute the main program in Release mode enter the following in the terminal instead:
+
+To execute the main program in Release mode enter the following in the terminal instead:
 `./build/release/Graph_TIProject`
 
 # GoogleTest Unit Testing Suite
-- After `setup.sh` has completed, the file `tests.cc` can be executed to run any tests defined within by entering:
+After `setup.sh` has completed, the file `tests.cc` can be executed to run any tests defined within by entering:
 `./build/debug/tests` OR `./build/release/tests`
