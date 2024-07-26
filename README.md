@@ -4,7 +4,10 @@ and Prim's Algorithm in finding optimal solutions when provided sets of graphica
 
 
 This program processes a user-provided text file containing lines in the format:
-`vertex1, vertex2, distance_between_vertex1_and_vertex2`
+
+```
+vertex1, vertex2, distance_between_vertex1_and_vertex2
+```
 
 The program will process the text file to generate a graphical representation to be
 utilized by customized hashmap and binary minimum heap data structures to:
@@ -24,6 +27,9 @@ my_graph4.txt
 This project can be built by either using:
 - CMake
 - Unix Makefile (included in git repository)
+
+NOTE: Implementation and Interaction is primarily conducted by providing terminal input
+utilizing Bash
 
 To build this project as a cmake project, please ensure you have the following installed:
 
