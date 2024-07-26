@@ -62,6 +62,7 @@ int main(void) {
     unsigned int vertex_count;
     // decltype (vertex_count) vertex_arg;
     std::cin >> read_name;
+    std::cin.clear();
     std::cout << '\n';
     std::cout << "Please Enter the Approximate Number of Unique Verticies: ";
     try {
