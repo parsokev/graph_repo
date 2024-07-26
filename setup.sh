@@ -69,4 +69,4 @@ cd ../../
 echo "Both CMake projects have been successfully built and compiled!"
 echo "To Run in Release Mode, Enter into the Terminal: \"./build/release/Graph_TIProject\""
 echo "To Run in Debug Mode, Enter into the Terminal: \"./build/debug/Graph_TIProject\""
-echo "To Run all tests within GoogleTest testing suite. Enter: \"./build/tests\" or \"./debug/tests\""
+echo "To Run all tests within GoogleTest testing suite. Enter: \"./build/release/tests\" or \"./build/debug/tests\""
