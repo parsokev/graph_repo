@@ -28,9 +28,6 @@ This project can be built by either using:
 - CMake
 - Unix Makefile (included in git repository)
 
-NOTE: Implementation and Interaction is primarily conducted by providing terminal input
-utilizing Bash
-
 To build this project as a cmake project, please ensure you have the following installed:
 
 - cmake version 3.0.0 (or newer)
@@ -39,6 +36,9 @@ To build this project as a cmake project, please ensure you have the following i
 To build this project using the provided Makefile, please ensure you have:
 
 - C++14 (or newer)
+
+NOTE: Project-involved implementation and interaction is primarily conducted through use of Bash.
+The provided shell script and commands listed below require Bash in order to perform as intended.
 
 # Building the Program Utilizing CMake
 After cloning this repository in your preferred text editor, enter the command into the terminal:
