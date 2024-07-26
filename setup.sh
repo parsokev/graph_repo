@@ -8,19 +8,11 @@ if [ $? -ne 0 ]; then
     kill -INT 0
 fi
 
-# Check if directory holding cloned git repository was successfully created after git clone call
-if [ ! -d "graph_repo" ]; then
-    echo $'Cloning of git repository failed to create expected directory, \'graph_repo\'\nAborting setup process...'
-    kill -INT 0
-else
-    echo $'Directory of git repository \'graph_repo\' found! Attempting to creating build folders...'
-fi
-
 # Attempt to enter directory of git repository
 cd ./graph_repo
 if [ $? -ne 0 ]; then
     echo "Failed to change to \"graph_repo\" directory from current working directory of ${PWD}."
-    echo "Please ensure bash script is called at current working directory one level above directory containing git repository"
+    echo "Please ensure bash script is called at current working directory one level above directory containing git repository (level at which git clone was called)"
     kill -INT 0
 fi
 
