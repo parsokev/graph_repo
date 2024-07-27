@@ -30,22 +30,68 @@ int build_adjacency_list (std::string& filename, unsigned int vertex_count, mast
             size_t line_length = line.size();
             long int spacer = 2;
             auto end = line.find(',');
+            // Ensure comma separating vertex 1 and 2 is found
+            if (end == line.npos) {
+                std::cerr << "FILE ERROR: Comma separating first vertex from second vertex not found!" << '\n';
+                std::cerr << "Please ensure each line follows format:\n\t VERTEX1_NAME, VERTEX2_NAME, DISTANCE_BETWEEN_VERTICIES" << '\n';
+            }
+            assert(end != line.npos);
             std::string vertex = line.substr(0, end);
             // std::cout << vertex << '\n';
-
+            // Ensure comma separting vertex 2 and the edge weight is found
             auto end_2 = line.rfind(',');
+            if (end == line.npos) {
+                std::cerr << "FILE ERROR: Comma separating second vertex from edge weight between vertex 1 and 2 not found!" << '\n';
+                std::cerr << "Please ensure each line follows format:\n\t VERTEX1_NAME, VERTEX2_NAME, DISTANCE_BETWEEN_VERTICIES" << '\n';
+            }
+            assert(end != line.npos);
+
+            // Ensure vertex 1 is found after a comma and a space 
             long int vertex_size = static_cast<long int>(vertex.size());
+            if (vertex_size <= 0) {
+                std::cerr << "FILE ERROR: No vertex name found after first comma!" << '\n';
+                std::cerr << "Please ensure each line follows format:\n\t VERTEX1_NAME, VERTEX2_NAME, DISTANCE_BETWEEN_VERTICIES" << '\n';
+            }
+            assert(vertex_size > 0);
+
+            // Ensure vertex 2 is found before end of the current line
             line_read.seekg(line_read.tellg() + spacer + vertex_size);
+            if (line_read.tellg() == -1) {
+                std::cerr << "FILE ERROR: Expected position of vertex 2 was not found (out of bounds)!" << '\n';
+                std::cerr << "Please ensure each line follows format:\n\t VERTEX1_NAME, VERTEX2_NAME, DISTANCE_BETWEEN_VERTICIES" << '\n';
+            }
+            assert(line_read.tellg() != -1);
+
             size_t next_word = static_cast<size_t>(line_read.tellg());
             std::string vertex_2 = line.substr(next_word, end_2 - next_word);
             // std::cout << vertex_2 << '\n';
             
-            
+            // Ensure vertex 2 is found between space after first comma and space before second comma
             long int vertex2_size = static_cast<long int>(vertex_2.size());
+            if (vertex2_size <= 0) {
+                std::cerr << "FILE ERROR: Second vertex name was not found after second comma!" << '\n';
+                std::cerr << "Please ensure each line follows format:\n\t VERTEX1_NAME, VERTEX2_NAME, DISTANCE_BETWEEN_VERTICIES" << '\n';
+            }
+            assert(vertex2_size > 0);
+
+            // Ensure edge weight between verticies is found before end of current line
             line_read.seekg(line_read.tellg() + vertex2_size + spacer);
+            if (line_read.tellg() == -1) {
+                std::cerr << "FILE ERROR: Expected position of vertex 2 was not found (out of bounds)!" << '\n';
+                std::cerr << "Please ensure each line follows format:\n\t VERTEX1_NAME, VERTEX2_NAME, DISTANCE_BETWEEN_VERTICIES" << '\n';
+            }
+            assert(line_read.tellg() != -1);
+
             size_t final_word = static_cast<size_t>(line_read.tellg());
             std::string weight_str = line.substr(final_word, line_length - final_word);
             double weight = strtod(weight_str.c_str(), nullptr);
+
+            // Ensure edge weight contains a numerical value
+            if (weight == std::numeric_limits<double>::infinity() || weight <= 0) {
+                std::cerr << "FILE ERROR: Entered value did not contain any non-zero numerical digits" << '\n';
+                std::cerr << "Please ensure each line follows format:\n\t VERTEX1_NAME, VERTEX2_NAME, DISTANCE_BETWEEN_VERTICIES" << '\n';
+            }
+            assert(weight != std::numeric_limits<double>::infinity() && weight > 0);
             // std::cout << weight << '\n';
             
             hash_tab1.add(vertex_2, weight);
@@ -71,7 +117,7 @@ int build_adjacency_list (std::string& filename, unsigned int vertex_count, mast
         }
         read_file.close();
     } else {
-        std::cerr << "Opening file '" << filename << "' failed!" << '\n';
+        std::cerr << "FILE ERROR: Opening file '" << filename << "' failed!" << '\n';
         return -1; 
     }
     return 0;
