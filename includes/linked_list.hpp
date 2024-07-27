@@ -16,6 +16,35 @@ class dl_list {
         size_t get_size() {
             return list_size;
         }
+
+        T get_front() {
+            return head -> data;
+        }
+
+        T get_back() {
+            return tail -> data;
+        }
+
+        T get_prev(T c) {
+            slistelem *start = head;
+            // auto prev = head -> prev;
+            while (start) {
+                if (start ->data == c) {
+                    auto prev = start -> prev;
+                    return prev -> data;
+                }
+                // prev = start -> prev;
+                start = start -> next;
+            }
+
+            return static_cast<T>(0);
+        
+        }
+
+        T get_before_tail() {
+            auto prev = tail -> prev;
+            return prev -> data;
+        }
         
         void add_to_front(T c) {
             slistelem *start = head;
@@ -133,34 +162,7 @@ class dl_list {
             return false;
         }
 
-        T get_front() {
-            return head -> data;
-        }
 
-        T get_back() {
-            return tail -> data;
-        }
-
-        T get_prev(T c) {
-            slistelem *start = head;
-            // auto prev = head -> prev;
-            while (start) {
-                if (start ->data == c) {
-                    auto prev = start -> prev;
-                    return prev -> data;
-                }
-                // prev = start -> prev;
-                start = start -> next;
-            }
-
-            return static_cast<T>(0);
-        
-        }
-
-        T get_before_tail() {
-            auto prev = tail -> prev;
-            return prev -> data;
-        }
 
         bool remove_back() {
             
