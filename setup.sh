@@ -1,8 +1,21 @@
 #!/bin/bash
 
-# Ensure cmake is installed
-cmake --version
+# Ensure all required packages are installed before building
+
+# Update ensure Linux distribution is up-to-date
+sudo apt-get -y update
+
 if [ $? -ne 0 ]; then 
+    echo "Unknown distribution has been detected. Checking for macOS..."
+#    x-code-select -y --ignore-missing --install $(< requirements.txt)
+    kill -INT 0
+fi
+
+# Ensure all package dependencies are installed in local environment
+sudo apt-get -y --ignore-missing install $(< requirements.txt)
+
+if [ $? -ne 0 ]; then
+    echo "Failed to install package dependencies"
     echo "cmake is required in order to properly utlize the project."
     echo "Please visit to https://www.kitware.com/cmake-3-30-1-available-for-download/ to download most updated version"
     kill -INT 0
