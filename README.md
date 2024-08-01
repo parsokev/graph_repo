@@ -44,18 +44,24 @@ these be present on local machine cloning the repository in order to operate as 
 # Building the Program Utilizing CMake
 After cloning this repository in your preferred text editor, enter the command into the terminal:
 
-`source ./graph_repo/setup.sh`
+```
+source ./graph_repo/setup.sh
+```
 
 `setup.sh` will build a "Release" and "Debug" configuration of the project "Graph_TIProject"
 
 # Executing CMake Project Configurations
 After `setup.sh` has completed, execute the main program in Debug mode by entering:
 
-`./build/debug/Graph_TIProject`
+```
+./build/debug/Graph_TIProject
+```
 
 To execute the main program in Release mode enter the following in the terminal instead:
 
-`./build/release/Graph_TIProject`
+```
+./build/release/Graph_TIProject
+```
 
 # Building the Program Utilizng The Provided Makefile
 After cloning this repository in your preferred text editor, enter the commands into the terminal:
@@ -70,11 +76,15 @@ make
 # Executing Standalone MakeFile Configurations
 After the `make` file has completed, execute the main program in Debug mode by entering:
 
-`./debug/graph_interface`
+```
+./debug/graph_interface
+```
 
 To execute the main program in Release mode enter the following in the terminal instead:
 
-`./release/graph_interface`
+```
+./release/graph_interface
+```
 
 
 # GoogleTest Unit Testing Suite
@@ -82,8 +92,12 @@ A GoogleTest Testing Suite is available for the CMake version of the main progra
 
 After `setup.sh` has completed, the file `tests.cc` can be executed to run any tests defined within by entering:
 
-`./build/debug/tests`
+```
+./build/debug/tests
+```
 
 OR
 
-`./build/release/tests`
+```
+./build/release/tests
+```
