@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(Graph_TIProject VERSION 0.1.0 LANGUAGES C CXX)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include(FetchContent)
 FetchContent_Declare(
@@ -25,7 +25,7 @@ add_executable( ${TARGET} ${CPPS} ${HPPS} )
 
 target_include_directories( ${TARGET} PUBLIC ${INCLUDE_PATH} )
 target_compile_options( ${TARGET} PRIVATE -Wall -Wextra -Wshadow -Wconversion -Wsign-conversion -Wunused-parameter -Wno-long-long -pedantic )
-target_compile_features( ${TARGET} PRIVATE cxx_std_23 )
+target_compile_features( ${TARGET} PRIVATE cxx_std_20 )
 
 enable_testing()
 add_executable(tests ${TEST_PATH})
