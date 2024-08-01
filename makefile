@@ -13,7 +13,7 @@ EXE := graph_interface
 SRCS := $(shell find src -type f -name '*.cpp')
 OBJS := $(SRCS:src/%.cpp=%.o)
 
-CXXFLAGS = -std=c++2b -Wall -Wextra -Wshadow -Wconversion -Wsign-conversion -Wunused-parameter -Wno-long-long -pedantic
+CXXFLAGS = -std=c++20 -Wall -Wextra -Wshadow -Wconversion -Wsign-conversion -Wunused-parameter -Wno-long-long -pedantic
 release: CXXFLAGS += -O3 
 debug: CXXFLAGS += -g -O0
 
