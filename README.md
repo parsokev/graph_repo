@@ -31,11 +31,11 @@ This project can be built by either using:
 Building this project as a cmake project requires the following:
 
 - cmake version 3.0.0 (or newer)
-- GCC Compiler using standard of C++14 (or newer)
+- GCC Compiler using standard of C++20 (or newer)
 
 Building this project using the provided Makefile requires:
 
-- GCC Compiler using standard of C++14 (or newer)
+- GCC Compiler using standard of C++20 (or newer)
 
 NOTE: Project-involved implementation and interaction is primarily conducted through use of a Bash
 terminal utilizing a Linux distribution. The provided shell script and commands listed below require
