@@ -32,14 +32,20 @@ Building this project as a cmake project requires the following:
 
 - cmake version 3.0.0 (or newer)
 - GCC Compiler using standard of C++20 (or newer)
+- MacOSX Users: Homebrew
 
 Building this project using the provided Makefile requires:
 
 - GCC Compiler using standard of C++20 (or newer)
 
 NOTE: Project-involved implementation and interaction is primarily conducted through use of a Bash
-terminal utilizing a Linux distribution. The provided shell script and commands listed below require
+terminal utilizing a Linux(Ubuntu) distribution. The provided shell script and commands listed below require
 these be present on local machine cloning the repository in order to operate as intended.
+
+For local machines with MacOSX, please ensure you have Homebrew installed on your local machine if intending
+to build the program using cmake and the `setup.sh` script as it run commands using Homebrew syntax
+
+Please visit https://brew.sh/ to install Homebrew if not currently installed.
 
 # Building the Program Utilizing CMake
 After cloning this repository in your preferred text editor, enter the command into the terminal:
