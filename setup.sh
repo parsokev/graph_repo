@@ -35,7 +35,7 @@ if [[ "$Platform" == 'Linux' ]]; then
     fi
 
 # If MacOSX, attempt to update Homebrew and install dependencies using Homebrew
-elif [[ "$Platform" == 'MAC_OS_X']]; then
+elif [[ "$Platform" == 'MAC_OS_X' ]]; then
     echo "Mac OS detected. Please ensure you have Homebrew installed before continuing!"
     echo "Attempting to update homebrew..."
     
@@ -60,7 +60,7 @@ elif [[ "$Platform" == 'MAC_OS_X']]; then
     fi
 
 # If Windows is detected, notify of script incompatibility
-elif [["$Platform" == 'Windows']]; then
+elif [[ "$Platform" == 'Windows' ]]; then
     echo "Windows detected. Please visit https://learn.microsoft.com/en-us/windows/wsl/install to in order to run this script in a Linux environment."
     echo "Script is unable to run within Windows Powershell"
     kill -INT 0
