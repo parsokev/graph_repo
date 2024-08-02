@@ -18,15 +18,40 @@ class dl_list {
         }
 
         T get_front() {
+            if (list_size == 0) {
+                std::cerr << "ERROR: List is empty!" << '\n';
+            }
+            assert(list_size > 0);
             return head -> data;
         }
 
         T get_back() {
+            if (list_size == 0) {
+                std::cerr << "ERROR: List is empty!" << '\n';
+            }
+            assert(list_size > 0);
             return tail -> data;
         }
 
         T get_prev(T c) {
             slistelem *start = head;
+            if (list_size == 0) {
+                std::cerr << "ERROR: List is empty!" << '\n';
+            }
+            assert(list_size > 0);
+
+            if (list_size == 1){
+                return head -> data;
+            }
+
+            if (c == head -> data) {
+                return head -> data;
+            }
+
+            // if (c == tail -> data) {
+            //     auto tail_val = tail -> prev;
+            //     return tail_val -> data;
+            // }
             // auto prev = head -> prev;
             while (start) {
                 if (start ->data == c) {
@@ -36,12 +61,22 @@ class dl_list {
                 // prev = start -> prev;
                 start = start -> next;
             }
-
+            if (!start) {
+                std::cerr << "List does not contain '" << c << "' !" << '\n';
+            }
+            assert(start);
             return static_cast<T>(0);
-        
         }
 
         T get_before_tail() {
+            if (list_size == 0) {
+                std::cerr << "List is empty!" << '\n';
+            }
+            assert(list_size > 0);
+            if (list_size == 1 || list_size == 2) {
+                return head -> data;
+            }
+
             auto prev = tail -> prev;
             return prev -> data;
         }
