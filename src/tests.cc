@@ -11,6 +11,7 @@
 // Test 5: Test get_back
 // Test 6: Test get_prev
 // Test 7: Test get_before_tail
+
 // Test 7: Test contains_node
 // Test 8: Test remove
 // Test 9: Test remove_back
@@ -18,21 +19,97 @@
 // Test 11: Test print_usage?
 // Test 12: Test dl_list constructor
 // Test 13: Test dl_list destructor
-
-TEST(test_DL, Testassert) {
-    EXPECT_STRNE("Hello", "World");
-    EXPECT_EQ(7 * 6, 42);
+TEST(test_DL, test_get_size) {
+    auto test_list = dl_list<std::string, 0> {};
+    auto list_size = test_list.get_size();
+    decltype (list_size) exp_size = 0;
+    EXPECT_EQ(list_size, exp_size);
+    test_list.add_to_back("last_node");
+    list_size = test_list.get_size();
+    exp_size++;
+    EXPECT_EQ(list_size, exp_size);
 }
 
-TEST(test_DL, TestList) {
+
+TEST(test_DL, test_add_to_back) {
     auto test_list = dl_list<std::string, 0> {};
-    test_list.add_to_back("first node");
+    test_list.add_to_back("last_node");
     auto list_size = test_list.get_size();
     decltype (list_size) exp_size = 1;
     EXPECT_EQ(list_size, exp_size);
-    EXPECT_TRUE(test_list.contains_node("first node"));
+    EXPECT_TRUE(test_list.contains_node("last_node"));
 }
 
+TEST(test_DL, test_add_to_front) {
+    auto test_list = dl_list<std::string, 0> {};
+    test_list.add_to_back("last_node");
+    test_list.add_to_front("front_node");
+    auto list_size = test_list.get_size();
+    decltype (list_size) exp_size = 2;
+    EXPECT_EQ(list_size, exp_size);
+    EXPECT_TRUE(test_list.contains_node("front_node"));
+    EXPECT_TRUE(test_list.contains_node("last_node"));
+}
+
+TEST(test_DL, test_get_front) {
+    auto test_list = dl_list<std::string, 0> {};
+    test_list.add_to_back("last_node");
+    test_list.add_to_front("front_node");
+    test_list.add_to_front("new_front");
+    auto front_node = test_list.get_front();
+    EXPECT_EQ(front_node, "new_front");
+}
+
+TEST(test_DL, test_get_back) {
+    auto test_list = dl_list<std::string, 0> {};
+    test_list.add_to_back("last_node");
+    test_list.add_to_front("front_node");
+    test_list.add_to_back("new_back");
+    test_list.add_to_front("new_front");
+    auto new_size = test_list.get_size();
+    auto back_node = test_list.get_back();
+    decltype (new_size) exp_size = 4;
+    EXPECT_EQ(new_size, exp_size);
+    EXPECT_EQ(back_node, "new_back");
+}
+
+TEST(test_DL, test_get_prev) {
+    auto test_list = dl_list<std::string, 0> {};
+    test_list.add_to_back("last_node");
+    test_list.add_to_front("front_node");
+    auto old_front = test_list.get_front();
+    auto old_back = test_list.get_back();
+    test_list.add_to_back("new_back");
+    test_list.add_to_front("new_front");
+    auto new_front = test_list.get_front();
+    auto new_back = test_list.get_back();
+    auto second_from_back = test_list.get_prev(new_back);
+    auto front_of_front = test_list.get_prev(new_front);
+    // auto non_existant_val = test_list.get_prev("should_create_error");
+    auto front = test_list.get_prev(old_front);
+    auto middle = test_list.get_prev(old_back);
+    EXPECT_EQ(second_from_back, "last_node");
+    EXPECT_EQ(front_of_front, "new_front");
+    EXPECT_EQ(front, "new_front");
+    EXPECT_EQ(middle, "front_node");
+}
+
+
+TEST(test_DL, test_get_before_tail) {
+    auto test_list = dl_list<std::string, 0> {};
+    test_list.add_to_back("last_node");
+    auto old_tail = test_list.get_before_tail();
+    test_list.add_to_front("front_node");
+    auto second_tail = test_list.get_before_tail();
+    test_list.add_to_back("new_back");
+    auto third_tail = test_list.get_before_tail();
+    test_list.add_to_back("newer_back");
+    auto fourth_tail = test_list.get_before_tail();
+    EXPECT_EQ(old_tail, "last_node");
+    EXPECT_EQ(second_tail, "front_node");
+    EXPECT_EQ(third_tail, "last_node");
+    EXPECT_EQ(fourth_tail, "new_back");
+}
 // Test Suite test_OAHSMP: OPEN-ADDRESSING HASHMAP Functions
 // Test oa_hashmap
 // Test 1: Test apply_hash_function
