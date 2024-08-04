@@ -227,7 +227,7 @@ void apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, uns
     std::cout << "The Shortest Path from " << s_vertex << " TO " << des_vertex << " : " << '\n';
 
     auto prev_vertex = vertex_path.get_val(des_vertex);
-    auto shortest_path = dl_list<std::string, 0>{};
+    auto shortest_path = dl_list<std::string>{};
     shortest_path.add_to_front(des_vertex);
 
 
