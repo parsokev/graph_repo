@@ -3,9 +3,17 @@
 #include <iostream>
 #include <assert.h>
 
-/// Class Definition for Customized Doubly-Linked List Data Structure, 'dl_list'
+/**
+ * Customized Doubly-linked List Data Structure
+ * @tparam T typename of values for dl_list to hold
+ * @param head First node in `dl_list`
+ * @param tail Last node in `dl_list`
+ * @param list_size Number of nodes currenly stored in `dl_list`
+ */
 template<class T>
+
 class dl_list {
+
     public:
         dl_list(): head(nullptr), list_size(0) {}
         // dl_list(const T (&array)[N]): head(nullptr), list_size(N) {fill_list(array);}
@@ -308,7 +316,7 @@ class dl_list {
          */
         void print_usage () {
             std::cerr << "USAGE: " << '\n';
-            std::cerr << '\t' << "EMPTY dl_list  -> " << "dl_list<typename> mx OR auto mx = dl_list<typename>" << '\n';
+            std::cerr << '\t' << "EMPTY dl_list  -> " << "dl_list<typename> mx; OR auto mx = dl_list<typename> {};" << '\n';
             // std::cerr << '\t' << "double arr[] = {}        -> " << "slist mc = dl_list<double, std::size(arr)>(arr);" << '\n';
             // std::cerr << '\t' << "double arr_buf[buf_size] -> " << "slist mh = dl_list<double, sizeof(arr_buf) / sizeof(double)>(arr_buf);" << std::endl;
         }
@@ -334,21 +342,28 @@ class dl_list {
 
         }
     private:
-        /// Node elements of contained within `dl_list` class
+
+        /**
+         *  Node elements of `dl_list`
+         * @param data Value held by this node
+         * @param next Pointer referencing node immediately after this node
+         * @param prev Pointer referencing node immediately before this node
+         * @param is_empty Boolean value indicating whether node holds a value
+         */
         struct slistelem{
-            /// Value held by this node
+            /// @brief Value held by this node
             T data;
-            /// References node immediately after this node
+            /// @brief Pointer referencing node immediately after this node
             slistelem *next = nullptr;
-            /// References node immediately before this node
+            /// @brief Pointer referencing node immediately before this node
             slistelem *prev = nullptr;
-            /// Indicates whether value held by this node should be ignored
+            /// @brief Boolean value indicating whether node holds a value
             bool is_empty = false;
         };
-        /// first element in `dl_list`
+        /// @brief First element in `dl_list`
         slistelem *head = new slistelem;
-        /// last element in `dl_list`
+        /// @brief Last element in `dl_list`
         slistelem *tail = head;
-        /// current number of elements held in `dl_list`
+        /// @brief Current number of elements held in `dl_list`
         size_t list_size;
 };
