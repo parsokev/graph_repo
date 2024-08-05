@@ -129,7 +129,7 @@ void apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, uns
     std::cerr << adj_list << '\n';
     #endif
     auto visited_vertices = master_hashmap<double>::oa_hashmap(vertex_count);
-    auto mhp = paired_min_heap<double, 0>{};
+    auto mhp = paired_min_heap<double>{};
     auto vertex_list = adj_list.get_master_keys();
     auto vertex_path = master_hashmap<std::string>::oa_hashmap(vertex_count);
 
@@ -152,7 +152,7 @@ void apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, uns
     double popped_vertex_distance;
 
     // Initiate while loop until all verticies have been visited (minheap will be empty)
-    while (mhp.get_heap_size() > 0) {
+    while (!mhp.is_empty()) {
         // Remove next vertex with smallest distance from minimum heap
         std::tie(popped_vertex, popped_vertex_distance) = mhp.remove_min();
         // Retrieve current distance from source vertex to extracted vertex held in visited verticies
@@ -286,58 +286,102 @@ void apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, uns
 
 void apply_prims_algorithm(std::string s_vertex, master_hashmap<double>& adj_list) {
     auto MST_verticies = std::vector<std::tuple<std::string, std::string>>{};
-    auto MST_traversal = std::vector<std::string>{};
+    auto MST_traversal = dl_list<std::string>{};
+    // auto MST_traversal = std::vector<std::string>{};
     double MST_sum = 0;
-    auto mhp = paired_min_heap<double, 0>{};
+    auto mhp = paired_min_heap<double>{};
     auto vertex_list = adj_list.get_master_keys();
 
     auto source_vertex = s_vertex;
-    MST_traversal.push_back(source_vertex);
+    MST_traversal.add_to_back(source_vertex);
     mhp.add_node(source_vertex, 0);
     std::string vertex;
     double distance;
-    while ( vertex_list.size() > MST_traversal.size()) {
-        std::tie(vertex, distance) = mhp.remove_min();
-        bool in_traversal = false;
-        auto current_min_distance = adj_list.get_key_by_val(vertex, distance);
-        auto adjacent_vertex_list = adj_list.get_key_list(vertex);
-        for (unsigned int k = 0; k < MST_traversal.size(); k++) {
-            if (MST_traversal[k].compare(vertex) == 0) {
-                in_traversal = true;
-                break;
-            } 
+    std::string current_min_distance;
+    while ( vertex_list.size() > MST_traversal.get_size()) {
+        if (!mhp.is_empty()) {
+            std::tie(vertex, distance) = mhp.remove_min();
         }
+        auto adjacent_vertex_list = adj_list.get_key_list(vertex);
+        #ifdef NDEBUG
+        #else
+        gprintf("\nExtracted VERTEX is: %s with a DISTANCE of %.2lf", vertex.c_str(), distance);
+        gprintf("\nThe Minimum HEAP currently contains: ");
+        std::cerr << mhp << '\n';
+        gprintf("\nThe list of ADJACENT vertices for %s is: ", vertex.c_str());
 
-        if (!in_traversal) {
-            MST_traversal.push_back(vertex);
+        std::cerr << adjacent_vertex_list << '\n';
+        #endif
+
+        // bool in_traversal = false;
+
+        if (vertex.compare(source_vertex) == 0) {
+            current_min_distance = source_vertex;
+        } else {
+            current_min_distance = adj_list.get_key_by_val(vertex, distance);
+        }
+        // auto adjacent_vertex_list = adj_list.get_key_list(vertex);
+        /// If extracted vertex has not been visited before, mark as visited and add edge to MST 
+        if (!MST_traversal.contains_node(vertex)) {
+            MST_traversal.add_to_back(vertex);
             auto new_path = std::tuple<std::string, std::string>(current_min_distance, vertex);
             MST_verticies.push_back(new_path);
             MST_sum += distance;
         }
-        
-        
-        for (unsigned int j = 0; j < vertex_list.size(); j++){
-            // Find all adjacent verticies
-            
-            if(adjacent_vertex_list.contains_key(vertex_list[j])) {
-                bool adj_in_traversal = false;
-                // search for each adjacent vertex in MST_traversal
-                for (unsigned int m = 0; m < MST_traversal.size(); m++) {
-                    if (MST_traversal[m].compare(vertex_list[j]) == 0) {
-                        adj_in_traversal = true;
-                        break;
-                    }
-
-                }
-                
-                if (!adj_in_traversal) {
-                    auto weight = adjacent_vertex_list.get_val(vertex_list[j]);
-                    mhp.add_node(vertex_list[j], weight);
-                }
-
+        // for (unsigned int k = 0; k < MST_traversal.size(); k++) {
+        //     if (MST_traversal[k].compare(vertex) == 0) {
+        //         in_traversal = true;
+        //         break;
+        //     } 
+        // }
+        /// If extracted vertex has not been visited, mark it as visited and add its edge to MST
+        // if (!in_traversal) {
+        //     MST_traversal.push_back(vertex);
+        //     auto new_path = std::tuple<std::string, std::string>(current_min_distance, vertex);
+        //     MST_verticies.push_back(new_path);
+        //     MST_sum += distance;
+        // }
+        /// If any verticies adjacent to extracted vertex
+        auto adjacent_verticies = adjacent_vertex_list.get_keys();
+        #ifdef NDEBUG
+        #else
+        gprintf("\nChecking list of verticies for those not visited yet");
+        #endif
+        for (unsigned int j = 0; j < adjacent_verticies.size(); j++) {
+            if (!MST_traversal.contains_node(adjacent_verticies[j])) {
+                auto weight = adjacent_vertex_list.get_val(adjacent_verticies[j]);
+                mhp.add_node(adjacent_verticies[j], weight);
+                #ifdef NDEBUG
+                #else
+                gprintf("\nAdding vertex %s to Minimum HEAP", adjacent_verticies[j].c_str());
+                std::cerr << "HEAP is now: " << mhp << '\n';
+                #endif
             }
+        }
 
-       }
+
+    //     for (unsigned int j = 0; j < vertex_list.size(); j++){
+    //         // Find all adjacent verticies
+            
+    //         if(adjacent_vertex_list.contains_key(vertex_list[j])) {
+    //             bool adj_in_traversal = false;
+    //             // search for each adjacent vertex in MST_traversal
+    //             for (unsigned int m = 0; m < MST_traversal.size(); m++) {
+    //                 if (MST_traversal[m].compare(vertex_list[j]) == 0) {
+    //                     adj_in_traversal = true;
+    //                     break;
+    //                 }
+
+    //             }
+                
+    //             if (!adj_in_traversal) {
+    //                 auto weight = adjacent_vertex_list.get_val(vertex_list[j]);
+    //                 mhp.add_node(vertex_list[j], weight);
+    //             }
+
+    //         }
+
+    //    }
     }
     std::cout << "The Minimum Spanning Tree is formed from the Edges of:" << '\n';
     for (unsigned int i = 0; i < MST_verticies.size(); i++) {
