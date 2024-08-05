@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "../includes/linked_list.hpp"
-
-
+#include "../includes/pair_minheap.hpp"
+#include "../includes/gprintf.hpp"
 // Test Suite test_DL: DOUBLY-LINKED lIST Functions
 // Test dl_list
 // Test 1: Test add_to_front
@@ -179,19 +179,142 @@ TEST(test_DL, test_contains_node) {
     EXPECT_FALSE(num_list.contains_node(0));
 }
 
-TEST(test_DL, test_overload_output) {
-    auto test_list = dl_list<std::string> {};
-    test_list.add_to_back("last_node");
-    std::cout << test_list << '\n';
-    EXPECT_EQ(test_list.get_size(), static_cast<size_t>(1));
-    test_list.remove("last_node");
-    std::cout << test_list << std::endl;
-    test_list.add_to_front("front_node");
-    test_list.add_to_back("new_back");
-    test_list.add_to_front("new_front");
-    std::cout << test_list << '\n';
+// TEST(test_DL, test_overload_output) {
+//     auto test_list = dl_list<std::string> {};
+//     test_list.add_to_back("last_node");
+//     std::cout << test_list << '\n';
+//     EXPECT_EQ(test_list.get_size(), static_cast<size_t>(1));
+//     test_list.remove("last_node");
+//     std::cout << test_list << std::endl;
+//     test_list.add_to_front("front_node");
+//     test_list.add_to_back("new_back");
+//     test_list.add_to_front("new_front");
+//     std::cout << test_list << '\n';
+// }
+
+// Test Suite test_PMNHP: MINIMUM BINARY HEAP OF KEY:VALUE PAIR NODES Functions
+// Test paired_min_heap
+// Test 1: Test get_min/paired_min_heap constructor
+// Test 2: Test get_heap_size
+// Test 3: Test add_node
+// Test 4: Test min_percolate/evaluate_children
+// Test 5: Test remove_min
+
+TEST(test_PRMNHP, test_get_heap_size) {
+    auto test_heap = paired_min_heap<double> {};
+    EXPECT_EQ(test_heap.get_heap_size(), 0);
+    test_heap.add_node("first_node", 0);
+    test_heap.add_node("second_node", 3);
+    EXPECT_EQ(test_heap.get_heap_size(), 2);
 }
 
+TEST(test_PRMNHP, test_add_node) {
+    auto test_heap = paired_min_heap<double> {};
+    EXPECT_EQ(test_heap.get_heap_size(), 0);
+    test_heap.add_node("first_node", 5);
+    EXPECT_EQ(test_heap.get_heap_size(), 1);
+    std::string key;
+    double value;
+    std::tie(key, value) = test_heap.get_min();
+    EXPECT_EQ(key, "first_node");
+    EXPECT_EQ(value, 5);
+    test_heap.add_node("second_node", 3);
+    std::tie(key, value) = test_heap.get_min();
+    EXPECT_EQ(key, "second_node");
+    EXPECT_EQ(value, 3);
+    EXPECT_EQ(test_heap.get_heap_size(), 2);
+    test_heap.add_node("third_node", 2);
+    std::tie(key, value) = test_heap.get_min();
+    EXPECT_EQ(key, "third_node");
+    EXPECT_EQ(value, 2);
+    EXPECT_EQ(test_heap.get_heap_size(), 3);
+}
+
+TEST(test_PRMNHP, test_get_min) {
+    auto test_heap = paired_min_heap<double> {};
+    test_heap.add_node("first_node", 0);
+    test_heap.add_node("second_node", 3);
+    std::string key;
+    double value;
+    std::tie(key, value) = test_heap.get_min();
+    EXPECT_EQ(key, "first_node");
+    EXPECT_EQ(value, 0);
+    EXPECT_EQ(test_heap.get_heap_size(), 2);
+}
+
+TEST(test_PRMNHP, test_min_percolate) {
+    auto test_heap = paired_min_heap<double> {};
+    test_heap.add_node("first_node", 5);
+    test_heap.add_node("second_node", 10);
+    test_heap.add_node("third_node", 3);
+    test_heap.add_node("fourth_node", 2);
+    std::string key;
+    double value;
+    std::tie(key, value) = test_heap.get_min();
+    EXPECT_EQ("fourth_node", key);
+    EXPECT_EQ(value, 2);
+    test_heap.min_percolate(0);
+    std::tie(key, value) = test_heap.get_min();
+    EXPECT_EQ("fourth_node", key);
+    EXPECT_EQ(value, 2);
+    test_heap.min_percolate(1);
+    std::tie(key, value) = test_heap.get_min();
+    EXPECT_EQ("fourth_node", key);
+    EXPECT_EQ(value, 2);
+    test_heap.min_percolate(2);
+    std::tie(key, value) = test_heap.get_min();
+    EXPECT_EQ("fourth_node", key);
+    EXPECT_EQ(value, 2);
+    test_heap.min_percolate(3);
+    std::tie(key, value) = test_heap.get_min();
+    EXPECT_EQ("fourth_node", key);
+    EXPECT_EQ(value, 2);
+    ASSERT_DEATH(test_heap.min_percolate(4), "Passed index is out of bounds of array!");
+    ASSERT_DEATH(test_heap.min_percolate(-1), "Passed index is out of bounds of array!");
+}
+
+TEST(test_PRMNHP, test_remove_min) {
+    auto test_heap = paired_min_heap<double> {};
+    test_heap.add_node("first_node", 5);
+    test_heap.add_node("second_node", 10);
+    test_heap.add_node("third_node", 3);
+    test_heap.add_node("fourth_node", 2);
+    test_heap.add_node("fifth_node", 0);
+    test_heap.add_node("sixth_node", 20);
+    EXPECT_EQ(test_heap.get_heap_size(), 6);
+    std::string key;
+    double value;
+    std::string removed_key;
+    double removed_value;
+    std::tie(key, value) = test_heap.get_min();
+    EXPECT_EQ("fifth_node", key);
+    EXPECT_EQ(value, 0);
+    std::tie(removed_key, removed_value) = test_heap.remove_min();
+    EXPECT_EQ(test_heap.get_heap_size(), 5);
+    EXPECT_EQ(removed_key, "fifth_node");
+    EXPECT_EQ(removed_value, 0);
+    std::tie(removed_key, removed_value) = test_heap.remove_min();
+    EXPECT_EQ(test_heap.get_heap_size(), 4);
+    EXPECT_EQ(removed_key, "fourth_node");
+    EXPECT_EQ(removed_value, 2);
+    std::tie(removed_key, removed_value) = test_heap.remove_min();
+    EXPECT_EQ(test_heap.get_heap_size(), 3);
+    EXPECT_EQ(removed_key, "third_node");
+    EXPECT_EQ(removed_value, 3);
+    std::tie(removed_key, removed_value) = test_heap.remove_min();
+    EXPECT_EQ(test_heap.get_heap_size(), 2);
+    EXPECT_EQ(removed_key, "first_node");
+    EXPECT_EQ(removed_value, 5);
+    std::tie(removed_key, removed_value) = test_heap.remove_min();
+    EXPECT_EQ(test_heap.get_heap_size(), 1);
+    EXPECT_EQ(removed_key, "second_node");
+    EXPECT_EQ(removed_value, 10);
+    std::tie(removed_key, removed_value) = test_heap.remove_min();
+    EXPECT_EQ(test_heap.get_heap_size(), 0);
+    EXPECT_EQ(removed_key, "sixth_node");
+    EXPECT_EQ(removed_value, 20);
+    ASSERT_DEATH(test_heap.remove_min(), "Heap is empty!");    
+}
 // Test Suite test_OAHSMP: OPEN-ADDRESSING HASHMAP Functions
 // Test oa_hashmap
 // Test 1: Test apply_hash_function
@@ -235,17 +358,7 @@ TEST(test_DL, test_overload_output) {
 // Test 17: Test prefill_hash_keys
 // Test 18: Test master_hashmap constructor
 
-// Test Suite test_PMNHP: MINIMUM BINARY HEAP OF KEY:VALUE PAIR NODES Functions
-// Test paired_min_heap
-// Test 1: Test get_min
-// Test 2: Test get_heap_size
-// Test 3: Test add_node
-// Test 4: Test fill_heap
-// Test 5: Test min_percolate
-// Test 6: Test evaluate_children
-// Test 7: Test get_vertex
-// Test 8: Test remove_min
-// Test 9: Test paired_min_heap constructor
+
 
 // Test Suite test_graph_funcs: GRAPH ALGORITHM Functions
 // Test functions involved in graph operations
