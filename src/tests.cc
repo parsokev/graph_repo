@@ -320,46 +320,21 @@ TEST(test_PRMNHP, test_remove_min) {
     ASSERT_DEATH(test_heap.remove_min(), "Heap is empty!");    
 }
 
-// TEST(test_OAHSMP, test_constructor) {
-//     auto dtest_hash = master_hashmap<double>::oa_hashmap(5);
-//     auto dtest_hash2 = master_hashmap<double>::oa_hashmap(5);
-//     auto dtest_hash3 = master_hashmap<double>::oa_hashmap(5);
-//     auto dtest_hashmap = master_hashmap<double>(5);
-
-//     dtest_hash.add("San Francisco", 3.0);
-//     dtest_hash.add("New York", 10.0);
-//     dtest_hash.add("Houston", 15.0);
-
-//     dtest_hash2.add("Dallas", 56.0);
-//     dtest_hash2.add("Santa Fe", 70.2);
-//     dtest_hash2.add("Seattle", 45.6);
-//     dtest_hash3.add("Chicago", 180.3);
-//     dtest_hash3.add("Oklahoma City", 78.5);
-//     dtest_hash3.add("Denver", 96.2);
-//     dtest_hashmap.add_key("Miami", dtest_hash);
-//     dtest_hashmap.add_key("Las Vegas", dtest_hash2);
-//     dtest_hashmap.add_key("Orlando", dtest_hash3);
-//     EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(3));
-//     EXPECT_EQ(dtest_hash2.get_size(), static_cast<unsigned int>(3));
-//     EXPECT_EQ(dtest_hash3.get_size(), static_cast<unsigned int>(3));
-//     EXPECT_EQ(dtest_hashmap.get_size(), static_cast<unsigned int>(3));
-//     std::cout << dtest_hashmap << std::endl;
-// }
 
 // Test Suite test_OAHSMP: OPEN-ADDRESSING HASHMAP Functions
 // Test oa_hashmap
 // Test 1: Test apply_hash_function
 // Test 2: Test get_next_prime
 // Test 3: Test is_prime
-
 // Test 4: Test fill_buckets
 // Test 5: Test get_size
 // Test 6: Test get_capacity
 // Test 7: Test get_keys
 // Test 8: Test get_hash_bucket
+// Test 9: Test table_load
+// Test 10: Test resize_table
 
-// Test 10: Test table_load
-// Test 11: Test resize_table
+
 // Test 12: Test add
 // Test 13: Test get_val
 // Test 14: Test empty_buckets
@@ -508,6 +483,9 @@ TEST(test_SOAHSMP, test_resize_table) {
     EXPECT_EQ(get_next_prime(next_cap), stest_hash.get_capacity());
     stest_hash.add("Lufkin", "Detriot");
 }
+
+
+
 // TEST(test_SOAHSMP, test_constructor) {
 //     auto dtest_hash = soa_hashmap<double>(5);
 //     auto stest_hash = soa_hashmap<std::string>(5);
@@ -567,6 +545,8 @@ TEST(test_MHSMP, test_constructor) {
     EXPECT_EQ(stest_hash2.get_size(), static_cast<unsigned int>(3));
     EXPECT_EQ(stest_hash3.get_size(), static_cast<unsigned int>(3));
     EXPECT_EQ(stest_hashmap.get_size(), static_cast<unsigned int>(3));
+    std::cout << stest_hashmap << '\n';
+    std::cout << dtest_hashmap << '\n';
 }
 
 
