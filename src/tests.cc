@@ -2,6 +2,10 @@
 #include "../includes/linked_list.hpp"
 #include "../includes/pair_minheap.hpp"
 #include "../includes/gprintf.hpp"
+// #include "../includes/master_hashmap.hpp"
+// #include "../src/master_hashmap.cpp"
+#include "../src/derived_hashmap.cpp"
+#include "../includes/derived_hashmap.hpp"
 // Test Suite test_DL: DOUBLY-LINKED lIST Functions
 // Test dl_list
 // Test 1: Test add_to_front
@@ -315,17 +319,45 @@ TEST(test_PRMNHP, test_remove_min) {
     EXPECT_EQ(removed_value, 20);
     ASSERT_DEATH(test_heap.remove_min(), "Heap is empty!");    
 }
+
+// TEST(test_OAHSMP, test_constructor) {
+//     auto dtest_hash = master_hashmap<double>::oa_hashmap(5);
+//     auto dtest_hash2 = master_hashmap<double>::oa_hashmap(5);
+//     auto dtest_hash3 = master_hashmap<double>::oa_hashmap(5);
+//     auto dtest_hashmap = master_hashmap<double>(5);
+
+//     dtest_hash.add("San Francisco", 3.0);
+//     dtest_hash.add("New York", 10.0);
+//     dtest_hash.add("Houston", 15.0);
+
+//     dtest_hash2.add("Dallas", 56.0);
+//     dtest_hash2.add("Santa Fe", 70.2);
+//     dtest_hash2.add("Seattle", 45.6);
+//     dtest_hash3.add("Chicago", 180.3);
+//     dtest_hash3.add("Oklahoma City", 78.5);
+//     dtest_hash3.add("Denver", 96.2);
+//     dtest_hashmap.add_key("Miami", dtest_hash);
+//     dtest_hashmap.add_key("Las Vegas", dtest_hash2);
+//     dtest_hashmap.add_key("Orlando", dtest_hash3);
+//     EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(3));
+//     EXPECT_EQ(dtest_hash2.get_size(), static_cast<unsigned int>(3));
+//     EXPECT_EQ(dtest_hash3.get_size(), static_cast<unsigned int>(3));
+//     EXPECT_EQ(dtest_hashmap.get_size(), static_cast<unsigned int>(3));
+//     std::cout << dtest_hashmap << std::endl;
+// }
+
 // Test Suite test_OAHSMP: OPEN-ADDRESSING HASHMAP Functions
 // Test oa_hashmap
 // Test 1: Test apply_hash_function
 // Test 2: Test get_next_prime
 // Test 3: Test is_prime
+
 // Test 4: Test fill_buckets
 // Test 5: Test get_size
 // Test 6: Test get_capacity
 // Test 7: Test get_keys
-// Test 8: Test print_keys
-// Test 9: Test get_hash_bucket
+// Test 8: Test get_hash_bucket
+
 // Test 10: Test table_load
 // Test 11: Test resize_table
 // Test 12: Test add
@@ -336,6 +368,207 @@ TEST(test_PRMNHP, test_remove_min) {
 // Test 17: Test clear
 // Test 18: Test fill_hash_table
 // Test 19: Test oa_hashmap constructor
+
+TEST(test_SOAHSMP, test_apply_hash_function) {
+    std::vector<std::string> sample_keys = {"San Francisco", "San Antonio", "Santa Cruz", "San Antonio", "San Francisco", "Santa Cruz"};
+    bool mismatch = false;
+    auto sf_hash = apply_hash_function("San Francsico");
+    auto sa_hash = apply_hash_function("San Antonio");
+    auto sc_hash = apply_hash_function("Santa Cruz");
+    for (size_t i = 0; i < sample_keys.size(); i++) {
+        auto hash_index = apply_hash_function(sample_keys[i]);
+        if (hash_index == sf_hash && sample_keys[i].compare("San Francisco") != 0) {
+            mismatch = true;
+            break;
+        }
+
+        if (hash_index == sa_hash && sample_keys[i].compare("San Antonio") != 0) {
+            mismatch = true;
+            break;
+        }
+
+        if (hash_index == sc_hash && sample_keys[i].compare("Santa Cruz") != 0) {
+            mismatch = true;
+            break;
+        }
+    }
+    EXPECT_FALSE(mismatch);
+}
+
+TEST(test_SOAHSMP, test_is_prime) {
+    std::vector<size_t> prime_list = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97};
+    bool is_prime_num = true;
+    for (size_t i = 0; i < prime_list.size(); i++) {
+        if (!is_prime(prime_list[i])) {
+            is_prime_num = false;
+            break;
+        }
+    }
+    EXPECT_TRUE(is_prime_num);
+}
+
+
+TEST(test_SOAHSMP, test_get_next_prime) {
+    std::vector<size_t> prime_list = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97};
+    bool fail_prime = true;
+    for (size_t i = 0; i < prime_list.size() - 1; i++) {
+        if (get_next_prime(prime_list[i] + 1) != prime_list[i+1]) {
+            fail_prime = false;
+            break;
+        }
+    }
+    EXPECT_TRUE(fail_prime);
+}
+
+TEST(test_SOAHSMP, test_get_size) {
+    auto dtest_hash = soa_hashmap<double>(5);
+    auto stest_hash = soa_hashmap<std::string>(5);
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(0));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(0));
+}
+
+TEST(test_SOAHSMP, test_get_capacity) {
+    auto dtest_hash = soa_hashmap<double>(5);
+    auto stest_hash = soa_hashmap<std::string>(5);
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(0));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(0));
+    EXPECT_EQ(dtest_hash.get_capacity(), static_cast<size_t>(5));
+    EXPECT_EQ(dtest_hash.get_capacity(), static_cast<size_t>(5));
+}
+
+TEST(test_SOAHSMP, test_get_keys) {
+    auto dtest_hash = soa_hashmap<double>(5);
+    auto stest_hash = soa_hashmap<std::string>(5);
+    dtest_hash.add("San Francisco", 3.0);
+    dtest_hash.add("New York", 10.0);
+    dtest_hash.add("Houston", 15.0);
+
+    stest_hash.add("San Francisco", "New York");
+    stest_hash.add("New York", "Houston");
+    stest_hash.add("Dallas", "San Antonio");
+    EXPECT_EQ(dtest_hash.get_keys().size(), static_cast<size_t>(3));
+    EXPECT_EQ(dtest_hash.get_keys().size(), static_cast<size_t>(3));
+}
+
+
+TEST(test_SOAHSMP, test_get_hashbucket) {
+    auto dtest_hash = soa_hashmap<double>(5);
+    auto stest_hash = soa_hashmap<std::string>(5);
+    dtest_hash.add("San Francisco", 3.0);
+    dtest_hash.add("New York", 10.0);
+    dtest_hash.add("Houston", 15.0);
+
+    stest_hash.add("San Francisco", "New York");
+    stest_hash.add("New York", "Houston");
+    stest_hash.add("Dallas", "San Antonio");
+    auto double_hashbucket = dtest_hash.get_hash_bucket();
+    EXPECT_EQ(double_hashbucket.size(), dtest_hash.get_capacity());
+
+    auto string_hashbucket = stest_hash.get_hash_bucket();
+    EXPECT_EQ(string_hashbucket.size(), stest_hash.get_capacity());
+}
+
+TEST(test_SOAHSMP, test_table_load) {
+    auto dtest_hash = soa_hashmap<double>(5);
+    auto stest_hash = soa_hashmap<std::string>(5);
+    auto exp_DTL = static_cast<double>(dtest_hash.get_size()) / static_cast<double>(dtest_hash.get_capacity());
+    auto exp_STL = static_cast<double>(stest_hash.get_size()) / static_cast<double>(stest_hash.get_capacity());
+    EXPECT_EQ(exp_DTL, dtest_hash.table_load());
+    EXPECT_EQ(exp_STL, stest_hash.table_load());
+    dtest_hash.add("San Francisco", 3.0);
+    dtest_hash.add("New York", 10.0);
+    dtest_hash.add("Houston", 15.0);
+    dtest_hash.add("Lufkin", 42.0);
+    stest_hash.add("San Francisco", "New York");
+    stest_hash.add("New York", "Houston");
+    stest_hash.add("Dallas", "San Antonio");
+    stest_hash.add("Lufkin", "Detriot");
+    exp_DTL = static_cast<double>(dtest_hash.get_size()) / static_cast<double>(dtest_hash.get_capacity());
+    exp_STL = static_cast<double>(stest_hash.get_size()) / static_cast<double>(stest_hash.get_capacity());
+    EXPECT_EQ(exp_DTL, dtest_hash.table_load());
+    EXPECT_EQ(exp_STL, stest_hash.table_load());
+}
+
+TEST(test_SOAHSMP, test_resize_table) {
+    auto dtest_hash = soa_hashmap<double>(3);
+    auto stest_hash = soa_hashmap<std::string>(3);
+    auto init_cap = dtest_hash.get_capacity();
+    EXPECT_EQ(init_cap, static_cast<size_t>(3));
+    dtest_hash.add("San Francisco", 3.0);
+    dtest_hash.add("New York", 10.0);
+    EXPECT_EQ(get_next_prime(init_cap), dtest_hash.get_capacity());
+    dtest_hash.add("Houston", 15.0);
+    auto next_cap = dtest_hash.get_capacity();
+    EXPECT_EQ(get_next_prime(next_cap), dtest_hash.get_capacity());
+    dtest_hash.add("Lufkin", 42.0);
+    stest_hash.add("San Francisco", "New York");
+    stest_hash.add("New York", "Houston");
+    EXPECT_EQ(get_next_prime(init_cap), stest_hash.get_capacity());
+    stest_hash.add("Dallas", "San Antonio");
+    EXPECT_EQ(get_next_prime(next_cap), stest_hash.get_capacity());
+    stest_hash.add("Lufkin", "Detriot");
+}
+// TEST(test_SOAHSMP, test_constructor) {
+//     auto dtest_hash = soa_hashmap<double>(5);
+//     auto stest_hash = soa_hashmap<std::string>(5);
+// }
+
+
+
+TEST(test_MHSMP, test_constructor) {
+    auto dtest_hash = soa_hashmap<double>(5);
+    auto dtest_hash2 = soa_hashmap<double>(5);
+    auto dtest_hash3 = soa_hashmap<double>(5);
+    auto dtest_hashmap = main_hashmap<double>(5);
+
+    auto stest_hash = soa_hashmap<std::string>(5);
+    auto stest_hash2 = soa_hashmap<std::string>(5);
+    auto stest_hash3 = soa_hashmap<std::string>(5);
+    auto stest_hashmap = main_hashmap<std::string>(5);
+
+    dtest_hash.add("San Francisco", 3.0);
+    dtest_hash.add("New York", 10.0);
+    dtest_hash.add("Houston", 15.0);
+
+    dtest_hash2.add("Dallas", 56.0);
+    dtest_hash2.add("Santa Fe", 70.2);
+    dtest_hash2.add("Seattle", 45.6);
+
+    dtest_hash3.add("Chicago", 180.3);
+    dtest_hash3.add("Oklahoma City", 78.5);
+    dtest_hash3.add("Denver", 96.2);
+
+    dtest_hashmap.add_key("Miami", dtest_hash);
+    dtest_hashmap.add_key("Las Vegas", dtest_hash2);
+    dtest_hashmap.add_key("Orlando", dtest_hash3);
+
+    stest_hash.add("San Francisco", "New York");
+    stest_hash.add("New York", "Houston");
+    stest_hash.add("Dallas", "San Antonio");
+
+    stest_hash2.add("Santa Fe", "Seattle");
+    stest_hash2.add("Chicago", "Santa Fe");
+    stest_hash2.add("Oklahoma City", "Portland");
+
+    stest_hash3.add("Denver", "Colorado Springs");
+    stest_hash3.add("Miami", "Sacramento");
+    stest_hash3.add("Chicago", "San Antonio");
+
+    stest_hashmap.add_key("Los Angeles", stest_hash);
+    stest_hashmap.add_key("Cupertino", stest_hash2);
+    stest_hashmap.add_key("Nashville", stest_hash3);
+
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(3));
+    EXPECT_EQ(dtest_hash2.get_size(), static_cast<unsigned int>(3));
+    EXPECT_EQ(dtest_hash3.get_size(), static_cast<unsigned int>(3));
+    EXPECT_EQ(dtest_hashmap.get_size(), static_cast<unsigned int>(3));
+
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(3));
+    EXPECT_EQ(stest_hash2.get_size(), static_cast<unsigned int>(3));
+    EXPECT_EQ(stest_hash3.get_size(), static_cast<unsigned int>(3));
+    EXPECT_EQ(stest_hashmap.get_size(), static_cast<unsigned int>(3));
+}
+
 
 // Test Suite test_MHSMP: HASHMAP CONTAINING OPEN-ADDRESSING HASHMAP(S) Functions
 // Test master_hashmap
