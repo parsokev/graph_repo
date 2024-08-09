@@ -13,19 +13,23 @@
 
 #include "../includes/linked_list.hpp"
 #include "../includes/pair_minheap.hpp"
-#include "../includes/master_hashmap.hpp"
+// #include "../includes/master_hashmap.hpp"
+#include "../includes/derived_hashmap.hpp"
 #include "../includes/graph_ops.hpp"
 #include "../includes/gprintf.hpp"
 
 
-int build_adjacency_list (std::string& filename, unsigned int vertex_count, master_hashmap<double>& adj_list) {
+// int build_adjacency_list (std::string& filename, unsigned int vertex_count, master_hashmap<double>& adj_list) {
+int build_adjacency_list (std::string& filename, unsigned int vertex_count, main_hashmap<double>& adj_list) {
     std::fstream read_file;
     read_file.open(filename);
     if (read_file.is_open()) {
         std::string line;
         while (getline(read_file, line)) {
-            auto hash_tab1 = master_hashmap<double>::oa_hashmap(vertex_count);
-            auto hash_tab2 = master_hashmap<double>::oa_hashmap(vertex_count);
+            // auto hash_tab1 = master_hashmap<double>::oa_hashmap(vertex_count);
+            // auto hash_tab2 = master_hashmap<double>::oa_hashmap(vertex_count);
+            auto hash_tab1 = soa_hashmap<double>(vertex_count);
+            auto hash_tab2 = soa_hashmap<double>(vertex_count);
             std::istringstream line_read(line);
             size_t line_length = line.size();
             long int spacer = 2;
@@ -123,15 +127,19 @@ int build_adjacency_list (std::string& filename, unsigned int vertex_count, mast
     return 0;
 }
 
-void apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, unsigned int vertex_count, master_hashmap<double>& adj_list) {
+// void apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, unsigned int vertex_count, master_hashmap<double>& adj_list) {
+void apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, unsigned int vertex_count, main_hashmap<double>& adj_list) {
     #ifdef NDEBUG
     #else
     std::cerr << adj_list << '\n';
     #endif
-    auto visited_vertices = master_hashmap<double>::oa_hashmap(vertex_count);
+    // auto visited_vertices = master_hashmap<double>::oa_hashmap(vertex_count);
+    auto visited_vertices = soa_hashmap<double>(vertex_count);
     auto mhp = paired_min_heap<double>{};
-    auto vertex_list = adj_list.get_master_keys();
-    auto vertex_path = master_hashmap<std::string>::oa_hashmap(vertex_count);
+    // auto vertex_list = adj_list.get_master_keys();
+    auto vertex_list = adj_list.get_main_keys();
+    // auto vertex_path = master_hashmap<std::string>::oa_hashmap(vertex_count);
+    auto vertex_path = soa_hashmap<std::string>(vertex_count);
 
     // auto test_path = dl_list<std::string, 0> {};
     // auto master_path = master_hashmap<double>(vertex_count);
@@ -284,13 +292,15 @@ void apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, uns
 
 
 
-void apply_prims_algorithm(std::string s_vertex, master_hashmap<double>& adj_list) {
+// void apply_prims_algorithm(std::string s_vertex, master_hashmap<double>& adj_list) {
+void apply_prims_algorithm(std::string s_vertex, main_hashmap<double>& adj_list) {
     auto MST_verticies = std::vector<std::tuple<std::string, std::string>>{};
     auto MST_traversal = dl_list<std::string>{};
     // auto MST_traversal = std::vector<std::string>{};
     double MST_sum = 0;
     auto mhp = paired_min_heap<double>{};
-    auto vertex_list = adj_list.get_master_keys();
+    // auto vertex_list = adj_list.get_master_keys();
+    auto vertex_list = adj_list.get_main_keys();
 
     auto source_vertex = s_vertex;
     MST_traversal.add_to_back(source_vertex);
