@@ -588,10 +588,12 @@ class main_hashmap {
              * Either:
              * 
              * Replaces the existing `entry` attribute of the `hash_table` struct holding the matching `key` attribute
+             * with the `soa_hashmap` class object referenced by `hash_list` and sets `is_tombstone` to indicate 
+             * values that the existing `hash_table` holds now 'exist'
              * 
              * OR
              * 
-             * Places a new `hash_entry` struct with its `key` and `value` attributes set to the argument values at the 
+             * Places a new `hash_table` struct with its `key` and `entry` attributes set to the argument values at the 
              * next empty index position within the `hash_bucket` array
              */
             while (main_hash_bucket[next_index].is_empty != true) {
@@ -612,24 +614,27 @@ class main_hashmap {
                     next_index = (hash_index + (j*j)) % main_capacity;
                 }
             }
-            // std::cout << "Adding " << key << "with value " << value << "to index " << next_index << '\n';
-            hash_table new_val;
-            new_val.main_key = key;
-            
-            new_val.entry = hash_list;
-            new_val.is_empty = false;
-            
-            main_hash_bucket[next_index] = new_val;
+
+            main_hash_bucket[next_index].main_key = key;
+            main_hash_bucket[next_index].entry = hash_list;
+            /// Sets `is_empty` to `false` to indicate `hash_table` struct is no longer empty
+            main_hash_bucket[next_index].is_empty = false;
+            // hash_table new_val;
+            // new_val.main_key = key;
+            // new_val.entry = hash_list;
+            // new_val.is_empty = false;
+            // main_hash_bucket[next_index] = new_val;
             main_keys.push_back(key);
             main_size++;
         }
 
+        /**
+         * 
+         */
         soa_hashmap<Type>& get_key_list(std::string key) {
-            
-            
+            /// Notify user of empty hashmap error before assertions aborts program
             if (main_size == 0) {
-                gprintf("Main Hashmap %s is empty!", key.c_str());
-                // std::cerr << "Hashmap for key " << key << " is empty!" << '\n';
+                std::cerr << "Hashmap for key " << key << " is empty!" << '\n';
                 // return main_hash_bucket[0].entry;
             }
             assert(main_size != 0);
