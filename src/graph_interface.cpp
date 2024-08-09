@@ -18,7 +18,8 @@
 #include "../includes/vector_minheap.hpp"
 #include "../includes/linked_list.hpp"
 #include "../includes/pair_minheap.hpp"
-#include "../includes/master_hashmap.hpp"
+#include "../includes/derived_hashmap.hpp"
+// #include "../includes/master_hashmap.hpp"
 #include "../includes/graph_ops.hpp"
 #include "../includes/gprintf.hpp"
 
@@ -80,11 +81,13 @@ int main(void) {
     // int vertex_count = 5;
     // int vertex_count = static_cast<int>(strtod(argv[1], nullptr));
     // std::vector<std::string> verticies_list {};
-    auto master = master_hashmap<double>(vertex_count);
+    // auto master = master_hashmap<double>(vertex_count);
+    auto main = main_hashmap<double>(vertex_count);
     // build_vertex_list(my_file, file_name, verticies_list);
     // std::cout << verticies_list << std::endl;
     std::cout << "Building graph from '" << read_name << "' file contents..." << '\n';
-    int output = build_adjacency_list(read_name, vertex_count, master);
+    // int output = build_adjacency_list(read_name, vertex_count, master);
+    int output = build_adjacency_list(read_name, vertex_count, main);
     if (output < 0) {
         return EXIT_FAILURE;
     }
@@ -92,12 +95,15 @@ int main(void) {
 
     std::string source_vertex;
     
-    std::cout << "Your Verticies Include: " << master.get_master_keys() << '\n';
+    // std::cout << "Your Verticies Include: " << master.get_master_keys() << '\n';
+    std::cout << "Your Verticies Include: " << main.get_main_keys() << '\n';
     std::cout << "Please Enter The Source Vertex: ";
     std::getline(std::cin>>std::ws, source_vertex);
-    while (!master.contains_key(source_vertex) && source_vertex.compare("exit now") != 0) {
+    // while (!master.contains_key(source_vertex) && source_vertex.compare("exit now") != 0) {
+    while (!main.contains_key(source_vertex) && source_vertex.compare("exit now") != 0) {
         std::cout << '\n' << "Error: Entered Source Vertex of '" << source_vertex << "' not found Within Generated Graph. Please try again or enter 'exit now' to exit." << '\n';
-        std::cout << "Your Verticies Include: " << master.get_master_keys() << '\n';
+        // std::cout << "Your Verticies Include: " << master.get_master_keys() << '\n';
+        std::cout << "Your Verticies Include: " << main.get_main_keys() << '\n';
         std::cout << "Please Enter The Source Vertex: ";
         std::getline(std::cin>>std::ws, source_vertex);
     }
@@ -106,12 +112,15 @@ int main(void) {
     }
 
     std::string dest_vertex;
-    std::cout << '\n' << "Your Verticies Include: " << master.get_master_keys() << '\n';
+    // std::cout << '\n' << "Your Verticies Include: " << master.get_master_keys() << '\n';
+    std::cout << '\n' << "Your Verticies Include: " << main.get_main_keys() << '\n';
     std::cout << "Please Enter The Destination Vertex: ";
     std::getline(std::cin>>std::ws, dest_vertex);
-    while (!master.contains_key(dest_vertex) && dest_vertex.compare("exit now") != 0) {
+    // while (!master.contains_key(dest_vertex) && dest_vertex.compare("exit now") != 0) {
+    while (!main.contains_key(dest_vertex) && dest_vertex.compare("exit now") != 0) {
         std::cout << '\n' << "Error: Entered Destination Vertex of '" << dest_vertex << "' not found Within Generated Graph. Please try again or enter 'exit now' to exit." << '\n';
-        std::cout << "Your Verticies Include: " << master.get_master_keys() << '\n';
+        // std::cout << "Your Verticies Include: " << master.get_master_keys() << '\n';
+        std::cout << "Your Verticies Include: " << main.get_main_keys() << '\n';
         std::cout << "Please Enter The Destination Vertex: ";
         std::getline(std::cin>>std::ws, dest_vertex);
     }
@@ -132,13 +141,15 @@ int main(void) {
     }
     if (algorithm_type.compare("M") == 0) {
         std::cout << '\n';
-        apply_prims_algorithm(source_vertex, master);
+        // apply_prims_algorithm(source_vertex, master);
+        apply_prims_algorithm(source_vertex, main);
         
     }
 
     if (algorithm_type.compare("S") == 0) {
         std::cout << '\n';
-        apply_djikstras_algorithm(source_vertex, dest_vertex, vertex_count, master);
+        // apply_djikstras_algorithm(source_vertex, dest_vertex, vertex_count, master);
+        apply_djikstras_algorithm(source_vertex, dest_vertex, vertex_count, main);
         
     }
     return EXIT_SUCCESS;
