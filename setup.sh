@@ -25,7 +25,7 @@ if [[ "$Platform" == 'Linux' ]]; then
         echo "Error in checking for unknown linux distribution has been detected."
         kill -INT 0
     fi
-    sudo apt-get -y --ignore-missing install $(< requirements.txt)
+    sudo apt-get -y --ignore-missing install $(< ./graph_repo/requirements.txt)
 
     if [ $? -ne 0 ]; then
         echo "Failed to install package dependencies"
@@ -51,7 +51,7 @@ elif [[ "$Platform" == 'MAC_OS_X' ]]; then
     kill -INT 0
     fi
 
-    brew -y --ignore-missing install $(< requirements.txt)
+    brew -y --ignore-missing install $(< ./graph_repo/requirements.txt)
 
     if [ $? -ne 0 ]; then
         echo "Failed to install package dependencies"
