@@ -23,6 +23,7 @@
 #include "../includes/graph_ops.hpp"
 #include "../includes/gprintf.hpp"
 
+
 std::ostream& operator<<(std::ostream& out, const std::vector<std::tuple<std::string, std::string>>& vertex_list) {
     out << "[ ";
     for (unsigned int i = 0; i < vertex_list.size(); i++) {
@@ -86,8 +87,11 @@ int main(void) {
     // build_vertex_list(my_file, file_name, verticies_list);
     // std::cout << verticies_list << std::endl;
     std::cout << "Building graph from '" << read_name << "' file contents..." << '\n';
+    std::string rel_path = "sample_graphs/";
+    rel_path.append(read_name);
+
     // int output = build_adjacency_list(read_name, vertex_count, master);
-    int output = build_adjacency_list(read_name, vertex_count, main);
+    int output = build_adjacency_list(rel_path, vertex_count, main);
     if (output < 0) {
         return EXIT_FAILURE;
     }
