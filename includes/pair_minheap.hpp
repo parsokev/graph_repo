@@ -260,7 +260,7 @@ class paired_min_heap {
             std::string root_key;
             /// Notfies user of error type before assertion
             if (heap_size == 0) {
-                std::cerr << "Heap is empty!" << '\n';
+                std::cerr << "Heap is empty!" << std::endl;
             }
             assert(heap_size > 0);
             /// Retrieves tuple with minimum value (held at index 0)
