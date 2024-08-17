@@ -283,8 +283,7 @@ void apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, uns
         prev_vertex = vertex_path.get_val(shortest_path.get_front());
     }
     shortest_path.add_to_front(s_vertex);
-    std::cout << shortest_path << '\n';
-
+    shortest_path.print_nodes();
     std::cout << "Total Distance: " << visited_vertices.get_val(des_vertex) << '\n';
     std::cout << '\n';
 
