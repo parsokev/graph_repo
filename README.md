@@ -91,19 +91,19 @@ extension before proceeding further.
 
 3. Configure the Build Target for the CMake Project using the provided `CMakePresets.json` file by:
 
-    1. Locating the Section titled `Project Status`
+    1. Locating the section titled `Project Status`
     2. Clicking the `Select Configure Preset` Icon under the Section titled `Configure`
-    3. Selecting `BUILD_DIR` from the Drop-down Command Palette menu
+    3. Selecting `BUILD_DIR` from the drop-down Command Palette menu
 
 4. Build or Rebuild all files within the target `Graph_TIProject` CMake Project using the provided
 `CMakeLists.txt` file and the `update.sh` shell script:
 
    1. To Rebuild the Main Build of the CMake Project:
-       - Clicking the `Build` Icon in upper right-hand corner of the title for the `Build` section
-         under the Section titled `Project Status`
+       - Clicking the `Build` icon in upper right-hand corner of the title for the `Build` section
+         under `Project Status`
 
-       - Clicking the `Build` Icon to the right of `Graph_TIProject(Executable)` section bar Under `Project Outline` 
-         Section
+       - Clicking the `Build` icon to the right of `Graph_TIProject(Executable)` section bar under
+         `Project Outline`
 
    2. To Rebuild the **Debug** and **Release** Configurations of the CMake Project:
        - Ensure the current working directory is `graph_repo`
@@ -113,10 +113,10 @@ extension before proceeding further.
             ```
 
 5. Build or Rebuild the GoogleTesting Suite by:
-    - Clicking on the `Build` Icon to the right of the `tests(Executable)` section bar Under the `Project Outline`
+    - Clicking on the `Build` icon to the right of the `tests(Executable)` section bar under the `Project Outline`
 
 
-# Building the Program Utilizng The Provided Makefile
+# Building the Program Utilizing The Provided Makefile
 After cloning this repository in your preferred text editor, enter the commands into the terminal:
 
 ```
@@ -159,4 +159,3 @@ After `setup.sh` has completed, the file `tests.cc` can be executed to run any t
 ```
 ./build/tests
 ```
-## Rebuilding Tests
