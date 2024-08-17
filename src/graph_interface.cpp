@@ -12,7 +12,7 @@
 #include <typeinfo>
 #include <stdexcept>
 #include <type_traits>
-
+#include <filesystem>
 
 #include "../includes/minheap.hpp"
 #include "../includes/vector_minheap.hpp"
@@ -54,18 +54,29 @@ std::ostream& operator<<(std::ostream&out, const std::vector<std::string>& strin
 class INVALID_VERTEX_VALUE_EXCEPTION {};
 
 int main(void) {
-    // if (argc != 3) {
-    //     std::cerr << "USAGE: FOR DEBUGGING: ./debug/executable_name [vertex_count] [filename_of_weighted_edges]" << '\n';
-    //     std::cerr << '\t' << "FOR TESTING: ./release/executable_name [vertex_count] [filename_of_weighted_edges]" << std::endl;
-    //     return EXIT_FAILURE;
-    // }
+
+
+
+    std::string rel_path = "sample_graphs";
+    auto file_list = dl_list<std::string>{};
+    for (const auto& sample_file : std::filesystem::directory_iterator(rel_path)){
+        std::string file_name = sample_file.path().string();
+        file_name.erase(file_name.begin(), file_name.begin() + 14);
+        file_list.add_to_back(file_name);
+    }
+    std::cout << "Current text files available are: " << '\n';
+    std::cout << file_list << '\n';
+    std::cout << '\n';
     std::cout << "Please Enter the Filename containing the Weighted Graph Edges: ";
     std::string read_name;
     unsigned int vertex_count;
-    // decltype (vertex_count) vertex_arg;
     std::cin >> read_name;
     std::cin.clear();
     std::cout << '\n';
+
+    rel_path.append("/");
+    rel_path.append(read_name);
+
     std::cout << "Please Enter the Approximate Number of Unique Verticies: ";
     try {
         std::cin >> vertex_count;
@@ -78,17 +89,11 @@ int main(void) {
         return EXIT_FAILURE;
     }
     std::cout << '\n';
-    // std::string read_name(argv[2]);
-    // int vertex_count = 5;
-    // int vertex_count = static_cast<int>(strtod(argv[1], nullptr));
-    // std::vector<std::string> verticies_list {};
-    // auto master = master_hashmap<double>(vertex_count);
+
     auto main = main_hashmap<double>(vertex_count);
-    // build_vertex_list(my_file, file_name, verticies_list);
-    // std::cout << verticies_list << std::endl;
+
     std::cout << "Building graph from '" << read_name << "' file contents..." << '\n';
-    std::string rel_path = "sample_graphs/";
-    rel_path.append(read_name);
+
 
     // int output = build_adjacency_list(read_name, vertex_count, master);
     int output = build_adjacency_list(rel_path, vertex_count, main);
@@ -99,7 +104,6 @@ int main(void) {
 
     std::string source_vertex;
     
-    // std::cout << "Your Verticies Include: " << master.get_master_keys() << '\n';
     std::cout << "Your Verticies Include: " << main.get_main_keys() << '\n';
     std::cout << "Please Enter The Source Vertex: ";
     std::getline(std::cin>>std::ws, source_vertex);
