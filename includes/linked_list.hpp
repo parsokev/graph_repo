@@ -321,6 +321,23 @@ class dl_list {
             // std::cerr << '\t' << "double arr_buf[buf_size] -> " << "slist mh = dl_list<double, sizeof(arr_buf) / sizeof(double)>(arr_buf);" << std::endl;
         }
 
+        void print_nodes() {
+            if (list_size == 0) {
+                std::cout << "[]" << '\n';
+                return;
+            }
+
+            slistelem *start = head;
+            while (start) {
+                std::cout << start -> data;
+                start = start -> next;
+                if (start) {
+                    std::cout << " -> ";
+                }
+            }
+            std::cout << '\n';
+        }
+
         /**
          * Overloading function for printing the contents of any `dl_list` instance to output streams 
          */
@@ -330,14 +347,15 @@ class dl_list {
                 out << "[]";
                 return out;
             }
+            out << "[ ";
             while (start) {
                 out << start -> data;
                 start = start -> next;
                 if (start) {
-                    out << " -> ";
+                    out << ", ";
                 }
             }
-            // out << "NULL";
+            out << " ]";
             return out;
 
         }
