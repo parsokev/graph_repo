@@ -17,18 +17,25 @@ utilized by customized hashmap and binary minimum heap data structures to:
 
 Sample text files (of varying amounts of graphical densities) that can be used are [included](./sample_graphs/)
 
+
 # Getting Started
 This project can be built by either using:
 1. CMake
-2. Unix Makefile (included in git repository)
+2. [Provided Unix Makefile](./makefile)
 
 > [!WARNING]
 > Project-involved implementation and interaction is primarily conducted through use of a Bash
 > terminal utilizing a **Linux(Ubuntu) distribution**. The provided shell script and commands listed below require
 > these be present on local machine cloning the repository in order to operate as intended.
 
-## Building this project as a CMake Project requires the following:
 
+## Building this project as a CMake Project
+
+>[!TIP]
+> `setup.sh` will attempt to install and/or update the items listed below when it
+> attempts to build the project locally ***with the exception of Homebrew***
+
+The following are required to build the project as a CMake Project:
 1. cmake version 3.0.0 (or newer)
 2. GCC Compiler using standard of C++20 (or newer)
 3. Homebrew (*MacOSX users only*)
@@ -38,12 +45,9 @@ This project can be built by either using:
 > to build the program using cmake and the `setup.sh` script as it run commands using Homebrew syntax
 > Please install [Homebrew](https://brew.sh/) if not currently installed.
 
-[!NOTE]
-> `setup.sh` will attempt to install and/or update these items when it
-> attempts to build the project locally *with the exeception of Homebrew* 
 
-## Building this project using the provided Makefile requires:
-
+## Building this project using the provided Makefile
+The following are required to build the project utilizing the provided standalone Makefile:
 1. GCC Compiler using standard of C++20 (or newer)
 
 
@@ -55,6 +59,7 @@ source ./graph_repo/setup.sh
 ```
 
 `setup.sh` will build a **Release** and **Debug** configuration of the project **Graph_TIProject**
+
 
 ## Executing CMake Project Configurations using CLI Commands
 After `setup.sh` has completed, execute the main program in **Debug** mode by entering:
@@ -68,6 +73,10 @@ To execute the main program in **Release** mode enter the following in the termi
 ```
 ./build/release/Graph_TIProject
 ```
+> [!NOTE]
+> All CLI Commands ***with the exception of `setup.sh`*** are intended to be run within the current working
+> directory of `graph_repo`. Please ensure you are in this directory when entering any of the provided CLI
+> commands into the terminal.
 
 ## Setting up CMake Project Configurations using CMakeTools Extension
 After `setup.sh` has completed, the user may utilize the CMakeTools extension for Build Process:
@@ -82,23 +91,30 @@ extension before proceeding further.
 
 3. Configure the Build Target for the CMake Project using the provided `CMakePresets.json` file by:
 
-  - Locating the Section titled `Project Status`
-  - Clicking the `Select Configure Preset` Icon under the Section titled `Configure`
-  - Selecting `BUILD_DIR` from the Drop-down Command Palette menu
+    1. Locating the Section titled `Project Status`
+    2. Clicking the `Select Configure Preset` Icon under the Section titled `Configure`
+    3. Selecting `BUILD_DIR` from the Drop-down Command Palette menu
 
 4. Build or Rebuild all files within the target `Graph_TIProject` CMake Project using the provided
-`CMakeLists.txt` file by either:
+`CMakeLists.txt` file and the `update.sh` shell script:
 
-  -  Clicking the `Build` Icon in upper right-hand corner of the title for the `Build` section
-     under the Section titled `Project Status`
+   1. To Rebuild the Main Build of the CMake Project:
+       - Clicking the `Build` Icon in upper right-hand corner of the title for the `Build` section
+         under the Section titled `Project Status`
 
-    OR
+       - Clicking the `Build` Icon to the right of `Graph_TIProject(Executable)` section bar Under `Project Outline` 
+         Section
 
-  -  Clicking the `Build` Icon to the right of `Graph_TIProject(Executable)` section bar Under `Project Outline` 
-     Section
+   2. To Rebuild the **Debug** and **Release** Configurations of the CMake Project:
+       - Ensure the current working directory is `graph_repo`
+       - Enter the following in the terminal to rebuild both configurations:
+            ```
+            source update.sh
+            ```
 
 5. Build or Rebuild the GoogleTesting Suite by:
-  - Clicking on the `Build` Icon to the right of the `tests(Executable)` section bar Under the `Project Outline`
+    - Clicking on the `Build` Icon to the right of the `tests(Executable)` section bar Under the `Project Outline`
+
 
 # Building the Program Utilizng The Provided Makefile
 After cloning this repository in your preferred text editor, enter the commands into the terminal:
@@ -108,27 +124,39 @@ cd ./graph_repo
 make
 ```
 
-`make` will build a "Release" and "Debug" configuration with the executable file `graph_interface`
+`make` will build a **Release** and **Debug** configuration with the executable file `graph_interface`
 
-## Executing Standalone MakeFile Configurations
-After the `make` file has completed, execute the main program in Debug mode by entering:
+
+## Executing And Rebuilding the Standalone MakeFile Configurations
+After the `make` file has completed, execute the main program in **Debug** mode by entering:
 
 ```
 ./debug/graph_interface
 ```
 
-To execute the main program in Release mode enter the following in the terminal instead:
+To execute the main program in **Release** mode enter the following in the terminal instead:
 
 ```
 ./release/graph_interface
 ```
 
+To Rebuild the Debug and Release Configurations enter the following:
+
+```
+make
+```
+
+> [!NOTE]
+> All above CLI Commands for the non-CMake build are intended to be run within the current working directory
+> of `graph_repo`. Please ensure you are in this directory when entering any of the above CLI commands into the terminal.
 
 # GoogleTest Unit Testing Suite
-A GoogleTest Testing Suite is available for the CMake version of the main program
+
+A GoogleTest Testing Suite is available for the **CMake** build of the project
 
 After `setup.sh` has completed, the file `tests.cc` can be executed to run any tests defined within by entering:
 
 ```
 ./build/tests
 ```
+## Rebuilding Tests
