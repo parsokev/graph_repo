@@ -317,7 +317,7 @@ TEST(test_PRMNHP, test_remove_min) {
     EXPECT_EQ(test_heap.get_heap_size(), 0);
     EXPECT_EQ(removed_key, "sixth_node");
     EXPECT_EQ(removed_value, 20);
-    ASSERT_DEATH(test_heap.remove_min(), "Heap is empty!");    
+    ASSERT_DEATH(test_heap.remove_min(), "Heap is empty!");   
 }
 
 
