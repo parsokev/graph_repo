@@ -81,21 +81,25 @@ To execute the main program in **Release** mode enter the following in the termi
 ## Setting up CMake Project Configurations using CMakeTools Extension
 After `setup.sh` has completed, the user may utilize the CMakeTools extension for Build Process:
 
-1. Ensure You have the CMakeTools extension installed and enabled. 
-As this extension is specific, to the Microsoft VS/VSCode editor, the CMakeTools option is only 
-accessible to VS/VSCode users. If you have VS/VSCode installed but do not have the CMakeTools
-extension, please install and setup the [CMakeTools](https://code.visualstudio.com/docs/cpp/CMake-linux)
-extension before proceeding further.
+1. Reopen the `graph_repo` directory as the **root** directory in your text editor
+   -  The highest level of your active directory must be `graph_repo` in order for CMakeTools
+      to recognize `graph_repo` as the active folder for configuration.
 
-2. Click on The CMakeTools Extension Icon
+2. Ensure You have the CMakeTools extension installed and enabled. 
+   As this extension is specific, to the Microsoft VS/VSCode editor, the CMakeTools option is only 
+   accessible to VS/VSCode users. If you have VS/VSCode installed but do not have the CMakeTools
+   extension, please install and setup the [CMakeTools](https://code.visualstudio.com/docs/cpp/CMake-linux)
+   extension before proceeding further.
 
-3. Configure the Build Target for the CMake Project using the provided `CMakePresets.json` file by:
+3. Click on The CMakeTools Extension Icon
 
-    1. Locating the section titled `Project Status`
-    2. Clicking the `Select Configure Preset` Icon under the Section titled `Configure`
-    3. Selecting `BUILD_DIR` from the drop-down Command Palette menu
+4. Configure the Build Target for the CMake Project using the provided `CMakePresets.json` file:
 
-4. Build or Rebuild all files within the target `Graph_TIProject` CMake Project using the provided
+    1. Locate the section titled `Project Status`
+    2. Click the `Select Configure Preset` Icon under the Section titled `Configure`
+    3. Select `BUILD_DIR` from the drop-down Command Palette menu
+
+5. Build or Rebuild all files within the target `Graph_TIProject` CMake Project using the provided
 `CMakeLists.txt` file and the `update.sh` shell script:
 
    1. To Rebuild the Main Build of the CMake Project:
@@ -112,7 +116,7 @@ extension before proceeding further.
             source update.sh
             ```
 
-5. Build or Rebuild the GoogleTesting Suite by:
+6. Build or Rebuild the GoogleTesting Suite by:
     - Clicking on the `Build` icon to the right of the `tests(Executable)` section bar under the `Project Outline`
 
 
