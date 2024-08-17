@@ -15,37 +15,37 @@ utilized by customized hashmap and binary minimum heap data structures to:
 1.  Find the shortest path between a user-provided source vertex and destination vertex
 2.  Find the Minimum Spanning Tree given a user-provided source vertex
 
-Sample text files that can be used are included (of varying amounts of graphical densities):
-```
-my_graph.txt
-my_graph2.txt
-my_graph3.txt
-my_graph4.txt
-```
+Sample text files (of varying amounts of graphical densities) that can be used are [included](./sample_graphs/)
 
 # Getting Started
 This project can be built by either using:
-- CMake
-- Unix Makefile (included in git repository)
+1. CMake
+2. Unix Makefile (included in git repository)
 
-Building this project as a cmake project requires the following:
+> [!WARNING]
+> Project-involved implementation and interaction is primarily conducted through use of a Bash
+> terminal utilizing a **Linux(Ubuntu) distribution**. The provided shell script and commands listed below require
+> these be present on local machine cloning the repository in order to operate as intended.
 
-- cmake version 3.0.0 (or newer)
-- GCC Compiler using standard of C++20 (or newer)
-- MacOSX Users: Homebrew
+## Building this project as a CMake Project requires the following:
 
-Building this project using the provided Makefile requires:
+1. cmake version 3.0.0 (or newer)
+2. GCC Compiler using standard of C++20 (or newer)
+3. Homebrew (*MacOSX users only*)
 
-- GCC Compiler using standard of C++20 (or newer)
+> [!WARNING]
+> For local machines with **MacOSX**, please ensure you have **Homebrew** installed on your local machine if intending
+> to build the program using cmake and the `setup.sh` script as it run commands using Homebrew syntax
+> Please install [Homebrew](https://brew.sh/) if not currently installed.
 
-NOTE: Project-involved implementation and interaction is primarily conducted through use of a Bash
-terminal utilizing a Linux(Ubuntu) distribution. The provided shell script and commands listed below require
-these be present on local machine cloning the repository in order to operate as intended.
+[!NOTE]
+> `setup.sh` will attempt to install and/or update these items when it
+> attempts to build the project locally *with the exeception of Homebrew* 
 
-For local machines with MacOSX, please ensure you have Homebrew installed on your local machine if intending
-to build the program using cmake and the `setup.sh` script as it run commands using Homebrew syntax
+## Building this project using the provided Makefile requires:
 
-Please visit https://brew.sh/ to install Homebrew if not currently installed.
+1. GCC Compiler using standard of C++20 (or newer)
+
 
 # Building the Program Utilizing CMake
 After cloning this repository in your preferred text editor, enter the command into the terminal:
@@ -54,51 +54,51 @@ After cloning this repository in your preferred text editor, enter the command i
 source ./graph_repo/setup.sh
 ```
 
-`setup.sh` will build a "Release" and "Debug" configuration of the project "Graph_TIProject"
+`setup.sh` will build a **Release** and **Debug** configuration of the project **Graph_TIProject**
 
-# Executing CMake Project Configurations using CLI Commands
-After `setup.sh` has completed, execute the main program in Debug mode by entering:
+## Executing CMake Project Configurations using CLI Commands
+After `setup.sh` has completed, execute the main program in **Debug** mode by entering:
 
 ```
 ./build/debug/Graph_TIProject
 ```
 
-To execute the main program in Release mode enter the following in the terminal instead:
+To execute the main program in **Release** mode enter the following in the terminal instead:
 
 ```
 ./build/release/Graph_TIProject
 ```
 
-# Seeting up CMake Project Configurations using CMakeTools Extension
+## Setting up CMake Project Configurations using CMakeTools Extension
 After `setup.sh` has completed, the user may utilize the CMakeTools extension for Build Process:
 
 1. Ensure You have the CMakeTools extension installed and enabled. 
 As this extension is specific, to the Microsoft VS/VSCode editor, the CMakeTools option is only 
 accessible to VS/VSCode users. If you have VS/VSCode installed but do not have the CMakeTools
-extension, please visit https://code.visualstudio.com/docs/cpp/CMake-linux to properly install
-this extension before proceeding further.
+extension, please install and setup the [CMakeTools](https://code.visualstudio.com/docs/cpp/CMake-linux)
+extension before proceeding further.
 
 2. Click on The CMakeTools Extension Icon
 
 3. Configure the Build Target for the CMake Project using the provided `CMakePresets.json` file by:
 
-- Locating the Section titled `Project Status`
-- Clicking the `Select Configure Preset` Icon under the Section titled `Configure`
-- Selecting `BUILD_DIR` from the Drop-down Command Palette menu
+  - Locating the Section titled `Project Status`
+  - Clicking the `Select Configure Preset` Icon under the Section titled `Configure`
+  - Selecting `BUILD_DIR` from the Drop-down Command Palette menu
 
 4. Build or Rebuild all files within the target `Graph_TIProject` CMake Project using the provided
-`CMakeLists.txt` file by Either:
+`CMakeLists.txt` file by either:
 
--  Clicking the `Build` Icon in upper right-hand corner of the title for the `Build` section
-under the Section titled `Project Status`
+  -  Clicking the `Build` Icon in upper right-hand corner of the title for the `Build` section
+     under the Section titled `Project Status`
 
     OR
 
--  Clicking the `Build` Icon to the right of `Graph_TIProject(Executable)` section bar Under `Project Outline` 
-Section
+  -  Clicking the `Build` Icon to the right of `Graph_TIProject(Executable)` section bar Under `Project Outline` 
+     Section
 
 5. Build or Rebuild the GoogleTesting Suite by:
-- Clicking on the `Build` Icon to the right of the `tests(Executable)` section bar Under the `Project Outline`
+  - Clicking on the `Build` Icon to the right of the `tests(Executable)` section bar Under the `Project Outline`
 
 # Building the Program Utilizng The Provided Makefile
 After cloning this repository in your preferred text editor, enter the commands into the terminal:
@@ -110,7 +110,7 @@ make
 
 `make` will build a "Release" and "Debug" configuration with the executable file `graph_interface`
 
-# Executing Standalone MakeFile Configurations
+## Executing Standalone MakeFile Configurations
 After the `make` file has completed, execute the main program in Debug mode by entering:
 
 ```
