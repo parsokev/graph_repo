@@ -15,8 +15,9 @@ utilized by customized hashmap and binary minimum heap data structures to:
 1.  Find the shortest path between a user-provided source vertex and destination vertex
 2.  Find the Minimum Spanning Tree given a user-provided source vertex
 
-Sample text files (of varying amounts of graphical densities) that can be used are [included](./sample_graphs/)
-
+Sample text files (of varying amounts of graphical densities) that can be used by the program
+are included in the [sample_graphs](./sample_graphs/) directory but you may add any text file
+whose contents match the above format to the `sample_graphs`  for program to process instead.
 
 # Getting Started
 This project can be built by either using:
