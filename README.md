@@ -114,15 +114,16 @@ rebuild the **Debug** and **Release** configurations of the CMake Project files 
 source ./scripts/update.sh
 ```
 
-This script should be compatible with both MacOS and Linux machines but MacOS users may simply
-replace the `update.sh` script's top line of `#!/usr/bin/env bash` with `#!/opt/homebrew/bash`
+This script should be compatible with both **MacOS** and **Linux** machines but **MacOS** users may simply
+replace the `update.sh` script's top line of `#!/usr/bin/env bash` with `#!/opt/homebrew/bin/bash`
 if any issues are encountered.
 
 
 ## Executing the Built CMake Project According to Pre-Built Configurations
 
 After the appropriate shell script has finished running, the main program can be executed in the
-**Debug** Configuration(reports additional information not visible in Release) or **Release** Configuration.
+**Debug** Configuration (Provides additional information reporting not visible in **Release**) 
+or **Release** Configuration.
 
 Execute the main program in **Debug** mode by entering the following in the terminal:
 
@@ -137,26 +138,27 @@ Execute the main program in **Release** mode by enter the following in the termi
 ```
 
 > [!NOTE]
-> All provided commands ***with the exception of those for running `linux_setup.sh` and `macOS_setup.sh` and `check_os.sh`*** 
-> are intended to be run with `graph_repo` as the current working directory. 
-> Please ensure the current working directory is `graph_repo` when entering any of the other provided commands into the terminal.
+> All provided commands ***with the exception of those for running `linux_setup.sh`, `macOS_setup.sh`, and `check_os.sh`*** 
+> are intended to be run with `graph_repo` as the current working directory. If entering any of the other provided commands
+> ***verbatim***, please ensure the current working directory is `graph_repo` when entering these into the terminal.
 
 
 ## Setting up CMake Project Configurations using CMakeTools Extension
 
-After the appropriate shell script has completed, the user may utilize the CMakeTools extension for Build Process:
+After the appropriate shell script has completed, any user using the **Microsoft Visual Studio/VSCode**
+text editor may utilize the CMakeTools extension to generate a UI for managing the CMake Project:
 
 1. Reopen the `graph_repo` directory as the **root** directory in your text editor
    -  The highest level of your active directory must be `graph_repo` in order for CMakeTools
       to recognize `graph_repo` as the active folder for configuration.
 
 2. Ensure You have the CMakeTools extension installed and enabled. 
-   As this extension is specific, to the Microsoft VS/VSCode editor, the CMakeTools option is only 
-   accessible to VS/VSCode users. If you have VS/VSCode installed but do not have the CMakeTools
-   extension, please install and setup the [CMakeTools](https://code.visualstudio.com/docs/cpp/CMake-linux)
-   extension before proceeding further.
+   - As this extension is specific to the **Microsoft VS/VSCode** editor, the CMakeTools option is only 
+     accessible to Microsoft VS/VSCode users. If you have Microsoft VS/VSCode installed but do not have the CMakeTools
+     extension, please install and setup the [CMakeTools](https://code.visualstudio.com/docs/cpp/CMake-linux)
+     extension before proceeding further.
 
-3. Click on The CMakeTools Extension Icon
+3. Click on The CMakeTools Extension Icon on Extension Bar on the far left-hand side of editor.
 
 4. Configure the Build Target for the CMake Project using the provided `CMakePresets.json` file:
 
@@ -167,7 +169,8 @@ After the appropriate shell script has completed, the user may utilize the CMake
 5. Build or Rebuild all files within the target `Graph_TIProject` CMake Project using the provided
 `CMakeLists.txt` file and the `update.sh` shell script:
 
-   1. To Rebuild the Main Build of the CMake Project:
+   1. To Rebuild the Main Build of the CMake Project By Either:
+
        - Clicking the `Build` icon in upper right-hand corner of the title for the `Build` section
          under `Project Status`
 
@@ -175,7 +178,7 @@ After the appropriate shell script has completed, the user may utilize the CMake
          `Project Outline`
 
    2. To Rebuild the **Debug** and **Release** Configurations of the CMake Project:
-       - Ensure the current working directory is `graph_repo`
+       - Ensure the current working directory is `graph_repo`.
        - Enter the following in the terminal to rebuild both configurations:
 
             ```
@@ -183,6 +186,7 @@ After the appropriate shell script has completed, the user may utilize the CMake
             ```
 
 6. Build or Rebuild the GoogleTesting Suite by:
+
     - Clicking on the `Build` icon to the right of the `tests(Executable)` section bar under the `Project Outline`
 
 
@@ -234,4 +238,5 @@ make
 
 > [!NOTE]
 > All above commands for the non-CMake build are intended to be run within the current working directory
-> of `graph_repo`. Please ensure you are in this directory when entering any of the above commands into the terminal.
+> of `graph_repo`. If entering any of the other provided commands ***verbatim***, Please ensure you are
+> in this directory when entering any of the above commands into the terminal.
