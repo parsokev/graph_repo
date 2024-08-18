@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# MacOSX Homebrew Users:
+# replace top line with line contained within <> if script does not run as is: <#!/opt/homebrew/bin/bash>
+
 # Attempt to navigate to directory containing Release Configuration of CMake Project
 cd ./build/release
 if [ $? -ne 0 ]; then 

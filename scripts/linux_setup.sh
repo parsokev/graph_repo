@@ -5,13 +5,9 @@ case "$(uname -sr)" in
    Darwin*)
      Platform='MAC_OS_X'
      ;;
-
    Linux*)
      Platform='Linux'
      ;;
-   CYGWIN*|MINGW*|MINGW32*|MSYS*)
-     Platform='Windows'
-     ;;  
     *)
      Platform='Unrecognized'
      ;;
@@ -29,45 +25,21 @@ if [[ "$Platform" == 'Linux' ]]; then
 
     if [ $? -ne 0 ]; then
         echo "Failed to install package dependencies"
-        echo "cmake is required in order to properly utlize the project."
-        echo "Please visit to https://www.kitware.com/cmake-3-30-1-available-for-download/ to download most updated version"
+        echo "All dependencies are required in order to properly utlize the project."
+        echo "Please ensure you have not moved \"requirements.txt\" from its original position within the cloned repository"
         kill -INT 0
     fi
 
-# If MacOSX, attempt to update Homebrew and install dependencies using Homebrew
+# If MacOSX, notify User to use macOS_setup script
 elif [[ "$Platform" == 'MAC_OS_X' ]]; then
-    echo "Mac OS detected. Please ensure you have Homebrew installed before continuing!"
-    echo "Attempting to update homebrew..."
-    
-    brew --version
-    if [ $? -ne 0 ]; then 
-    echo "Homebrew not detected on local machine... please visit https://brew.sh/ to have Homebrew installed."
-    kill -INT 0
-    fi
-
-    brew update && brew upgrade
-    if [ $? -ne 0 ]; then 
-    echo "Error encountered while attempting to update brew... please visit https://brew.sh/ for troubleshooting."
-    kill -INT 0
-    fi
-
-    brew -y --ignore-missing install $(< ./graph_repo/requirements.txt)
-
-    if [ $? -ne 0 ]; then
-        echo "Failed to install package dependencies"
-        echo "Please visit https://brew.sh/ to ensure you have Homebrew properly installed on your local machine."
-        kill -INT 0
-    fi
-
-# If Windows is detected, notify of script incompatibility
-elif [[ "$Platform" == 'Windows' ]]; then
-    echo "Windows detected. Please visit https://learn.microsoft.com/en-us/windows/wsl/install to in order to run this script in a Linux environment."
-    echo "Script is unable to run within Windows Powershell"
+    echo "Mac OS detected. Please run the \"macOS_setup.sh\" script intended for MacOSX users."
+    echo "Please ensure you have homebrew installed before running \"macOS_setup.sh\"!"
+    echo "You can install the latest version of homebrew at https://brew.sh/"
     kill -INT 0
 
 # If OS is not recognized, exit with notification
 else
-    echo "Unrecognized distribution. If running in Linux environment other than Debian or Ubuntu, this script is currently unable to run in these environments."
+    echo "Unrecognized distribution. Please run \"os_check.sh\" to determine whether your system is compatible with either bash script"
     kill -INT 0
 fi
 
