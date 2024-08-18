@@ -17,70 +17,134 @@ utilized by customized hashmap and binary minimum heap data structures to:
 
 Sample text files (of varying amounts of graphical densities) that can be used by the program
 are included in the [sample_graphs](./sample_graphs/) directory but you may add any text file
-whose contents match the above format to the `sample_graphs`  for program to process instead.
+whose contents match the above format to the `sample_graphs`  for the program to process instead.
+
 
 # Getting Started
+
 This project can be built by either using:
 1. CMake
 2. [Provided Unix Makefile](./makefile)
 
 > [!WARNING]
-> Project-involved implementation and interaction is primarily conducted through use of a Bash
-> terminal utilizing a **Linux(Ubuntu) distribution**. The provided shell script and commands listed below require
-> these be present on local machine cloning the repository in order to operate as intended.
+> Project-involved implementation and interaction is primarily conducted within a Bash shell.
+> The provided shell script and commands listed below require use of a Bash-integrated command-line
+> terminal on the local machine cloning the repository in order to operate as intended.
 
 
-## Building this project as a CMake Project
+# Building The Project Using CMake
+
+## Testing for Local Machine Compatibility
+
+The repository provides several different shell scripts to build the project using CMake 
+on local machines with **MacOS** and **Linux** within the [Scripts Directory](./scripts/).
+These will be addressed in further detail below.
+
+For users that are unsure of their local machine's compatibility with the shell scripts used to build 
+the project using CMake, the `os_check.sh` script can be run after cloning the repository to their
+local machine. The `os_check.sh` script will print out the OS description of their local machine and
+the corresponding instructions by entering:
+
+```
+source .graph_repo/scripts/os_check.sh
+```
 
 >[!TIP]
-> `setup.sh` will attempt to install and/or update the items listed below when it
-> attempts to build the project locally ***with the exception of Homebrew***
+> The appropriate shell script will attempt to install and/or update the items listed below
+> when it attempts to build the project locally ***with the exception of Homebrew***.
 
-The following are required to build the project as a CMake Project:
-1. cmake version 3.0.0 (or newer)
+### Required Dependencies
+
+The following are required to build the project using CMake:
+1. [cmake version 3.0.0 (or newer)](https://www.kitware.com/cmake-3-30-1-available-for-download/)
 2. GCC Compiler using standard of C++20 (or newer)
-3. Homebrew (*MacOSX users only*)
+3. [Homebrew](https://brew.sh/) (*MacOS users only*)
+
 
 > [!WARNING]
-> For local machines with **MacOSX**, please ensure you have **Homebrew** installed on your local machine if intending
-> to build the program using cmake and the `setup.sh` script as it run commands using Homebrew syntax
-> Please install [Homebrew](https://brew.sh/) if not currently installed.
+> For local machines with **MacOS**, please ensure you have **Homebrew** installed on your local machine if intending
+> to build the program using cmake. Please install [Homebrew](https://brew.sh/) if not currently installed.
+>
+> For local machines with **Linux Distributions**, if the distribution is not **Debian** or **Ubuntu**,
+> the shell scripts will most likely be unable to properly build the CMake Project. However, the project
+> can still be built using the provided [Makefile](./makefile).
+>
+> For local machines with **Windows**, if you are utilizing **Cygwin** or **MingW**, the shell scripts
+> will most likely be unable to properly build the CMake Project. Please install the [Windows Subsystem for Linux(WSL)](https://learn.microsoft.com/en-us/windows/wsl/install)
+> in order to build the CMake Project on a local machine using Windows.
 
 
-## Building this project using the provided Makefile
-The following are required to build the project utilizing the provided standalone Makefile:
-1. GCC Compiler using standard of C++20 (or newer)
+## Running Provided Shell Script for CMake Build
+
+After cloning this repository in your preferred text editor, you may run one of several shell
+scripts provided within the [Scripts Directory](./scripts/) to build/rebuild the project.
 
 
-# Building the Program Utilizing CMake
-After cloning this repository in your preferred text editor, enter the command into the terminal:
+### Shell Script for Building CMake Project on MacOS
+
+For users wishing to build the project on a local machine using **MacOS**, run the
+`macOS_setup.sh` shell script to build the project by entering the following:
 
 ```
-source ./graph_repo/setup.sh
+source ./graph_repo/scripts/macOS_setup.sh
 ```
 
-`setup.sh` will build a **Release** and **Debug** configuration of the project **Graph_TIProject**
+`macOS_setup.sh` will build a **Release** and **Debug** configuration of the project **Graph_TIProject**
 
 
-## Executing CMake Project Configurations using CLI Commands
-After `setup.sh` has completed, execute the main program in **Debug** mode by entering:
+### Shell Script for Building CMake Project on Linux/Windows
+
+For users wishing to build the project on a local machine using either a **Debian**/**Ubuntu** Linux
+Distribution or the **Windows Subsystem for Linux**, run the `linux_setup.sh` shell script to build
+the project by entering the following:
+
+```
+source ./graph_repo/scripts/linux_setup.sh
+```
+
+`linux_setup.sh` will build a **Release** and **Debug** configuration of the project **Graph_TIProject**
+
+
+### Shell Script for Building/Rebuilding Project Configurations
+
+***After running either setup scripts***, the `update.sh` shell script can be run at any time to
+rebuild the **Debug** and **Release** configurations of the CMake Project files by entering the following:
+
+```
+source ./scripts/update.sh
+```
+
+This script should be compatible with both MacOS and Linux machines but MacOS users may simply
+replace the `update.sh` script's top line of `#!/usr/bin/env bash` with `#!/opt/homebrew/bash`
+if any issues are encountered.
+
+
+## Executing the Built CMake Project According to Pre-Built Configurations
+
+After the appropriate shell script has finished running, the main program can be executed in the
+**Debug** Configuration(reports additional information not visible in Release) or **Release** Configuration.
+
+Execute the main program in **Debug** mode by entering the following in the terminal:
 
 ```
 ./build/debug/Graph_TIProject
 ```
 
-To execute the main program in **Release** mode enter the following in the terminal instead:
+Execute the main program in **Release** mode by enter the following in the terminal:
 
 ```
 ./build/release/Graph_TIProject
 ```
+
 > [!NOTE]
-> All CLI Commands ***with the exception of `setup.sh`*** are intended to be run within the current working
-> directory of `graph_repo`. Please ensure you are in this directory when entering any of the provided CLI
-> commands into the terminal.
+> All provided commands ***with the exception of those for running `linux_setup.sh` and `macOS_setup.sh` and `check_os.sh`*** 
+> are intended to be run with `graph_repo` as the current working directory. 
+> Please ensure the current working directory is `graph_repo` when entering any of the other provided commands into the terminal.
+
 
 ## Setting up CMake Project Configurations using CMakeTools Extension
-After `setup.sh` has completed, the user may utilize the CMakeTools extension for Build Process:
+
+After the appropriate shell script has completed, the user may utilize the CMakeTools extension for Build Process:
 
 1. Reopen the `graph_repo` directory as the **root** directory in your text editor
    -  The highest level of your active directory must be `graph_repo` in order for CMakeTools
@@ -113,15 +177,31 @@ After `setup.sh` has completed, the user may utilize the CMakeTools extension fo
    2. To Rebuild the **Debug** and **Release** Configurations of the CMake Project:
        - Ensure the current working directory is `graph_repo`
        - Enter the following in the terminal to rebuild both configurations:
+
             ```
-            source update.sh
+            source ./scripts/update.sh
             ```
 
 6. Build or Rebuild the GoogleTesting Suite by:
     - Clicking on the `Build` icon to the right of the `tests(Executable)` section bar under the `Project Outline`
 
 
+## GoogleTest Unit Testing Suite (CMake Projects Only)
+
+A GoogleTest Testing Suite is available for the **CMake** build of the project
+
+After the appropriate shell script has completed, the file `tests.cc` can be executed to run any tests defined within by entering:
+
+```
+./build/tests
+```
+
 # Building the Program Utilizing The Provided Makefile
+
+The following are required to build the project utilizing the provided standalone Makefile:
+1. GCC Compiler using standard of C++20 (or newer)
+
+
 After cloning this repository in your preferred text editor, enter the commands into the terminal:
 
 ```
@@ -133,6 +213,7 @@ make
 
 
 ## Executing And Rebuilding the Standalone MakeFile Configurations
+
 After the `make` file has completed, execute the main program in **Debug** mode by entering:
 
 ```
@@ -152,15 +233,5 @@ make
 ```
 
 > [!NOTE]
-> All above CLI Commands for the non-CMake build are intended to be run within the current working directory
-> of `graph_repo`. Please ensure you are in this directory when entering any of the above CLI commands into the terminal.
-
-# GoogleTest Unit Testing Suite
-
-A GoogleTest Testing Suite is available for the **CMake** build of the project
-
-After `setup.sh` has completed, the file `tests.cc` can be executed to run any tests defined within by entering:
-
-```
-./build/tests
-```
+> All above commands for the non-CMake build are intended to be run within the current working directory
+> of `graph_repo`. Please ensure you are in this directory when entering any of the above commands into the terminal.
