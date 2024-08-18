@@ -49,9 +49,13 @@ the corresponding instructions by entering:
 source .graph_repo/scripts/os_check.sh
 ```
 
->[!TIP]
+> [!TIP]
 > The appropriate shell script will attempt to install and/or update the items listed below
 > when it attempts to build the project locally ***with the exception of Homebrew***.
+> 
+> If the expected path to bash does not exist, the script will not run. If this occurs,
+> either bash does not exist locally or it is located in an irregular path, which can be
+> fixed by manually changing the top line of the script to this path.
 
 ### Required Dependencies
 
