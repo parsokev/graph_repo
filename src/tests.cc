@@ -317,7 +317,7 @@ TEST(test_PRMNHP, test_remove_min) {
     EXPECT_EQ(test_heap.get_heap_size(), 0);
     EXPECT_EQ(removed_key, "sixth_node");
     EXPECT_EQ(removed_value, 20);
-    ASSERT_DEATH(test_heap.remove_min(), "Heap is empty!");   
+    ASSERT_DEATH(test_heap.remove_min(), "Heap is empty!");    
 }
 
 
@@ -549,7 +549,74 @@ TEST(test_MHSMP, test_constructor) {
     std::cout << dtest_hashmap << '\n';
 }
 
+TEST(test_MHSMP, test_get_key_val) {
+        auto dtest_hash = soa_hashmap<double>(5);
+    auto dtest_hash2 = soa_hashmap<double>(5);
+    auto dtest_hash3 = soa_hashmap<double>(5);
+    auto dtest_hashmap = main_hashmap<double>(5);
 
+    auto stest_hash = soa_hashmap<std::string>(5);
+    auto stest_hash2 = soa_hashmap<std::string>(5);
+    auto stest_hash3 = soa_hashmap<std::string>(5);
+    auto stest_hashmap = main_hashmap<std::string>(5);
+
+    dtest_hash.add("San Francisco", 3.0);
+    dtest_hash.add("New York", 10.0);
+    dtest_hash.add("Houston", 15.0);
+
+    dtest_hash2.add("Dallas", 56.0);
+    dtest_hash2.add("Santa Fe", 70.2);
+    dtest_hash2.add("Seattle", 45.6);
+
+    dtest_hash3.add("Chicago", 180.3);
+    dtest_hash3.add("Oklahoma City", 78.5);
+    dtest_hash3.add("Denver", 96.2);
+
+    dtest_hashmap.add_key("Miami", dtest_hash);
+    dtest_hashmap.add_key("Las Vegas", dtest_hash2);
+    dtest_hashmap.add_key("Orlando", dtest_hash3);
+
+    stest_hash.add("San Francisco", "New York");
+    stest_hash.add("New York", "Houston");
+    stest_hash.add("Dallas", "San Antonio");
+
+    stest_hash2.add("Santa Fe", "Seattle");
+    stest_hash2.add("Chicago", "Santa Fe");
+    stest_hash2.add("Oklahoma City", "Portland");
+
+    stest_hash3.add("Denver", "Colorado Springs");
+    stest_hash3.add("Miami", "Sacramento");
+    stest_hash3.add("Chicago", "San Antonio");
+
+    stest_hashmap.add_key("Los Angeles", stest_hash);
+    stest_hashmap.add_key("Cupertino", stest_hash2);
+    stest_hashmap.add_key("Nashville", stest_hash3);
+
+    EXPECT_EQ(stest_hashmap.get_key_val("Los Angeles", "San Francisco"), "New York");
+    EXPECT_EQ(stest_hashmap.get_key_val("Los Angeles", "New York"), "Houston");
+    EXPECT_EQ(stest_hashmap.get_key_val("Los Angeles", "Dallas"), "San Antonio");
+    EXPECT_EQ(stest_hashmap.get_key_val("Cupertino", "Santa Fe"), "Seattle");
+    EXPECT_EQ(stest_hashmap.get_key_val("Cupertino", "Chicago"), "Santa Fe");
+    EXPECT_EQ(stest_hashmap.get_key_val("Cupertino", "Oklahoma City"), "Portland");
+    EXPECT_EQ(stest_hashmap.get_key_val("Nashville", "Denver"), "Colorado Springs");
+    EXPECT_EQ(stest_hashmap.get_key_val("Nashville", "Miami"), "Sacramento");
+    EXPECT_EQ(stest_hashmap.get_key_val("Nashville", "Chicago"), "San Antonio");
+
+    EXPECT_EQ(dtest_hashmap.get_key_val("Miami", "San Francisco"), 3.0);
+    EXPECT_EQ(dtest_hashmap.get_key_val("Miami", "New York"), 10.0);
+    EXPECT_EQ(dtest_hashmap.get_key_val("Miami", "Houston"), 15.0);
+    EXPECT_EQ(dtest_hashmap.get_key_val("Las Vegas", "Dallas"), 56.0);
+    EXPECT_EQ(dtest_hashmap.get_key_val("Las Vegas", "Santa Fe"), 70.2);
+    EXPECT_EQ(dtest_hashmap.get_key_val("Las Vegas", "Seattle"), 45.6);
+    EXPECT_EQ(dtest_hashmap.get_key_val("Orlando", "Chicago"), 180.3);
+    EXPECT_EQ(dtest_hashmap.get_key_val("Orlando", "Oklahoma City"), 78.5);
+    EXPECT_EQ(dtest_hashmap.get_key_val("Orlando", "Denver"), 96.2);
+    EXPECT_EQ(dtest_hashmap.get_key_by_weight("Las Vegas", 70.2), "Santa Fe");
+
+    ASSERT_DEATH(stest_hashmap.get_key_by_weight("Nashville", "Miami"), "Non-String Values are not acceptable weight values");
+    ASSERT_DEATH(stest_hashmap.get_key_val("Cupertino", "Denver"), "The Existing Hashmap 'Cupertino' does not contain the key 'Denver'!");
+    ASSERT_DEATH(dtest_hashmap.get_key_val("Cupertino", "Denver"), "The key 'Cupertino' does not exist in calling main_hashmap object!");
+}
 // Test Suite test_MHSMP: HASHMAP CONTAINING OPEN-ADDRESSING HASHMAP(S) Functions
 // Test master_hashmap
 // Test 1: Test fill_buckets
