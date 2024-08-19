@@ -305,7 +305,7 @@ void apply_prims_algorithm(std::string s_vertex, main_hashmap<double>& adj_list)
     MST_traversal.add_to_back(source_vertex);
     mhp.add_node(source_vertex, 0);
     std::string vertex;
-    double distance;
+    double distance = 0;
     std::string current_min_distance;
     while ( vertex_list.size() > MST_traversal.get_size()) {
         if (!mhp.is_empty()) {
@@ -327,7 +327,7 @@ void apply_prims_algorithm(std::string s_vertex, main_hashmap<double>& adj_list)
         if (vertex.compare(source_vertex) == 0) {
             current_min_distance = source_vertex;
         } else {
-            current_min_distance = adj_list.get_key_by_val(vertex, distance);
+            current_min_distance = adj_list.get_key_by_value(vertex, distance);
         }
         // auto adjacent_vertex_list = adj_list.get_key_list(vertex);
         /// If extracted vertex has not been visited before, mark as visited and add edge to MST 
