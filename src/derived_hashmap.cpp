@@ -6,14 +6,6 @@
 #include "../includes/derived_hashmap.hpp"
 
 
-void prefill_hash_keys(main_hashmap<double>& main_hash, std::vector<std::string>& key_list, unsigned int vertex_count) {
-    for (unsigned int i = 0; i < key_list.size(); i++) {
-        auto new_hash = soa_hashmap<double>(vertex_count);
-        // auto new_hash  = main_hashmap2<double>::soa_hashmap<double>(vertex_count);
-        main_hash.add_key(key_list[i], new_hash);
-    }    
-}
-
 unsigned int apply_hash_function(const std::string& key) {
     unsigned int hash = 0;
     unsigned int index = 0;
