@@ -321,6 +321,9 @@ class dl_list {
             // std::cerr << '\t' << "double arr_buf[buf_size] -> " << "slist mh = dl_list<double, sizeof(arr_buf) / sizeof(double)>(arr_buf);" << std::endl;
         }
 
+        /**
+         * Prints calling `dl_list` class object's contents in classic node representation
+         */
         void print_nodes() {
             if (list_size == 0) {
                 std::cout << "[]" << '\n';
