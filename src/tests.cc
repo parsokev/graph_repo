@@ -870,6 +870,22 @@ TEST(test_MHSMP, test_constructor) {
     EXPECT_EQ(stest_hashmap.get_size(), static_cast<unsigned int>(3));
 }
 
+TEST(test_MHSMP, test_fill_buckets) {
+    auto dtest_hash = soa_hashmap<double>(5);
+    auto dtest_hash2 = soa_hashmap<double>(5);
+    auto dtest_hash3 = soa_hashmap<double>(5);
+    auto dtest_hashmap = main_hashmap<double>(1);
+
+    auto stest_hash = soa_hashmap<std::string>(5);
+    auto stest_hash2 = soa_hashmap<std::string>(5);
+    auto stest_hash3 = soa_hashmap<std::string>(5);
+    auto stest_hashmap = main_hashmap<std::string>(1);
+    EXPECT_EQ(dtest_hashmap.get_capacity(), static_cast<unsigned int>(5));
+    EXPECT_EQ(stest_hashmap.get_capacity(), static_cast<unsigned int>(5));
+    EXPECT_EQ(dtest_hashmap.get_size(), static_cast<unsigned int>(0));
+    EXPECT_EQ(stest_hashmap.get_size(), static_cast<unsigned int>(0));
+}
+
 TEST(test_MHSMP, test_get_key_val) {
         auto dtest_hash = soa_hashmap<double>(5);
     auto dtest_hash2 = soa_hashmap<double>(5);
