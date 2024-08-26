@@ -14,6 +14,7 @@ brew -y --ignore-missing install $(< ./graph_repo/requirements.txt)
 if [ $? -ne 0 ]; then
     echo "Error: Failed to install all package dependencies listed in \"requirements.txt\""
     echo "Please ensure you have not moved \"requirements.txt\" from its original position within the cloned repository"
+    echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script"
     kill -INT 0
 fi
 
@@ -22,6 +23,7 @@ cd ./graph_repo
 if [ $? -ne 0 ]; then
     echo "Failed to change to \"graph_repo\" directory from current working directory of ${PWD}."
     echo "Please ensure bash script is called at current working directory one level above directory containing git repository (level at which git clone was called)"
+    echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script"
     kill -INT 0
 fi
 
@@ -30,6 +32,7 @@ mkdir build
 if [ $? -ne 0 ]; then
     echo "Failed to create \"build\" directory in cloned repo directory."
     echo "Aborting setup process..."
+    echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script"
     kill -INT 0
 else
     echo "\"build\" directory successfully created."
@@ -40,6 +43,7 @@ mkdir ./build/release
 if [ $? -ne 0 ]; then
     echo "Failed to create \"build/release/\" subdirectory in cloned repo directory."
     echo "Aborting setup process.."
+    echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script"
     kill -INT 0
 else
     echo "\"release\" subdirectory successfully created."
@@ -50,6 +54,7 @@ mkdir ./build/debug
 if [ $? -ne 0 ]; then
     echo "Failed to create \"build/debug/\" subdirectory in cloned repo directory."
     echo "Aborting setup process.."
+    echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script"
     kill -INT 0
 else
     echo "\"debug\" subdirectory successfully created."
@@ -70,4 +75,4 @@ cd ../../
 echo "Both CMake projects have been successfully built and compiled!"
 echo "To Run in Release Mode, Enter into the Terminal: \"./build/release/Graph_TIProject\""
 echo "To Run in Debug Mode, Enter into the Terminal: \"./build/debug/Graph_TIProject\""
-echo "To Run all tests within GoogleTest testing suite. Enter: \"./build/tests\" or \"./build/tests\""
+echo "To Run all tests within GoogleTest testing suite. Enter: \"./build/tests\""
