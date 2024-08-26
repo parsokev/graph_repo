@@ -1,0 +1,12 @@
+strict digraph main_graph {
+fontname="DejaVu Sans,Arial,sans-serif"
+node [fontname="Impact,Arial,sans-serif"]
+edge [fontname="Comic Sans,Arial,sans-serif"]
+node [style=filled fillcolor="darkolivegreen2"]
+ratio=auto
+landscape=false
+subgraph cluster {"Full Graph" [shape=box fontsize=14 label="Shortest Path from San Diego TO Cupertino" tooltip="All Nodes"] }
+San_Diego [label="San_Diego" id="San_Diego" fontsize=12 shape=box3d tooltip="San_Diego" color="darkgreen"fillcolor="darkolivegreen2"]
+Cupertino [label="Cupertino" id="Cupertino" fontsize=12 shape=box3d tooltip="Cupertino" color="darkgreen"fillcolor="darkolivegreen2"]
+San_Diego -> Cupertino [label="0.90" weight=50 penwidth=3 color="darkorange1" tooltip="San_Diego -> Cupertino" labeltooltip="San_Diego -> Cupertino"]
+}
