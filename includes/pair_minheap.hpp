@@ -5,7 +5,7 @@
 #include <iterator>
 #include <tuple>
 #include <string>
-#include <assert.h>
+#include <cassert>
 #include "../includes/gprintf.hpp"
 /**
  * Customized class that utilizes its underlying storage array `start_heap` as an array representation of
