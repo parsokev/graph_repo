@@ -46,7 +46,7 @@ local machine. The `os_check.sh` script will print out the OS description of the
 the corresponding instructions by entering:
 
 ```
-source .graph_repo/scripts/os_check.sh
+source ./graph_repo/scripts/os_check.sh
 ```
 
 > [!TIP]
