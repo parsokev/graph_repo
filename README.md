@@ -63,7 +63,7 @@ The following are required to build the project using CMake:
 1. [cmake version 3.0.0 (or newer)](https://www.kitware.com/cmake-3-30-1-available-for-download/)
 2. GCC Compiler using standard of C++20 (or newer)
 3. [Homebrew](https://brew.sh/) (*MacOS users only*)
-
+4. [Graphviz](httpshttps://www.graphviz.org/)
 
 > [!WARNING]
 > For local machines with **MacOS**, please ensure you have **Homebrew** installed on your local machine if intending
