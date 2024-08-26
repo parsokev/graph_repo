@@ -3,7 +3,5 @@ algorithm_notes.txt
 debug
 release
 notes
-graph_images/full_graph.png
-dot_graphs/full_graph.gv
-graph_images/shortest_path.png
-dot_graphs/shortest_path.gv
+graph_images/
+dot_graphs/
