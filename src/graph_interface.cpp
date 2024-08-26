@@ -1,5 +1,4 @@
 #include <iostream>
-#include <experimental/random>
 #include <vector>
 #include <iosfwd>
 #include <tuple>
@@ -8,21 +7,17 @@
 #include <limits>
 #include <cstdio>
 #include <fstream>
-#include <sstream>
-#include <typeinfo>
-#include <stdexcept>
-#include <type_traits>
 #include <filesystem>
+#include <stdlib.h>
+#include <sys/wait.h>
 
-#include "../includes/minheap.hpp"
-#include "../includes/vector_minheap.hpp"
+#include "../includes/graph_input.hpp"
 #include "../includes/linked_list.hpp"
 #include "../includes/pair_minheap.hpp"
 #include "../includes/derived_hashmap.hpp"
 // #include "../includes/master_hashmap.hpp"
 #include "../includes/graph_ops.hpp"
 #include "../includes/gprintf.hpp"
-
 
 std::ostream& operator<<(std::ostream& out, const std::vector<std::tuple<std::string, std::string>>& vertex_list) {
     out << "[ ";
@@ -38,127 +33,67 @@ std::ostream& operator<<(std::ostream& out, const std::vector<std::tuple<std::st
     return out;
 }
 
-std::ostream& operator<<(std::ostream&out, const std::vector<std::string>& string_list) {
-    out << "[ ";
-    for (unsigned int i = 0; i < string_list.size(); i++) {
-        if ( i == string_list.size() - 1) {
-            out << string_list[i];
-        } else {
-            out << string_list[i] << ", ";
-        }
-    }
-    out << " ]";
-    return out;
-}
-
-class INVALID_VERTEX_VALUE_EXCEPTION {};
 
 int main(void) {
 
-
-
-    std::string rel_path = "sample_graphs";
-    auto file_list = dl_list<std::string>{};
-    for (const auto& sample_file : std::filesystem::directory_iterator(rel_path)){
-        std::string file_name = sample_file.path().string();
-        file_name.erase(file_name.begin(), file_name.begin() + 14);
-        file_list.add_to_back(file_name);
-    }
-    std::cout << "Current text files available are: " << '\n';
-    std::cout << file_list << '\n';
-    std::cout << '\n';
-    std::cout << "Please Enter the Filename containing the Weighted Graph Edges: ";
+    /// Establish preset file paths for reading and writing operations
+    std::string graph_filename = "./dot_graphs/full_graph.gv";
+    // std::string graph_filename = "./dot_graphs/full_graph.gv";
+    std::string rel_path = "sample_graphs/";
+    std::string path_filename = "./dot_graphs/shortest_path.gv";
     std::string read_name;
-    unsigned int vertex_count;
-    std::cin >> read_name;
-    std::cin.clear();
-    std::cout << '\n';
 
-    rel_path.append("/");
-    rel_path.append(read_name);
-
-    std::cout << "Please Enter the Approximate Number of Unique Verticies: ";
-    try {
-        std::cin >> vertex_count;
-        if (std::cin.fail() || vertex_count <= 0) {
-            throw INVALID_VERTEX_VALUE_EXCEPTION();
-        }
+    /// Determine and present acceptable files from designated directory for user-provided graph text files
+    int file_output = get_graph_filename(rel_path, read_name);
+    if (file_output < 0) {
+        return EXIT_SUCCESS;
     }
-    catch (INVALID_VERTEX_VALUE_EXCEPTION e) {
-        std::cerr << "Invalid Argument: Number of Verticies must be a positive integer value greater than zero." << '\n';
-        return EXIT_FAILURE;
-    }
-    std::cout << '\n';
 
-    auto main = main_hashmap<double>(vertex_count);
+    /// Handle User Input For Total Number of Verticies in Submitted Graph
+    long int vertex_count;
+    get_graph_vertex_count(vertex_count);
 
+    /// Build main_hashmap data struct to store a relevant graphical information extracted from user-provided graph file
+    /// Write relevant extracted information in dot language format to designated .gv file for building graph visualization 
+    auto main = main_hashmap<double>(static_cast<unsigned int>(vertex_count));
     std::cout << "Building graph from '" << read_name << "' file contents..." << '\n';
-
-
-    // int output = build_adjacency_list(read_name, vertex_count, master);
-    int output = build_adjacency_list(rel_path, vertex_count, main);
+    std::cout << "Writing graph information to file '" << graph_filename << "' for image processing..." << '\n';
+    unsigned int file_vertex_count = static_cast<unsigned int>(vertex_count);
+    int output = build_adjacency_list(rel_path, graph_filename, file_vertex_count, main);
     if (output < 0) {
         return EXIT_FAILURE;
     }
+
+    /// Handle User Input for Preferred Calculation to Apply using Extracted Information
     std::cout << "Graph Successfully Built!" << '\n' << '\n';
-
-    std::string source_vertex;
-    
-    std::cout << "Your Verticies Include: " << main.get_main_keys() << '\n';
-    std::cout << "Please Enter The Source Vertex: ";
-    std::getline(std::cin>>std::ws, source_vertex);
-    // while (!master.contains_key(source_vertex) && source_vertex.compare("exit now") != 0) {
-    while (!main.contains_key(source_vertex) && source_vertex.compare("exit now") != 0) {
-        std::cout << '\n' << "Error: Entered Source Vertex of '" << source_vertex << "' not found Within Generated Graph. Please try again or enter 'exit now' to exit." << '\n';
-        // std::cout << "Your Verticies Include: " << master.get_master_keys() << '\n';
-        std::cout << "Your Verticies Include: " << main.get_main_keys() << '\n';
-        std::cout << "Please Enter The Source Vertex: ";
-        std::getline(std::cin>>std::ws, source_vertex);
-    }
-    if (source_vertex.compare("exit now") == 0) {
-        return EXIT_SUCCESS;
-    }
-
-    std::string dest_vertex;
-    // std::cout << '\n' << "Your Verticies Include: " << master.get_master_keys() << '\n';
-    std::cout << '\n' << "Your Verticies Include: " << main.get_main_keys() << '\n';
-    std::cout << "Please Enter The Destination Vertex: ";
-    std::getline(std::cin>>std::ws, dest_vertex);
-    // while (!master.contains_key(dest_vertex) && dest_vertex.compare("exit now") != 0) {
-    while (!main.contains_key(dest_vertex) && dest_vertex.compare("exit now") != 0) {
-        std::cout << '\n' << "Error: Entered Destination Vertex of '" << dest_vertex << "' not found Within Generated Graph. Please try again or enter 'exit now' to exit." << '\n';
-        // std::cout << "Your Verticies Include: " << master.get_master_keys() << '\n';
-        std::cout << "Your Verticies Include: " << main.get_main_keys() << '\n';
-        std::cout << "Please Enter The Destination Vertex: ";
-        std::getline(std::cin>>std::ws, dest_vertex);
-    }
-    if (dest_vertex.compare("exit now") == 0) {
-        return EXIT_SUCCESS;
-    }
-
     std::string algorithm_type;
-    std::cout << '\n' << "Please Enter Desired Graph Output ('M' for Minimum Spanning Tree OR 'S' for Shortest Distance): ";
-    std::getline(std::cin, algorithm_type);
-    while (algorithm_type.compare("M") != 0 && algorithm_type.compare("S") != 0 && algorithm_type.compare("exit now")) {
-        std::cout << "Error: '" << algorithm_type << "' is not a valid. Please try again or enter 'exit now' to exit." << '\n';
-        std::cout << "Please Enter Desired Graph Output ('M' for Minimum Spanning Tree OR 'S' for Shortest Distance): ";
-        std::getline(std::cin, algorithm_type);
-    }
-    if (algorithm_type.compare("exit now") == 0) {
-        return EXIT_SUCCESS;
-    }
-    if (algorithm_type.compare("M") == 0) {
-        std::cout << '\n';
-        // apply_prims_algorithm(source_vertex, master);
-        apply_prims_algorithm(source_vertex, main);
-        
+    int request_output = get_requested_algorithm (algorithm_type, main, path_filename);
+    if (request_output < 0) {
+        return EXIT_FAILURE;
     }
 
-    if (algorithm_type.compare("S") == 0) {
-        std::cout << '\n';
-        // apply_djikstras_algorithm(source_vertex, dest_vertex, vertex_count, master);
-        apply_djikstras_algorithm(source_vertex, dest_vertex, vertex_count, main);
-        
+    /// Run Bash Script for Generating Graph Images
+    char visualize_script_path[] = "./scripts/visualize_graph.sh";
+    char bash_path[] = "/bin/bash";
+
+    pid_t pid = fork();
+    int childStatus;
+    switch(pid) {
+        case -1:
+            perror("fork");
+            break;
+        case 0:
+            std::cout << "Running \"visualize_graph.sh\" to build graphs from graph information..." << '\n';
+            execl(bash_path, bash_path, visualize_script_path, nullptr);
+            perror("execl");
+            break;
+        default:
+            pid = waitpid(pid, &childStatus, 0);
+
+            std::cout << "Graph generation complete!\nThe generated image of the complete graph within the \"graph_images\" directory as \"full_graph.png\".\n";
+            if (algorithm_type.compare("S") == 0) {
+                std::cout << "The generated image of the shortest path from your provided verticies will be within \"shortest_path.png\"" << std::endl;
+            }
     }
     return EXIT_SUCCESS;
 }
