@@ -1,0 +1,2 @@
+Fresno, San Diego, 10.0
+Santa Domingo, Chicago, 15.3
