@@ -1,7 +1,7 @@
 #!/opt/homebrew/bin/bash
 
 # Script will only run if homebrew exists with bash env
-echo "Attempting to update homebrew..."
+echo "Checking for updates to local version of Homebrew..."
 brew update && brew upgrade
 if [ $? -ne 0 ]; then 
 echo "Error encountered while attempting to update brew... please visit https://brew.sh/ for troubleshooting."
@@ -72,7 +72,9 @@ make
 cd ../../
 
 # Provide Usage Instructions
-echo "Both CMake projects have been successfully built and compiled!"
-echo "To Run in Release Mode, Enter into the Terminal: \"./build/release/Graph_TIProject\""
-echo "To Run in Debug Mode, Enter into the Terminal: \"./build/debug/Graph_TIProject\""
-echo "To Run all tests within GoogleTest testing suite. Enter: \"./build/tests\""
+echo "Both CMake projects have been successfully built and compiled!\\n"
+echo "EXECUTING PROGRAM:"
+echo "To Run the Program in Release Mode, Enter into the Terminal: \"./build/release/Graph_TIProject\""
+echo "To Run the Program in Debug Mode, Enter into the Terminal: \"./build/debug/Graph_TIProject\""
+echo "EXECUTING TESTING SUITE:"
+echo "To Run all tests within GoogleTest testing suite, Enter: \"./build/debug/tests\""
