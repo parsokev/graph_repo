@@ -162,6 +162,28 @@ TEST(test_DL, test_remove_back) {
     EXPECT_EQ(test_list.get_size(), static_cast<size_t>(0));
 }
 
+TEST(test_DL, test_pop) {
+    auto test_list = dl_list<std::string> {};
+    test_list.add_to_back("last_node");
+    test_list.add_to_front("front_node");
+    test_list.add_to_front("new front node");
+    test_list.add_to_back("new last node");
+    EXPECT_EQ(test_list.get_size(), static_cast<size_t>(4));
+    EXPECT_EQ(test_list.pop(), "new last node");
+    EXPECT_EQ(test_list.get_size(), static_cast<size_t>(3));
+    EXPECT_EQ(test_list.pop(), "last_node");
+    EXPECT_EQ(test_list.get_size(), static_cast<size_t>(2));
+    EXPECT_EQ(test_list.pop(), "front_node");
+    EXPECT_EQ(test_list.get_size(), static_cast<size_t>(1));
+    EXPECT_EQ(test_list.pop(), "new front node");
+    EXPECT_EQ(test_list.get_size(), static_cast<size_t>(0));
+    EXPECT_FALSE(test_list.contains_node("last_node"));
+    EXPECT_FALSE(test_list.contains_node("front_node"));
+    EXPECT_FALSE(test_list.contains_node("new last node"));
+    EXPECT_FALSE(test_list.contains_node("new front node"));
+    EXPECT_DEATH(test_list.pop(), "List is empty!");
+}
+
 TEST(test_DL, test_contains_node) {
     auto test_list = dl_list<std::string> {};
     test_list.add_to_back("last_node");
@@ -182,7 +204,26 @@ TEST(test_DL, test_contains_node) {
     EXPECT_FALSE(num_list.contains_node(0));
 }
 
-
+TEST(test_DL, test_direct_indexing) {
+    auto test_list = dl_list<std::string> {};
+    test_list.add_to_back("last_node");
+    test_list.add_to_front("front_node");
+    auto num_list = dl_list<double> {};
+    num_list.add_to_back(5.0);
+    num_list.add_to_front(15.3);
+    EXPECT_EQ(num_list[0], 15.3);
+    EXPECT_EQ(test_list[0], "front_node");
+    EXPECT_EQ(num_list[1], 5.0);
+    EXPECT_EQ(test_list[1], "last_node");
+    ASSERT_DEATH(num_list[2], "Index '2' is out of bounds!");
+    ASSERT_DEATH(test_list[2], "Index '2' is out of bounds!");
+    test_list.remove_back();
+    test_list.remove_back();
+    num_list.remove_back();
+    num_list.remove_back();
+    ASSERT_DEATH(test_list[0], "List is empty!");
+    ASSERT_DEATH(num_list[0], "List is empty!");
+}
 // Test Suite test_PMNHP: MINIMUM BINARY HEAP OF KEY:VALUE PAIR NODES Functions
 // Test paired_min_heap
 // Test 1: Test get_min/paired_min_heap constructor
@@ -326,31 +367,98 @@ TEST(test_PRMNHP, test_remove_min) {
 // Test 14: Test remove
 // Test 15: Test clear
 
+
 TEST(test_SOAHSMP, test_apply_hash_function) {
-    std::vector<std::string> sample_keys = {"San Francisco", "San Antonio", "Santa Cruz", "San Antonio", "San Francisco", "Santa Cruz"};
+    std::vector<std::string> sample_keys = {"San Francisco", "Santa Barbara", "Santa Cruz", "Sacramento", "Medford", "San Diego", "Redding", "Los Angeles", "San Jose",  "Las Vegas", "Fresno", "Cupertino"};
     bool mismatch = false;
     auto sf_hash = apply_hash_function("San Francsico");
-    auto sa_hash = apply_hash_function("San Antonio");
+    auto sb_hash = apply_hash_function("Santa Barbara");
     auto sc_hash = apply_hash_function("Santa Cruz");
+    auto scr_hash = apply_hash_function("Sacramento");
+    auto md_hash = apply_hash_function("Medford");
+    auto sd_hash = apply_hash_function("San Diego");
+    auto rd_hash = apply_hash_function("Redding");
+    auto la_hash = apply_hash_function("Los Angeles");
+    auto sj_hash = apply_hash_function("San Jose");
+    auto lv_hash = apply_hash_function("Las Vegas");
+    auto fr_hash = apply_hash_function("Fresno");
+    auto cr_hash = apply_hash_function("Cupertino");
     for (size_t i = 0; i < sample_keys.size(); i++) {
         auto hash_index = apply_hash_function(sample_keys[i]);
         if (hash_index == sf_hash && sample_keys[i].compare("San Francisco") != 0) {
+            std::cout << "San Francisco" << '\n';
             mismatch = true;
             break;
         }
 
-        if (hash_index == sa_hash && sample_keys[i].compare("San Antonio") != 0) {
+        if (hash_index == sb_hash && sample_keys[i].compare("Santa Barbara") != 0) {
+            std::cout << "Santa Barbara" << '\n'; 
             mismatch = true;
             break;
         }
 
         if (hash_index == sc_hash && sample_keys[i].compare("Santa Cruz") != 0) {
+            std::cout << "Santa Cruz" << '\n';
             mismatch = true;
             break;
         }
+
+        if (hash_index == scr_hash && sample_keys[i].compare("Sacramento") != 0) {
+            std::cout << "Sacramento" << '\n';
+            mismatch = true;
+            break;
+        }
+
+        if (hash_index == md_hash && sample_keys[i].compare("Medford") != 0) {
+            std::cout << "Medford" << '\n';
+            mismatch = true;
+            break;
+        }
+        if (hash_index == sd_hash && sample_keys[i].compare("San Diego") != 0) {
+            std::cout << "San Diego" << '\n';
+            mismatch = true;
+            break;
+        }
+
+        if (hash_index == rd_hash && sample_keys[i].compare("Redding") != 0) {
+            std::cout << "Redding" << '\n';
+            mismatch = true;
+            break;
+        }        
+
+        if (hash_index == la_hash && sample_keys[i].compare("Los Angeles") != 0) {
+            std::cout << "Los Angeles" << '\n';
+            mismatch = true;
+            break;
+        }
+
+        if (hash_index == sj_hash && sample_keys[i].compare("San Jose") != 0) {
+            std::cout << "San Jose" << '\n';
+            mismatch = true;
+            break;
+        }
+
+        if (hash_index == lv_hash && sample_keys[i].compare("Las Vegas") != 0) {
+            std::cout << "Las Vegas" << '\n';
+            mismatch = true;
+            break;
+        }
+
+        if (hash_index == fr_hash && sample_keys[i].compare("Fresno") != 0) {
+            std::cout << "Fresno" << '\n';
+            mismatch = true;
+            break;
+        }
+
+        if (hash_index == cr_hash && sample_keys[i].compare("Cupertino") != 0) {
+            std::cout << "Cupertino" << '\n';
+            mismatch = true;
+            break;
+        }                
     }
     EXPECT_FALSE(mismatch);
 }
+
 
 TEST(test_SOAHSMP, test_is_prime) {
     std::vector<size_t> prime_list = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97};
@@ -377,39 +485,45 @@ TEST(test_SOAHSMP, test_get_next_prime) {
     EXPECT_TRUE(fail_prime);
 }
 
+TEST(test_SOAHSMP, test_constructor) {
+    auto dtest_hash = soa_hashmap<double>(1);
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(0));
+    EXPECT_EQ(dtest_hash.get_capacity(), static_cast<unsigned int>(5));
+}
+
 TEST(test_SOAHSMP, test_get_size) {
     auto dtest_hash = soa_hashmap<double>(5);
     auto stest_hash = soa_hashmap<std::string>(5);
-    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(0));
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(0));
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(0));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(0));
 }
 
 TEST(test_SOAHSMP, test_get_capacity) {
     auto dtest_hash = soa_hashmap<double>(5);
     auto stest_hash = soa_hashmap<std::string>(5);
-    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(0));
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(0));
-    EXPECT_EQ(dtest_hash.get_capacity(), static_cast<size_t>(5));
-    EXPECT_EQ(dtest_hash.get_capacity(), static_cast<size_t>(5));
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(0));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(0));
+    EXPECT_EQ(dtest_hash.get_capacity(), static_cast<unsigned int>(5));
+    EXPECT_EQ(dtest_hash.get_capacity(), static_cast<unsigned int>(5));
 }
 
 TEST(test_SOAHSMP, test_add) {
     auto dtest_hash = soa_hashmap<double>(5);
     auto stest_hash = soa_hashmap<std::string>(5);
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(0));
-    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(0));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(0));
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(0));
     dtest_hash.add("San Francisco", 3.0);
-    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(1));
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(1));
     dtest_hash.add("New York", 10.0);
-    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(2));
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(2));
     dtest_hash.add("Houston", 15.0);
-    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(3));
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(3));
     stest_hash.add("San Francisco", "New York");
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(1));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(1));
     stest_hash.add("New York", "Houston");
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(2));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(2));
     stest_hash.add("Dallas", "San Antonio");
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(3));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(3));
 }
 
 TEST(test_SOAHSMP, test_get_keys) {
@@ -422,8 +536,8 @@ TEST(test_SOAHSMP, test_get_keys) {
     stest_hash.add("San Francisco", "New York");
     stest_hash.add("New York", "Houston");
     stest_hash.add("Dallas", "San Antonio");
-    EXPECT_EQ(dtest_hash.get_keys().size(), static_cast<size_t>(3));
-    EXPECT_EQ(dtest_hash.get_keys().size(), static_cast<size_t>(3));
+    EXPECT_EQ(dtest_hash.get_keys().size(), static_cast<unsigned int>(3));
+    EXPECT_EQ(dtest_hash.get_keys().size(), static_cast<unsigned int>(3));
 }
 
 
@@ -469,7 +583,7 @@ TEST(test_SOAHSMP, test_resize_table) {
     auto dtest_hash = soa_hashmap<double>(3);
     auto stest_hash = soa_hashmap<std::string>(3);
     auto init_cap = dtest_hash.get_capacity();
-    EXPECT_EQ(init_cap, static_cast<size_t>(3));
+    EXPECT_EQ(init_cap, static_cast<unsigned int>(5));
     dtest_hash.add("San Francisco", 3.0);
     dtest_hash.add("New York", 10.0);
     EXPECT_EQ(get_next_prime(init_cap), dtest_hash.get_capacity());
@@ -534,41 +648,41 @@ TEST(test_SOAHSMP, test_empty_buckets) {
     auto stest_hash = soa_hashmap<std::string>(5);
     EXPECT_EQ(stest_hash.empty_buckets(), stest_hash.get_capacity());
     EXPECT_EQ(dtest_hash.empty_buckets(), dtest_hash.get_capacity());
-    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(0));
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(0));
-    EXPECT_EQ(dtest_hash.get_capacity(), static_cast<size_t>(5));
-    EXPECT_EQ(stest_hash.get_capacity(), static_cast<size_t>(5));
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(0));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(0));
+    EXPECT_EQ(dtest_hash.get_capacity(), static_cast<unsigned int>(5));
+    EXPECT_EQ(stest_hash.get_capacity(), static_cast<unsigned int>(5));
 
     dtest_hash.add("San Francisco", 3.0);
-    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(1));
-    EXPECT_EQ(dtest_hash.get_capacity(), static_cast<size_t>(5));
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(1));
+    EXPECT_EQ(dtest_hash.get_capacity(), static_cast<unsigned int>(5));
     EXPECT_EQ(dtest_hash.empty_buckets(), dtest_hash.get_capacity() - dtest_hash.get_size());
     dtest_hash.add("New York", 10.0);
-    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(2));
-    EXPECT_EQ(dtest_hash.get_capacity(), static_cast<size_t>(5));
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(2));
+    EXPECT_EQ(dtest_hash.get_capacity(), static_cast<unsigned int>(5));
     EXPECT_EQ(dtest_hash.empty_buckets(), dtest_hash.get_capacity() - dtest_hash.get_size());
     dtest_hash.add("Houston", 15.0);
-    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(3));
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(3));
     EXPECT_EQ(dtest_hash.get_capacity(), get_next_prime(5));
     EXPECT_EQ(dtest_hash.empty_buckets(), dtest_hash.get_capacity() - dtest_hash.get_size());
     dtest_hash.add("Lufkin", 42.0);
-    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(4));
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(4));
     EXPECT_EQ(dtest_hash.empty_buckets(), dtest_hash.get_capacity() - dtest_hash.get_size());
 
     stest_hash.add("San Francisco", "New York");
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(1));
-    EXPECT_EQ(stest_hash.get_capacity(), static_cast<size_t>(5));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(1));
+    EXPECT_EQ(stest_hash.get_capacity(), static_cast<unsigned int>(5));
     EXPECT_EQ(stest_hash.empty_buckets(), stest_hash.get_capacity() - stest_hash.get_size());
     stest_hash.add("New York", "Houston");
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(2));
-    EXPECT_EQ(stest_hash.get_capacity(), static_cast<size_t>(5));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(2));
+    EXPECT_EQ(stest_hash.get_capacity(), static_cast<unsigned int>(5));
     EXPECT_EQ(stest_hash.empty_buckets(), stest_hash.get_capacity() - stest_hash.get_size());
     stest_hash.add("Dallas", "San Antonio");
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(3));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(3));
     EXPECT_EQ(stest_hash.get_capacity(), get_next_prime(5));
     EXPECT_EQ(stest_hash.empty_buckets(), stest_hash.get_capacity() - stest_hash.get_size());
     stest_hash.add("Lufkin", "Detroit");
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(4));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(4));
     EXPECT_EQ(stest_hash.empty_buckets(), stest_hash.get_capacity() - stest_hash.get_size());
 }
 
@@ -577,10 +691,10 @@ TEST(test_SOAHSMP, test_remove) {
     auto stest_hash = soa_hashmap<std::string>(5);
     EXPECT_EQ(stest_hash.empty_buckets(), stest_hash.get_capacity());
     EXPECT_EQ(dtest_hash.empty_buckets(), dtest_hash.get_capacity());
-    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(0));
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(0));
-    EXPECT_EQ(dtest_hash.get_capacity(), static_cast<size_t>(5));
-    EXPECT_EQ(stest_hash.get_capacity(), static_cast<size_t>(5));
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(0));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(0));
+    EXPECT_EQ(dtest_hash.get_capacity(), static_cast<unsigned int>(5));
+    EXPECT_EQ(stest_hash.get_capacity(), static_cast<unsigned int>(5));
 
     dtest_hash.add("San Francisco", 3.0);
     dtest_hash.add("New York", 10.0);
@@ -591,61 +705,61 @@ TEST(test_SOAHSMP, test_remove) {
     stest_hash.add("Dallas", "San Antonio");
     stest_hash.add("Lufkin", "Detroit");
 
-    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(4));
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(4));
     EXPECT_FALSE(dtest_hash.contains_key("Billings"));
     EXPECT_FALSE(stest_hash.contains_key("Billings"));
 
     EXPECT_TRUE(dtest_hash.contains_key("Houston"));
     dtest_hash.remove("Houston");
     stest_hash.remove("Billings");
-    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(3));
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(3));
     EXPECT_FALSE(dtest_hash.contains_key("Houston"));
 
     EXPECT_TRUE(dtest_hash.contains_key("San Francisco"));
     dtest_hash.remove("San Francisco");
     stest_hash.remove("Billings");
-    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(2));
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(2));
     EXPECT_FALSE(dtest_hash.contains_key("San Francisco"));
 
     EXPECT_TRUE(dtest_hash.contains_key("Lufkin"));
     dtest_hash.remove("Lufkin");
     stest_hash.remove("Billings");
-    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(1));
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(1));
     EXPECT_FALSE(dtest_hash.contains_key("Lufkin"));
 
     EXPECT_TRUE(dtest_hash.contains_key("New York"));   
     dtest_hash.remove("New York");
     stest_hash.remove("Billings");
-    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(0));
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(0));
     EXPECT_FALSE(dtest_hash.contains_key("New York"));
 
 
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(4));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(4));
     EXPECT_TRUE(stest_hash.contains_key("Lufkin"));
     stest_hash.remove("Lufkin");
     stest_hash.remove("Billings");
     EXPECT_FALSE(stest_hash.contains_key("Lufkin"));
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(3));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(3));
 
     EXPECT_TRUE(stest_hash.contains_key("Dallas"));
     stest_hash.remove("Dallas");
     stest_hash.remove("Billings");
     EXPECT_FALSE(stest_hash.contains_key("Dallas"));
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(2));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(2));
 
     EXPECT_TRUE(stest_hash.contains_key("New York"));
     stest_hash.remove("New York");
     stest_hash.remove("Billings");
     EXPECT_FALSE(stest_hash.contains_key("New York"));
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(1));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(1));
 
     EXPECT_TRUE(stest_hash.contains_key("San Francisco"));
     stest_hash.remove("San Francisco");
     stest_hash.remove("Billings");
     EXPECT_FALSE(stest_hash.contains_key("San Francisco"));
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(0));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(0));
     stest_hash.remove("San Francisco");
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(0));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(0));
 }
 
 TEST(test_SOAHSMP, test_clear) {
@@ -653,10 +767,10 @@ TEST(test_SOAHSMP, test_clear) {
     auto stest_hash = soa_hashmap<std::string>(5);
     EXPECT_EQ(stest_hash.empty_buckets(), stest_hash.get_capacity());
     EXPECT_EQ(dtest_hash.empty_buckets(), dtest_hash.get_capacity());
-    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(0));
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(0));
-    EXPECT_EQ(dtest_hash.get_capacity(), static_cast<size_t>(5));
-    EXPECT_EQ(stest_hash.get_capacity(), static_cast<size_t>(5));
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(0));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(0));
+    EXPECT_EQ(dtest_hash.get_capacity(), static_cast<unsigned int>(5));
+    EXPECT_EQ(stest_hash.get_capacity(), static_cast<unsigned int>(5));
 
     dtest_hash.add("San Francisco", 3.0);
     dtest_hash.add("New York", 10.0);
@@ -669,14 +783,14 @@ TEST(test_SOAHSMP, test_clear) {
     auto new_capacity = dtest_hash.get_capacity();
     EXPECT_EQ(new_capacity, stest_hash.get_capacity());
 
-    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(4));
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(4));
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(4));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(4));
     dtest_hash.clear();
     stest_hash.clear();
     EXPECT_EQ(dtest_hash.get_keys().size(), static_cast<size_t>(0));
     EXPECT_EQ(stest_hash.get_keys().size(), static_cast<size_t>(0));
-    EXPECT_EQ(dtest_hash.get_size(), static_cast<size_t>(0));
-    EXPECT_EQ(stest_hash.get_size(), static_cast<size_t>(0));
+    EXPECT_EQ(dtest_hash.get_size(), static_cast<unsigned int>(0));
+    EXPECT_EQ(stest_hash.get_size(), static_cast<unsigned int>(0));
     EXPECT_EQ(dtest_hash.get_capacity(), new_capacity);
     EXPECT_EQ(stest_hash.get_capacity(), new_capacity);    
 }
