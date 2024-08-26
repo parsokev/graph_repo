@@ -15,6 +15,7 @@ esac
 
 # If Linux, attempt to update distribution and install dependencies
 if [[ "$Platform" == 'Linux' ]]; then
+    echo "Checking for updates to Ubuntu Distribution..."
     sudo apt-get -y update && sudo apt-get -y upgrade
 
     if [ $? -ne 0 ]; then 
@@ -98,7 +99,9 @@ make
 cd ../../
 
 # Provide Usage Instructions
-echo "Both CMake projects have been successfully built and compiled!"
-echo "To Run in Release Mode, Enter into the Terminal: \"./build/release/Graph_TIProject\""
-echo "To Run in Debug Mode, Enter into the Terminal: \"./build/debug/Graph_TIProject\""
-echo "To Run all tests within GoogleTest testing suite. Enter: \"./build/tests\""
+echo "Both CMake projects have been successfully built and compiled!\\n"
+echo "EXECUTING PROGRAM:"
+echo "To Run the Program in Release Mode, Enter into the Terminal: \"./build/release/Graph_TIProject\""
+echo "To Run the Program in Debug Mode, Enter into the Terminal: \"./build/debug/Graph_TIProject\""
+echo "EXECUTING TESTING SUITE:"
+echo "To Run all tests within GoogleTest testing suite, Enter: \"./build/debug/tests\""
