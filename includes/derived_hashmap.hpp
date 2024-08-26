@@ -7,8 +7,6 @@
 #include <cassert>
 #include <cmath>
 #include <string>
-#include <typeinfo>
-#include <type_traits>
 
 #include "gprintf.hpp"
 /**
@@ -51,6 +49,10 @@ class soa_hashmap {
          * Upon initialization of `soa_hashmap`, all indices between 0 and `capacity` can be dynamically accessed
          */
         void fill_buckets() {
+            if (capacity < 5) {
+                capacity = 5;
+                assert(capacity == 5);
+            }
             for (unsigned int i = 0; i < capacity; i++) {
                 hash_entry new_val;
                 hash_bucket.insert(hash_bucket.begin() + i, new_val);
@@ -445,6 +447,10 @@ class main_hashmap {
          * Upon initialization of `main_hashmap`, all indices between 0 and `capacity` can be dynamically accessed
         */
         void fill_buckets() {
+            if (main_capacity < 5) {
+                main_capacity = 5;
+                assert(main_capacity == 5);
+            }
             for (unsigned int i = 0; i < main_capacity; i++) {
                 hash_table new_val;
                 main_hash_bucket.insert(main_hash_bucket.begin() + i, new_val);
