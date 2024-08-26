@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include <assert.h>
+#include <cassert>
 
 /**
  * Customized Doubly-linked List Data Structure
@@ -292,6 +292,40 @@ class dl_list {
         }
 
         /**
+         * Removes last node (`tail`) in calling `dl_list` instance
+         * @return `true` if `tail` node exists in `dl_list` and is removed, else `false`
+         */
+        T pop() {
+            if (list_size == 0) {
+                std::cerr << "List is empty!" << '\n';
+            }
+            assert(list_size > 0);
+            T removed_val;
+            switch (list_size) {
+                case 1:
+                    removed_val = head -> data;
+                    head -> is_empty = true;
+                    tail = head;
+                    list_size--;
+                    break;
+                case 2:
+                    removed_val = tail -> data;
+                    delete tail;
+                    head -> next = nullptr;
+                    tail = head;
+                    list_size--;
+                    break;
+                default:
+                    removed_val = tail -> data;
+                    auto prev = tail -> prev;
+                    delete tail;
+                    prev -> next = nullptr;
+                    tail = prev;
+                    list_size--;
+            }
+            return removed_val;
+        } 
+        /**
          * `dl_list` destructor method for freeing all memory allocated for instance of `dl_list`
          */
         void release() {
@@ -362,6 +396,32 @@ class dl_list {
             return out;
 
         }
+
+        const T& operator[] (size_t index) {
+            slistelem *start = this -> head;
+            size_t size = this -> list_size;
+            size_t start_index = 0;
+            if (size == 0) {
+                std::cerr << "List is empty!";
+            }
+            assert(size > 0);
+            
+            if (index > size - static_cast<size_t>(1)) {
+                std::cerr << "Index '" << index << "' is out of bounds!";
+            }
+            assert( index <= size - static_cast<size_t>(1));
+
+            while(start) {
+                if (start_index == index) {
+                    return start -> data;
+                }
+                start = start -> next;
+                start_index++;
+            }
+            std::cerr << "You should never reach here!" << '\n';
+            return start -> data;
+        }
+
     private:
 
         /**
