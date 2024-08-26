@@ -5,10 +5,12 @@ edge [fontname="Comic Sans,Arial,sans-serif"]
 node [style=filled fillcolor="darkolivegreen2"]
 ratio=auto
 landscape=false
-subgraph cluster {"Full Graph" [shape=box fontsize=14 label="Shortest Path from Cupertino TO Medford" tooltip="All Nodes"] }
+subgraph cluster {"Full Graph" [shape=box fontsize=14 label="Shortest Path from Cupertino TO Redding" tooltip="All Nodes"] }
 Cupertino [label="Cupertino" id="Cupertino" fontsize=12 shape=box3d tooltip="Cupertino" color="darkgreen"fillcolor="darkolivegreen2"]
 Sacramento [label="Sacramento" id="Sacramento" fontsize=12 shape=box3d tooltip="Sacramento" color="darkgreen"fillcolor="darkolivegreen2"]
 Medford [label="Medford" id="Medford" fontsize=12 shape=box3d tooltip="Medford" color="darkgreen"fillcolor="darkolivegreen2"]
+Redding [label="Redding" id="Redding" fontsize=12 shape=box3d tooltip="Redding" color="darkgreen"fillcolor="darkolivegreen2"]
+Medford -> Redding [label="0.20" weight=50 penwidth=3 color="darkorange1" tooltip="Medford -> Redding" labeltooltip="Medford -> Redding"]
 Sacramento -> Medford [label="0.10" weight=50 penwidth=3 color="darkorange1" tooltip="Sacramento -> Medford" labeltooltip="Sacramento -> Medford"]
 Cupertino -> Sacramento [label="0.60" weight=50 penwidth=3 color="darkorange1" tooltip="Cupertino -> Sacramento" labeltooltip="Cupertino -> Sacramento"]
 }

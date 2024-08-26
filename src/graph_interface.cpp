@@ -42,7 +42,6 @@ int main(void) {
     std::string rel_path = "sample_graphs/";
     std::string path_filename = "./dot_graphs/shortest_path.gv";
     std::string read_name;
-
     /// Determine and present acceptable files from designated directory for user-provided graph text files
     int file_output = get_graph_filename(rel_path, read_name);
     if (file_output < 0) {
@@ -75,7 +74,7 @@ int main(void) {
     /// Run Bash Script for Generating Graph Images
     char visualize_script_path[] = "./scripts/visualize_graph.sh";
     char bash_path[] = "/bin/bash";
-
+    // char bash_path[] = "/opt/homebrew/bin/bash"
     pid_t pid = fork();
     int childStatus;
     switch(pid) {
