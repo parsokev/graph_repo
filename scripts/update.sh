@@ -3,6 +3,26 @@
 # MacOSX Homebrew Users:
 # replace top line with line contained within <> if script does not run as is: <#!/opt/homebrew/bin/bash>
 
+echo "NOTE: If you wish to add or remove any original files from the \"src\" or \"includes\" directories,"
+echo "you may need to delete the \"build\" directory and rerun the appropriate setup script to rebuild."
+
+
+cd ./build
+if [ $? -ne 0 ]; then 
+echo "Error encountered while attempting to navigate to the Parent Build Directory."
+echo "Please ensure you call \"update.sh\" in current working directory of \"graph_repo\""
+kill -INT 0
+fi
+
+make
+if [ $? -ne 0 ]; then 
+echo "Error encountered while attempting to rebuild the Parent Build Project."
+echo "Please ensure you have run the \"setup.sh\" script at least once before calling the \"update.sh\" script"
+kill -INT 0
+fi
+
+cd ..
+
 # Attempt to navigate to directory containing Release Configuration of CMake Project
 cd ./build/release
 if [ $? -ne 0 ]; then 
