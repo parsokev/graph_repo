@@ -196,16 +196,16 @@ text editor may utilize the [CMakeTools](https://code.visualstudio.com/docs/cpp/
     1. Locate the section titled `Project Status`
     2. Click the `Select Configure Preset` Icon under the Section titled `Configure`
     3. Select the Preferred Configuration for Building/Executing from the drop-down Command Palette menu:
-      - Select `Debug_DIR` to Utilize the **Debug** Configuration
-      - Select `Release_DIR` to Utilize the **Release** Configuration
+       - Select `Debug_DIR` to Utilize the **Debug** Configuration
+       - Select `Release_DIR` to Utilize the **Release** Configuration
 
 5. Build or Rebuild all files within the target `Graph_TIProject` CMake Project by doing **ONE** of the following:
 
-  -  Click the `Build` icon in upper right-hand corner of the title for the `Build` section under `Project Status`
-     to rebuild the selected project configuration
+    -  Click the `Build` icon in upper right-hand corner of the title for the `Build` section under `Project Status`
+       to rebuild the selected project configuration
 
-  - After ensuring the current working directory is `graph_repo`, enter the following into the terminal,
-    which will rebuild both the **Debug** and **Release** Configurations simultaneously:
+    - After ensuring the current working directory is `graph_repo`, enter the following into the terminal,
+      which will rebuild both the **Debug** and **Release** Configurations simultaneously:
 
             ```
             source ./scripts/update.sh
@@ -213,12 +213,12 @@ text editor may utilize the [CMakeTools](https://code.visualstudio.com/docs/cpp/
 
 6. Select the Appropriate File to Execute/Run
 
-  - Click the ***Icon that appears immediately below the Play Icon*** in the right-hand corner of the `Launch` Section.
-  - Select the `Graph_TIProject` executable from Dropdown Command Palette to set it as the Launch Target.
+    - Click the ***Icon that appears immediately below the Play Icon*** in the right-hand corner of the `Launch` Section.
+    - Select the `Graph_TIProject` executable from Dropdown Command Palette to set it as the Launch Target.
 
 7. Run/Execute the Appropriate File
 
-  - Click the Play Icon in the right-hand corner of the "Launch" Section to execute the selected configuration of the program.
+    - Click the Play Icon in the right-hand corner of the "Launch" Section to execute the selected configuration of the program.
 
 
 # Building the Program Utilizing The Provided Makefile
