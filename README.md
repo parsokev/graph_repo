@@ -1,29 +1,51 @@
 # Project Description
-This project was built to demonstrate the basic graphical applications of Djikstra's algorithm
-and Prim's Algorithm in finding optimal solutions when provided sets of graphical information
+
+## Overview
+
+This project was built to demonstrate the combined utilization of basic graphical applications and
+the well-known Djikstra's algorithm and Prim's algorithm to process and visualize optimal path solutions.
+
+Instead of accepting graphical information in the traditional forms of adjacency matricies or adjacency
+lists, this program processes graphical information in a more human-friendly format for ease of access
+to individuals who wish to both provide and view graphical data in a more readily understood format. 
 
 
-This program processes a user-provided text file containing lines in the format:
+## Processing of User-Provided Graphical Information
+
+This program processes a text file where each line contains the information for each unique edge
+in the graph to be processed. This line-by-line format is structured in the following way:
 
 ```
-vertex1, vertex2, distance_between_vertex1_and_vertex2
+vertex1_name, vertex2_name, distance_between_vertex1_and_vertex2
 ```
 
 The program will process the text file to generate a graphical representation to be
-utilized by customized hashmap and binary minimum heap data structures to:
+utilized by customized Hashmap and Binary Minimum Heap data structures to:
 
 1.  Find the shortest path between a user-provided source vertex and destination vertex
 2.  Find the Minimum Spanning Tree given a user-provided source vertex
 
-Sample text files (of varying amounts of graphical densities) that can be used by the program
-are included in the [sample_graphs](./sample_graphs/) directory but you may add any text file
-whose contents match the above format to the `sample_graphs`  for the program to process instead.
+For referencing purposes, several sample text files (of varying amounts of graphical densities)
+that adhere to the proper format for processing are included in the [sample_graphs](./sample_graphs/) directory.
+
+Text files, whose contents match the outlined format and are placed within the `sample_graphs` directory,
+will be detected by the program and presented to the user in the terminal for selection upon starting the program.
+
+After recieving the required information from the user through the terminal, the program will then utilize 
+[Graphviz](https://www.graphviz.org/) to generate:
+
+1. PNG-format image of the entire graph extracted from the user-selected text file in the `sample_graphs` directory.
+2. PNG-format depiction of the requested MST or Shortest Path generated (according to the type of request placed by
+   the user into the terminal).
+
+Both of these images will be placed within the `graph_images` directory for viewing after completion.
 
 
 # Getting Started
 
 This project can be built by either using:
-1. CMake
+
+1. [CMake](https://www.kitware.com/cmake-3-30-1-available-for-download)
 2. [Provided Unix Makefile](./makefile)
 
 > [!WARNING]
@@ -53,9 +75,9 @@ source ./graph_repo/scripts/os_check.sh
 > The appropriate shell script will attempt to install and/or update the items listed below
 > when it attempts to build the project locally ***with the exception of Homebrew***.
 > 
-> If the expected path to bash does not exist, the script will not run. If this occurs,
-> either bash does not exist locally or it is located in an irregular path, which can be
-> fixed by manually changing the top line of the script to this path.
+> If the expected path to Bash does not exist or is incorrect, the script will not run.
+> If this occurs and Bash does exist within the local machine, the top line of the script
+> can be changed to the correct path to Bash locally to allow for the script(s) to be run.
 
 ### Required Dependencies
 
@@ -123,7 +145,7 @@ replace the `update.sh` script's top line of `#!/usr/bin/env bash` with `#!/opt/
 if any issues are encountered.
 
 
-## Executing the Built CMake Project According to Pre-Built Configurations
+## Executing the CMake Project Configurations using the Command Line Interface 
 
 After the appropriate shell script has finished running, the main program can be executed in the
 **Debug** Configuration (Provides additional information reporting not visible in **Release**) 
@@ -141,16 +163,22 @@ Execute the main program in **Release** mode by enter the following in the termi
 ./build/release/Graph_TIProject
 ```
 
+To Rebuild/Update both Configurations, run the `update.sh` shell script:
+
+```
+source ./scripts/update.sh
+```
+
 > [!NOTE]
 > All provided commands ***with the exception of those for running `linux_setup.sh`, `macOS_setup.sh`, and `check_os.sh`*** 
 > are intended to be run with `graph_repo` as the current working directory. If entering any of the other provided commands
 > ***verbatim***, please ensure the current working directory is `graph_repo` when entering these into the terminal.
 
 
-## Setting up CMake Project Configurations using CMakeTools Extension
+## Executing the CMake Project Configurations using the CMakeTools Extension
 
-After the appropriate shell script has completed, any user using the **Microsoft Visual Studio/VSCode**
-text editor may utilize the CMakeTools extension to generate a UI for managing the CMake Project:
+After the appropriate initial setup script has finished running, any user using the **Microsoft Visual Studio/VSCode**
+text editor may utilize the [CMakeTools](https://code.visualstudio.com/docs/cpp/CMake-linux) extension to generate a UI for managing the CMake Project:
 
 1. Reopen the `graph_repo` directory as the **root** directory in your text editor
    -  The highest level of your active directory must be `graph_repo` in order for CMakeTools
@@ -159,8 +187,7 @@ text editor may utilize the CMakeTools extension to generate a UI for managing t
 2. Ensure You have the CMakeTools extension installed and enabled. 
    - As this extension is specific to the **Microsoft VS/VSCode** editor, the CMakeTools option is only 
      accessible to Microsoft VS/VSCode users. If you have Microsoft VS/VSCode installed but do not have the CMakeTools
-     extension, please install and setup the [CMakeTools](https://code.visualstudio.com/docs/cpp/CMake-linux)
-     extension before proceeding further.
+     extension, please install and setup the CMakeTools extension before proceeding further.
 
 3. Click on The CMakeTools Extension Icon on Extension Bar on the far left-hand side of editor.
 
@@ -168,41 +195,31 @@ text editor may utilize the CMakeTools extension to generate a UI for managing t
 
     1. Locate the section titled `Project Status`
     2. Click the `Select Configure Preset` Icon under the Section titled `Configure`
-    3. Select `BUILD_DIR` from the drop-down Command Palette menu
+    3. Select the Preferred Configuration for Building/Executing from the drop-down Command Palette menu:
+      - Select `Debug_DIR` to Utilize the **Debug** Configuration
+      - Select `Release_DIR` to Utilize the **Release** Configuration
 
-5. Build or Rebuild all files within the target `Graph_TIProject` CMake Project using the provided
-`CMakeLists.txt` file and the `update.sh` shell script:
+5. Build or Rebuild all files within the target `Graph_TIProject` CMake Project by doing **ONE** of the following:
 
-   1. To Rebuild the Main Build of the CMake Project By Either:
+  -  Click the `Build` icon in upper right-hand corner of the title for the `Build` section under `Project Status`
+     to rebuild the selected project configuration
 
-       - Clicking the `Build` icon in upper right-hand corner of the title for the `Build` section
-         under `Project Status`
-
-       - Clicking the `Build` icon to the right of `Graph_TIProject(Executable)` section bar under
-         `Project Outline`
-
-   2. To Rebuild the **Debug** and **Release** Configurations of the CMake Project:
-       - Ensure the current working directory is `graph_repo`.
-       - Enter the following in the terminal to rebuild both configurations:
+  - After ensuring the current working directory is `graph_repo`, enter the following into the terminal,
+    which will rebuild both the **Debug** and **Release** Configurations simultaneously:
 
             ```
             source ./scripts/update.sh
             ```
 
-6. Build or Rebuild the GoogleTesting Suite by:
+6. Select the Appropriate File to Execute/Run
 
-    - Clicking on the `Build` icon to the right of the `tests(Executable)` section bar under the `Project Outline`
+  - Click the ***Icon that appears immediately below the Play Icon*** in the right-hand corner of the `Launch` Section.
+  - Select the `Graph_TIProject` executable from Dropdown Command Palette to set it as the Launch Target.
 
+7. Run/Execute the Appropriate File
 
-## GoogleTest Unit Testing Suite (CMake Projects Only)
+  - Click the Play Icon in the right-hand corner of the "Launch" Section to execute the selected configuration of the program.
 
-A GoogleTest Testing Suite is available for the **CMake** build of the project
-
-After the appropriate shell script has completed, the file `tests.cc` can be executed to run any tests defined within by entering:
-
-```
-./build/tests
-```
 
 # Building the Program Utilizing The Provided Makefile
 
@@ -244,3 +261,33 @@ make
 > All above commands for the non-CMake build are intended to be run within the current working directory
 > of `graph_repo`. If entering any of the other provided commands ***verbatim***, Please ensure you are
 > in this directory when entering any of the above commands into the terminal.
+
+# GoogleTest Unit Testing Suite (CMake Projects Only)
+
+A GoogleTest Testing Suite is available for the **CMake** build of the project to implement testing scenarios
+for different functional aspects of the program.
+
+>[!CAUTION]
+> Do not attempt to execute the GoogleTest Testing Suite using the **Release** Configuration.
+> The Testing Suite includes tests that require the use of assertions that will fail to properly
+> execute within the **Release** Configuration. Please use the **Debug** Configuration when
+> utilizing the GoogleTest Testing Suite.
+
+## Executing The GoogleTest Testing Suite using the Command Line Interface
+
+After the appropriate initial setup shell script has completed, the file `tests.cc` can be executed to run any tests defined within by entering:
+
+```
+./build/debug/tests
+```
+
+## Executing The GoogleTest Testing Suite using the CMakeTools Extension
+
+After the appropriate initial setup shell script has completed, the file `tests.cc` can be executed to run any tests defined within using
+CMakeTools:
+  1. Click the Icon to the right of the `Configure` Section Bar under the `Project Status` Section. 
+  2. Select the **Debug** Configuration Preset for the CMake Project, `Debug_DIR` from the Dropdown Command Palette.
+  3. Click the Icon to the right of the `Build` Section Bar under the `Project Status` Section to Rebuild the Project.
+  4. Click ***Icon that appears immediately below the Play Icon*** in the right-hand corner of the `Launch` Section under the `Project Status` Section.
+  5. Select the `tests` executable from Dropdown Command Palette to set it as the Launch Target.
+  6. Click the Play Icon in the right-hand corner of the `Launch` Section to execute the GoogleTest Testing Suite.
