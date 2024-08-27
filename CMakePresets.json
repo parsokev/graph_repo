@@ -2,19 +2,34 @@
     "version": 8,
     "configurePresets": [
         {
-            "name": "default",
-            "displayName": "BUILD_DIR",
+            "name": "debug_build",
+            "displayName": "Debug_DIR",
             "hidden": false,
             "generator": "Unix Makefiles",
-            "description": "Default Settings for CMake Program",
-            "binaryDir": "${workspaceFolder}/build",
+            "description": "Debug Configuration for CMake Project",
+            "binaryDir": "${workspaceFolder}/build/debug",
             "cacheVariables": {
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
                 "CMAKE_INSTALL_PREFIX": "${workspaceFolder}/install",
                 "CMAKE_C_COMPILER": "/usr/bin/gcc",
-                "CMAKE_CXX_COMPILER": "/usr/bin/g++"
+                "CMAKE_CXX_COMPILER": "/usr/bin/g++",
+                "CMAKE_BUILD_TYPE":"Debug"
+            }
+        },
+        {
+            "name": "release_build",
+            "displayName": "Release_DIR",
+            "hidden": false,
+            "generator": "Unix Makefiles",
+            "description": "Release Configuration for Cmake Project",
+            "binaryDir": "${workspaceFolder}/build/release",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
+                "CMAKE_INSTALL_PREFIX": "${workspaceFolder}/install",
+                "CMAKE_C_COMPILER": "/usr/bin/gcc",
+                "CMAKE_CXX_COMPILER": "/usr/bin/g++",
+                "CMAKE_BUILD_TYPE":"Release"
             }
         }
-
     ]
 }
