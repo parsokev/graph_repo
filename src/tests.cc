@@ -596,7 +596,6 @@ TEST(test_PRMNHP, test_heap_move_constructor) {
     ASSERT_EQ(key, "London");
     ASSERT_EQ(value, 2000.5);
     ASSERT_EQ(transfer_heap -> get_heap_size(), 0);
-
 }
 
 
