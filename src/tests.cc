@@ -1,10 +1,17 @@
 #include <gtest/gtest.h>
+
+#include <tuple>
 #include "../includes/linked_list.hpp"
 #include "../includes/pair_minheap.hpp"
 #include "../includes/gprintf.hpp"
 #include "../src/derived_hashmap.cpp"
 #include "../includes/derived_hashmap.hpp"
 
+// std::ostream& operator<<(std::ostream& out, const std::pair<std::string, double>& pair_val) {
+//     out << "{ ";
+//     out << std::get<0>(pair_val) << " : " << std::get<1>(pair_val) << " }";
+//     return out;
+// }
 // Test Suite test_DL: DOUBLY-LINKED lIST Functions
 // Test dl_list
 // Test 1: Test add_to_front
@@ -224,16 +231,18 @@ TEST(test_DL, test_direct_indexing) {
     ASSERT_DEATH(test_list[0], "List is empty!");
     ASSERT_DEATH(num_list[0], "List is empty!");
 }
+
 // Test Suite test_PMNHP: MINIMUM BINARY HEAP OF KEY:VALUE PAIR NODES Functions
 // Test paired_min_heap
-// Test 1: Test get_min/paired_min_heap constructor
-// Test 2: Test get_heap_size
-// Test 3: Test add_node
-// Test 4: Test min_percolate/evaluate_children
-// Test 5: Test remove_min
+
+// Test 1: Test get_heap_size
+// Test 2: Test add_node
+// Test 3: Test min_percolate/evaluate_children
+// Test 4: Test remove_min
+// Test 5: Test paired_min_heap constructor(s)
 
 TEST(test_PRMNHP, test_get_heap_size) {
-    auto test_heap = paired_min_heap<double> {};
+    auto test_heap = paired_min_heap<double>(5);
     EXPECT_EQ(test_heap.get_heap_size(), 0);
     test_heap.add_node("first_node", 0);
     test_heap.add_node("second_node", 3);
@@ -241,7 +250,7 @@ TEST(test_PRMNHP, test_get_heap_size) {
 }
 
 TEST(test_PRMNHP, test_add_node) {
-    auto test_heap = paired_min_heap<double> {};
+    auto test_heap = paired_min_heap<double>(5);
     EXPECT_EQ(test_heap.get_heap_size(), 0);
     test_heap.add_node("first_node", 5);
     EXPECT_EQ(test_heap.get_heap_size(), 1);
@@ -263,7 +272,7 @@ TEST(test_PRMNHP, test_add_node) {
 }
 
 TEST(test_PRMNHP, test_get_min) {
-    auto test_heap = paired_min_heap<double> {};
+    auto test_heap = paired_min_heap<double>(5);
     test_heap.add_node("first_node", 0);
     test_heap.add_node("second_node", 3);
     std::string key;
@@ -275,7 +284,7 @@ TEST(test_PRMNHP, test_get_min) {
 }
 
 TEST(test_PRMNHP, test_min_percolate) {
-    auto test_heap = paired_min_heap<double> {};
+    auto test_heap = paired_min_heap<double>(5);
     test_heap.add_node("first_node", 5);
     test_heap.add_node("second_node", 10);
     test_heap.add_node("third_node", 3);
@@ -306,7 +315,7 @@ TEST(test_PRMNHP, test_min_percolate) {
 }
 
 TEST(test_PRMNHP, test_remove_min) {
-    auto test_heap = paired_min_heap<double> {};
+    auto test_heap = paired_min_heap<double>(5);
     test_heap.add_node("first_node", 5);
     test_heap.add_node("second_node", 10);
     test_heap.add_node("third_node", 3);
@@ -346,6 +355,248 @@ TEST(test_PRMNHP, test_remove_min) {
     EXPECT_EQ(removed_key, "sixth_node");
     EXPECT_EQ(removed_value, 20);
     ASSERT_DEATH(test_heap.remove_min(), "Heap is empty!");    
+}
+
+
+TEST(test_PRMNHP, test_heap_vector_constructor) {
+    auto miami = std::make_pair("Miami", 25.0);
+    auto harvard = std::make_pair("Harvard", 2.0);
+    auto los_angeles = std::make_pair("Los Angeles", 15.3);
+    auto new_york = std::make_pair("New York", 3.6);
+    auto fresno = std::make_pair("Fresno", 10.0);
+    auto redding = std::make_pair("Redding", 1.3);
+    auto san_francisco = std::make_pair("San Francisco", 50.2);
+    auto las_vegas = std::make_pair("Las Vegas", 14.0);
+    auto detroit = std::make_pair("Detroit", 70.4);
+    auto medford = std::make_pair("Medford", 14.7);
+    auto dallas = std::make_pair("Dallas", 34.1);
+    auto phoenix = std::make_pair("Phoenix", 24.3);
+    auto seattle = std::make_pair("Seattle", 47.6);
+    auto portland = std::make_pair("Portland", 18.9);
+    auto orlando = std::make_pair("Orlando", 100.5);
+    auto colorado_springs = std::make_pair("Colorado Springs", 56.8);
+    std::vector<std::pair<std::string, double>> heap_vals = {miami, harvard, los_angeles, new_york, fresno, redding, san_francisco, las_vegas, detroit, medford, dallas, phoenix, seattle, portland, orlando, colorado_springs};
+    auto min_heap = make_unique<paired_min_heap<double>>(heap_vals);
+    ASSERT_EQ(min_heap -> get_heap_size(), 16);
+    std::string key;
+    double value;
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Redding");
+    ASSERT_EQ(value, 1.3);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Harvard");
+    ASSERT_EQ(value, 2.0);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "New York");
+    ASSERT_EQ(value, 3.6);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Fresno");
+    ASSERT_EQ(value, 10.0);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Las Vegas");
+    ASSERT_EQ(value, 14.0);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Medford");
+    ASSERT_EQ(value, 14.7);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Los Angeles");
+    ASSERT_EQ(value, 15.3);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Portland");
+    ASSERT_EQ(value, 18.9);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Phoenix");
+    ASSERT_EQ(value, 24.3);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Miami");
+    ASSERT_EQ(value, 25.0);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Dallas");
+    ASSERT_EQ(value, 34.1);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Seattle");
+    ASSERT_EQ(value, 47.6);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "San Francisco");
+    ASSERT_EQ(value, 50.2);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Colorado Springs");
+    ASSERT_EQ(value, 56.8);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Detroit");
+    ASSERT_EQ(value, 70.4);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Orlando");
+    ASSERT_EQ(value, 100.5);
+    ASSERT_EQ(min_heap -> get_heap_size(), 0);
+}
+
+TEST(test_PRMNHP, test_heap_capacity_constructor) {
+    auto min_heap = std::make_unique<paired_min_heap<double>>(16);
+    ASSERT_EQ(min_heap -> get_heap_size(), 0);
+    ASSERT_EQ(min_heap -> get_capacity(), 16);
+    min_heap -> add_node("Miami", 25.0);
+    min_heap -> add_node("Harvard", 2.0);
+    min_heap -> add_node("Los Angeles", 15.3);
+    min_heap -> add_node("New York", 3.6);
+    min_heap -> add_node("Fresno", 10.0);
+    min_heap -> add_node("Redding", 1.3);
+    min_heap -> add_node("San Francisco", 50.2);
+    min_heap -> add_node("Las Vegas", 14.0);
+    min_heap -> add_node("Detroit", 70.4);
+    min_heap -> add_node("Medford", 14.7);
+    min_heap -> add_node("Dallas", 34.1);
+    min_heap -> add_node("Phoenix", 24.3);
+    min_heap -> add_node("Seattle", 47.6);
+    min_heap -> add_node("Portland", 18.9);
+    min_heap -> add_node("Orlando", 100.5);
+    min_heap -> add_node("Colorado Springs", 56.8);
+    ASSERT_EQ(min_heap -> get_heap_size(), 16);
+
+    std::string key;
+    double value;
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Redding");
+    ASSERT_EQ(value, 1.3);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Harvard");
+    ASSERT_EQ(value, 2.0);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "New York");
+    ASSERT_EQ(value, 3.6);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Fresno");
+    ASSERT_EQ(value, 10.0);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Las Vegas");
+    ASSERT_EQ(value, 14.0);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Medford");
+    ASSERT_EQ(value, 14.7);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Los Angeles");
+    ASSERT_EQ(value, 15.3);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Portland");
+    ASSERT_EQ(value, 18.9);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Phoenix");
+    ASSERT_EQ(value, 24.3);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Miami");
+    ASSERT_EQ(value, 25.0);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Dallas");
+    ASSERT_EQ(value, 34.1);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Seattle");
+    ASSERT_EQ(value, 47.6);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "San Francisco");
+    ASSERT_EQ(value, 50.2);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Colorado Springs");
+    ASSERT_EQ(value, 56.8);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Detroit");
+    ASSERT_EQ(value, 70.4);
+    std::tie(key, value) = min_heap -> remove_min();
+    ASSERT_EQ(key, "Orlando");
+    ASSERT_EQ(value, 100.5);
+    ASSERT_EQ(min_heap -> get_heap_size(), 0);
+    // std::tie(key, value) = min_heap -> remove_min();
+
+    // std::cout << min_heap << '\n';
+    // std::tie(key, value) = min_heap -> remove_min();
+
+    // std::cout << min_heap << '\n';
+    // std::tie(key, value) = min_heap -> remove_min();
+}
+
+TEST(test_PRMNHP, test_heap_move_constructor) {
+    auto min_heap = std::make_unique<paired_min_heap<double>>(16);
+    ASSERT_EQ(min_heap -> get_heap_size(), 0);
+    ASSERT_EQ(min_heap -> get_capacity(), 16);
+    min_heap -> add_node("Miami", 25.0);
+    min_heap -> add_node("Harvard", 2.0);
+    min_heap -> add_node("Los Angeles", 15.3);
+    min_heap -> add_node("New York", 3.6);
+    min_heap -> add_node("Fresno", 10.0);
+    min_heap -> add_node("Redding", 1.3);
+    min_heap -> add_node("San Francisco", 50.2);
+    min_heap -> add_node("Las Vegas", 14.0);
+    min_heap -> add_node("Detroit", 70.4);
+    min_heap -> add_node("Medford", 14.7);
+    min_heap -> add_node("Dallas", 34.1);
+    min_heap -> add_node("Phoenix", 24.3);
+    min_heap -> add_node("Seattle", 47.6);
+    min_heap -> add_node("Portland", 18.9);
+    min_heap -> add_node("Orlando", 100.5);
+    min_heap -> add_node("Colorado Springs", 56.8);
+    ASSERT_EQ(min_heap -> get_heap_size(), 16);
+    auto transfer_heap = std::move(min_heap);
+    ASSERT_EQ(transfer_heap -> get_heap_size(), 16);
+    transfer_heap -> add_node("Ontario", 600.5);
+    transfer_heap -> add_node("London", 2000.5);
+    ASSERT_EQ(transfer_heap -> get_heap_size(), 18);
+    std::string key;
+    double value;
+    std::tie(key, value) = transfer_heap -> remove_min();
+    ASSERT_EQ(key, "Redding");
+    ASSERT_EQ(value, 1.3);
+    std::tie(key, value) = transfer_heap -> remove_min();
+    ASSERT_EQ(key, "Harvard");
+    ASSERT_EQ(value, 2.0);
+    std::tie(key, value) = transfer_heap -> remove_min();
+    ASSERT_EQ(key, "New York");
+    ASSERT_EQ(value, 3.6);
+    std::tie(key, value) = transfer_heap -> remove_min();
+    ASSERT_EQ(key, "Fresno");
+    ASSERT_EQ(value, 10.0);
+    std::tie(key, value) = transfer_heap -> remove_min();
+    ASSERT_EQ(key, "Las Vegas");
+    ASSERT_EQ(value, 14.0);
+    std::tie(key, value) = transfer_heap -> remove_min();
+    ASSERT_EQ(key, "Medford");
+    ASSERT_EQ(value, 14.7);
+    std::tie(key, value) = transfer_heap -> remove_min();
+    ASSERT_EQ(key, "Los Angeles");
+    ASSERT_EQ(value, 15.3);
+    std::tie(key, value) = transfer_heap -> remove_min();
+    ASSERT_EQ(key, "Portland");
+    ASSERT_EQ(value, 18.9);
+    std::tie(key, value) = transfer_heap -> remove_min();
+    ASSERT_EQ(key, "Phoenix");
+    ASSERT_EQ(value, 24.3);
+    std::tie(key, value) = transfer_heap -> remove_min();
+    ASSERT_EQ(key, "Miami");
+    ASSERT_EQ(value, 25.0);
+    std::tie(key, value) = transfer_heap -> remove_min();
+    ASSERT_EQ(key, "Dallas");
+    ASSERT_EQ(value, 34.1);
+    std::tie(key, value) = transfer_heap -> remove_min();
+    ASSERT_EQ(key, "Seattle");
+    ASSERT_EQ(value, 47.6);
+    std::tie(key, value) = transfer_heap -> remove_min();
+    ASSERT_EQ(key, "San Francisco");
+    ASSERT_EQ(value, 50.2);
+    std::tie(key, value) = transfer_heap -> remove_min();
+    ASSERT_EQ(key, "Colorado Springs");
+    ASSERT_EQ(value, 56.8);
+    std::tie(key, value) = transfer_heap -> remove_min();
+    ASSERT_EQ(key, "Detroit");
+    ASSERT_EQ(value, 70.4);
+    std::tie(key, value) = transfer_heap -> remove_min();
+    ASSERT_EQ(key, "Orlando");
+    ASSERT_EQ(value, 100.5);
+    std::tie(key, value) = transfer_heap -> remove_min();
+    ASSERT_EQ(key, "Ontario");
+    ASSERT_EQ(value, 600.5);
+    std::tie(key, value) = transfer_heap -> remove_min();
+    ASSERT_EQ(key, "London");
+    ASSERT_EQ(value, 2000.5);
+    ASSERT_EQ(transfer_heap -> get_heap_size(), 0);
+
 }
 
 
