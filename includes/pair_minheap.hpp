@@ -391,9 +391,15 @@ class paired_min_heap {
         void print_usage () {
             
             std::cout << "USAGE: " << '\n';
-            std::cout << '\t' << "EMPTY paired_min_heap -> " << "paired_min_heap<typename> mx; OR auto mx = paired_min_heap<typename> {};" << '\n';
-            std::cout << '\t' << "std::vector<std::pair<std::string, typename> arr[] = {}  -> " << "paired_minheap<typename> mc = min_heap<double, std::size(arr)>(arr);" << '\n';
-            // std::cout << '\t' << "double arr_buf[buf_size] -> " << "min_heap mh = min_heap<double, sizeof(arr_buf) / sizeof(double)>(arr_buf);" << '\n';
+            std::cout << "1.  Zero-Initialization Constructor: " << '\n';
+            std::cout << '\t' << "EMPTY paired_minheap:  " << "paired_minheap<typename> mx; OR auto mx = paired_minheap<typename>{};\n" << '\n';
+            std::cout << "2.  Initialization using User-Defined Preallocated Amount for Number of Elements to Store: " << '\n';
+            std::cout << '\t' << "paired_minheap w/ preallocated amount:  " << "auto ms = paired_minheap<typename>(Total Expected # of Elements to be Added)\n" << '\n';
+            std::cout << "3.  Initialization using Pre-existing Vector Array of String 'key' : Typename 'value' pairs:\n";
+            std::cout << '\t' << "std::vector<std::pair<std::string, typename>> arr[] = {args...}:  " << "auto mc = paired_minheap<typename>(arr[]);\n" << '\n';
+            std::cout << "4.  Initialization transferring Pre-existing paired_minheap object to newly initialized paired_minheap object" << '\n';
+            std::cout << '\t' << "A. Pre-existing paired_minheap with unique_ptr ownership:  " << "auto some_heap = std::make_unique<paired_minheap<typename>(# of expected elements);\n";
+            std::cout << '\t' << "B. paired_minheap<typename> transfer_heap:  " << "auto transfer_heap = std::move(some_heap);\n" << '\n';
         }
 
         /**
@@ -416,16 +422,17 @@ class paired_min_heap {
         
         /// @brief Current number of nodes stored in `paired_min_heap` instance
         int heap_size;
+
+        /// @brief  Number of `vertex_pair` objects that `paired_min_heap` has currently preallocated memory for storage
         unsigned int capacity;
         /**
          *  Node elements of `paired_min_heap`
          * @param value_pair Tuple of a string-type "key" and numerical "value" pair
          */
         struct vertex_pair {
-            // std::unique_ptr<std::pair<std::string, Type>> value_pair;
+            /// @brief Tuple of a string-type "key" and numerical "value" pair
             std::pair<std::string, Type> value_pair;
         }; 
         /// @brief  underlying storage array of `paired_min_heap` class instance
         std::vector<std::unique_ptr<vertex_pair>> start_heap {};
-        // std::vector<vertex_pair> start_heap{};
 };
