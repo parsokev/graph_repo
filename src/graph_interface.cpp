@@ -10,6 +10,7 @@
 #include <filesystem>
 #include <stdlib.h>
 #include <sys/wait.h>
+#include <memory>
 
 #include "../includes/graph_input.hpp"
 #include "../includes/linked_list.hpp"
@@ -19,20 +20,24 @@
 #include "../includes/graph_ops.hpp"
 #include "../includes/gprintf.hpp"
 
-std::ostream& operator<<(std::ostream& out, const std::vector<std::tuple<std::string, std::string>>& vertex_list) {
-    out << "[ ";
-    for (unsigned int i = 0; i < vertex_list.size(); i++) {
-        std::string vertex1;
-        std::string vertex2;
-        std::tie(vertex1, vertex2) = vertex_list[i];
-        out << "( " << vertex1 << ", " << vertex2 << " )";
-        if (i != vertex_list.size() - 1) {
-            out << ", ";
-        }
-    }
-    return out;
-}
-
+// std::ostream& operator<<(std::ostream& out, const std::vector<std::tuple<std::string, std::string>>& vertex_list) {
+//     out << "[ ";
+//     for (unsigned int i = 0; i < vertex_list.size(); i++) {
+//         std::string vertex1;
+//         std::string vertex2;
+//         std::tie(vertex1, vertex2) = vertex_list[i];
+//         out << "( " << vertex1 << ", " << vertex2 << " )";
+//         if (i != vertex_list.size() - 1) {
+//             out << ", ";
+//         }
+//     }
+//     return out;
+// }
+// std::ostream& operator<<(std::ostream& out, const std::pair<std::string, double>& pair_val) {
+//     out << "{ ";
+//     out << std::get<0>(pair_val) << " : " << std::get<1>(pair_val) << " }";
+//     return out;
+// }
 
 int main(void) {
 
@@ -50,8 +55,10 @@ int main(void) {
 
     /// Handle User Input For Total Number of Verticies in Submitted Graph
     long int vertex_count;
-    get_graph_vertex_count(vertex_count);
-
+    int vertex_output = get_graph_vertex_count(vertex_count);
+    if (vertex_output < 0) {
+        return EXIT_SUCCESS;
+    }
     /// Build main_hashmap data struct to store a relevant graphical information extracted from user-provided graph file
     /// Write relevant extracted information in dot language format to designated .gv file for building graph visualization 
     auto main = main_hashmap<double>(static_cast<unsigned int>(vertex_count));
