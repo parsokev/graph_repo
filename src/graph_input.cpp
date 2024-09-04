@@ -6,41 +6,66 @@
 #include <cstdio>
 #include <fstream>
 #include <filesystem>
+#include <list>
+#include <algorithm>
 
 #include "../includes/derived_hashmap.hpp"
 #include "../includes/linked_list.hpp"
 #include "../includes/graph_input.hpp"
 #include "../includes/graph_ops.hpp"
 
-std::ostream& operator<<(std::ostream&out, const std::vector<std::string>& string_list) {
+
+std::ostream& operator<<(std::ostream& out, const std::vector<std::string>& string_list) {
     out << "[ ";
-    for (unsigned int i = 0; i < string_list.size(); i++) {
-        if ( i == string_list.size() - 1) {
-            out << string_list[i];
+    // for (unsigned int i = 0; i < string_list.size(); i++) {
+    //     if ( i == string_list.size() - 1) {
+    //         out << string_list[i];
+    //     } else {
+    //         out << string_list[i] << ", ";
+    //     }
+    // }
+    for (std::string key : string_list) {
+        if ( key == string_list.back()) {
+            out << key;
         } else {
-            out << string_list[i] << ", ";
+            out << key << ", ";
         }
     }
     out << " ]";
     return out;
 }
 
+ static void print_list(std::list<std::string>& list_s) {
+    std::cout << "[ ";
+    for (std::string i : list_s) {
+        if ( i == list_s.back()) {
+            std::cout << i;
+        } else {
+            std::cout << i << ", ";
+        }
+        
+    }
+    std::cout << " ]" << '\n';
+    return;
+}
+
 int get_graph_filename(std::string& directory_name, std::string& user_file) {
     /// Retrieve contents of designated directory for storing user-provided graph information 
-    auto file_list = dl_list<std::string>{};
+    auto file_list = std::list<std::string>{};
     for (const auto& sample_file : std::filesystem::directory_iterator(directory_name)){
         std::string file_name = sample_file.path().string();
         file_name.erase(file_name.begin(), file_name.begin() + 14);
-        file_list.add_to_back(file_name);
+        file_list.emplace_back(std::move(file_name));
     }
     /// Display file contents to user
     std::cout << "Current text files available are: " << '\n';
-    std::cout << file_list << '\n';
+    print_list(file_list);
     std::cout << '\n';
     /// Handle user input of graph filename
     std::cout << "Please Enter the Filename containing the Weighted Graph Edges: ";
     getline(std::cin>>std::ws, user_file);
-    while(!file_list.contains_node(user_file) && user_file.compare("exit now") != 0) {
+    // while(!file_list.contains_node(user_file) && user_file.compare("exit now") != 0) {
+    while(std::find(file_list.begin(), file_list.end(), user_file) == file_list.end() && user_file.compare("exit now") != 0) {
         std::cerr << "Error: Filename of '" << user_file << "' not found in \"sample_graphs\" directory" << '\n';
         std::cout << "If you wish to Exit, Enter \"exit now\" instead." << '\n';
         std::cout << "Please Enter the Filename of file within \"sample_graphs\" directory containing the Weight Graph Edges: ";
@@ -59,10 +84,11 @@ int get_graph_filename(std::string& directory_name, std::string& user_file) {
     return 0;
 }
 
-void get_graph_vertex_count(long int& vertex_count) {
+int get_graph_vertex_count(long int& vertex_count) {
     /// Handle user provided value for total number of unique verticies in provided graph file
-    std::cout << "Please Enter the Approximate Number of Unique Verticies: ";
+    std::cout << "Please Enter the Approximate Number of Unique Verticies (or Enter \"0\" to abort): ";
     while(!(std::cin >> vertex_count) || vertex_count > UINT32_MAX) {
+
         /// Handle when user provides non-integer value
         if (std::cin.fail()) {
             std::cerr << "Invalid Vertex Count: Number of Verticies must be a positive integer value greater than zero (and preferably much less than 4294967294)." << '\n';
@@ -76,7 +102,7 @@ void get_graph_vertex_count(long int& vertex_count) {
         // Discard rest of string line from standard input stream
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         // Ask for user input
-        std::cout << "Please Enter the Approximate Number of Unique Verticies (or Enter \"Ctrl+C\" to abort): ";
+        std::cout << "Please Enter the Approximate Number of Unique Verticies (or Enter \"0\" to abort): ";
     }
     /// Convert negative integer to positive integer if provided by user
     if (vertex_count < 0) {
@@ -85,11 +111,12 @@ void get_graph_vertex_count(long int& vertex_count) {
     }
     /// Convert zero values to default size of 5
     if (vertex_count == 0) {
-        vertex_count += 5;
-        std::cerr << "Invalid integer value of zero entered, incrementing value to " << vertex_count << '\n';
+        std::cerr << "Recognized exit value of \"0\" detected. Closing Program... Goodbye!" << '\n';
+        return -1;
     }
 
     std::cout << '\n';
+    return 0;
 }
 
 int get_shortest_path(main_hashmap<double>& main, std::string& path_filename) {
@@ -153,13 +180,13 @@ int get_requested_algorithm (std::string& algorithm_type, main_hashmap<double>& 
     getline(std::cin >> std::ws, algorithm_type);
     while (algorithm_type.compare("M") != 0 && algorithm_type.compare("S") != 0 && algorithm_type.compare("exit now") != 0) {
         std::cout << "Error: '" << algorithm_type << "' is not an accepted value. Please try again or enter 'exit now' to exit." << '\n';
-        std::cout << "Please Enter Desired Graph Output ('M' for Minimum Spanning Tree OR 'S' for Shortest Distance): ";
+        std::cout << "Please Enter Desired Graph Output ('M' for Minimum Spanning Tree OR 'S' for Shortest Distance OR 'exit now' to exit): ";
         std::getline(std::cin >> std::ws, algorithm_type);
     }
     /// User wishes to exit program
     if (algorithm_type.compare("exit now") == 0) {
         std::cout << "Exiting Program... Goodbye!" << std::endl;
-        return 0;
+        return -1;
     }
 
     /// User wishes to have MST calculated of provided graph
