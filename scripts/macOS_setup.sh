@@ -63,16 +63,58 @@ fi
 # build cmake projects configured for release and debug within corresponding subdirectories of build
 cd ./build/release
 echo "building cmake project in debug and release configurations..."
+
+# Generate CMakefile for Release Configuration of CMake Project
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ ../../
+if [ $? -ne 0 ]; then
+    echo "Failed to create CMake \"Release\" Configuaration in \"build/release/\" subdirectory in cloned repo directory."
+    echo "Please ensure you are calling script from top level directory. Aborting setup process.."
+    echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script according to README instructions"
+    kill -INT 0
+else
+    echo "Attempting to build \"Release\" configuration using generated CMakefile..."
+fi
+
+# Attempt to build Release Configuration based on generated CMakefile
 make
+if [ $? -ne 0 ]; then
+    echo "Failed to build CMake \"Release\" Configuaration in \"build/release/\" subdirectory in cloned repo directory."
+    echo "Please ensure you are calling script from top level directory. Aborting setup process.."
+    echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script according to README instructions"
+    kill -INT 0
+else
+    echo "\"Release\" Configuration of CMake Project successfully built!"
+fi
+
+
 cd ..
 cd ./debug
+# Generate CMakefile for Debug Configuration of CMake Project
 cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ ../../
+if [ $? -ne 0 ]; then
+    echo "Failed to create CMake \"Debug\" Configuaration in \"build/debug/\" subdirectory in cloned repo directory."
+    echo "Please ensure you are calling script from top level directory. Aborting setup process.."
+    echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script according to README instructions"
+    kill -INT 0
+else
+echo "Attempting to build \"Debug\" configuration using generated CMakefile..."
+fi
+
+# Attempt to build Debug Configuration based on generated CMakefile
 make
+if [ $? -ne 0 ]; then
+    echo "Failed to build CMake \"Debug\" Configuaration in \"build/debug/\" subdirectory in cloned repo directory."
+    echo "Please ensure you are calling script from top level directory. Aborting setup process.."
+    echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script according to README instructions"
+    kill -INT 0
+else
+    echo "\"Debug\" Configuration of CMake Project successfully built!"
+fi
+
 cd ../../
 
 # Provide Usage Instructions
-echo "Both CMake projects have been successfully built and compiled!\\n"
+echo "Both CMake projects have been successfully built and compiled!\n"
 echo "EXECUTING PROGRAM:"
 echo "To Run the Program in Release Mode, Enter into the Terminal: \"./build/release/Graph_TIProject\""
 echo "To Run the Program in Debug Mode, Enter into the Terminal: \"./build/debug/Graph_TIProject\""
