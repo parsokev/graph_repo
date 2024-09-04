@@ -11,3 +11,9 @@ if [ $? -ne 0 ]; then
 echo "Error encountered while attempting to build \"shortest_path.png\"."
 kill -INT 0
 fi
+
+dot -Tpng ./dot_graphs/short_path_graph.gv -o ./graph_images/short_path_overlay.png
+if [ $? -ne 0 ]; then 
+echo "Error encountered while attempting to build \"short_path_overlay.png\"."
+kill -INT 0
+fi
