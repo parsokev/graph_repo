@@ -9,18 +9,170 @@
 #include <fstream>
 #include <sstream>
 #include <list>
+#include <stdlib.h>
+#include <sys/wait.h>
+#include <queue>
+#include <memory>
 
 #include "../includes/linked_list.hpp"
 #include "../includes/pair_minheap.hpp"
-// #include "../includes/master_hashmap.hpp"
 #include "../includes/derived_hashmap.hpp"
 #include "../includes/graph_ops.hpp"
 #include "../includes/gprintf.hpp"
 
 
+static void print_shortest_path(std::vector<std::string>& path_list) {
+
+    for (std::string key : path_list) {
+        if (key == path_list.back() ) {
+            std::cout << key;
+        } else {
+            std::cout << key << " -> ";
+        }
+    }
+    std::cout << '\n';
+    return;
+}
+
+int overlay_shortest_path(std::string& dot_file, std::string& path_file, soa_hashmap<double>& path_map) {
+
+    std::string full_write_path = path_file;
+    std::string full_read_path = dot_file;
+    auto path_edges = path_map.get_keys();
+    std::fstream write_file {full_write_path, write_file.trunc | write_file.out};
+    std::fstream read_file {full_read_path, read_file.in};
+    if (read_file.is_open()) {
+        if (write_file.is_open()) {
+            std::string line;
+            // Extract contents of first line
+            getline(read_file, line);
+            std::istringstream line_read(line);
+
+            // Locate the leading g of expected "graph" word in first line
+            auto get_first_g = line.find('g');
+            // If leading 'g' is not found, format of reading file is incorrect, abort program.
+            if (get_first_g == line.npos) {
+                std::cerr << "ERROR: expected at least once occurence in 'g' in first line of '" << dot_file << "' file\n";
+                return -1;
+            }
+            assert(get_first_g != line.npos);
+
+            line.insert(get_first_g, "di").append("\n");
+            write_file.write(line.c_str(), static_cast<long int>(line.size()));
+
+            while (getline(read_file, line)) {
+                // Initialize parameters to track and locate key characters that indicate line defines an edge
+                auto begin = write_file.tellg();    
+                auto find_left_bracket = line.find('['); // Position of left bracket character ('[')
+                auto find_first_dash = line.find('-');   // Position of first dash character ('-')
+                auto find_second_dash = line[find_first_dash + 1]; // Position of character immediately following first dash character
+                bool has_double_dash = find_second_dash == '-';     // True if current line contains "--" substring
+
+
+                // Determine if current line contains a left bracket and has dashes indicating it defines an edge
+                if (find_left_bracket != line.npos && find_first_dash != line.npos && has_double_dash) {
+                    std::string arrow_label = "arrowsize=0 ";   // Edges not part of shortest path do not have arrows
+                    std::string color_label = "darkcyan";       // Edges that are part of shortest path
+                    auto compare_slice = line.substr(0, find_left_bracket - static_cast<size_t>(1));    // Substring of line[0 : left_bracket] (not including)
+                    auto bracket_slice = line.substr(find_left_bracket, line.size());   // Substring of line[left_bracket : end] (inclusive)
+                    auto get_color = bracket_slice.find('c') + compare_slice.size();    // Position of 'c' character for 'color' definition of current line
+                    auto begin_label = get_color + 8;      // Position of first character following first double quote(") character in 'color' definition of line
+                    auto end_label = begin_label + 14;      // Position of last character preceding second double quote(") character in 'color' definition of line
+                    compare_slice[find_first_dash + 1] = '>';   
+                    bool is_set = false;
+                    line[find_first_dash +1] = '>';
+
+                    for (size_t i = 0; i < path_edges.size(); i++) {
+                        auto first_space = compare_slice.find(" "); // Position of whitespace between first vertex name and dash character ('-')
+                        auto second_space = compare_slice.rfind(" "); // Position of whitespace between second vertex name and arrow character ('>')
+                        std::string vertex1 = compare_slice.substr(0, first_space); // Substring containing first vertex name
+                        std::string vertex2 = compare_slice.substr(second_space + 1, path_edges[i].size() - 1); // Substring containing second vertex name
+                        
+                        // Substring with edge involving same vertcies but with opposite edge directionality 
+                        std::string reverse_compare_slice = vertex2;
+                        reverse_compare_slice.append(" -> ").append(vertex1);
+
+                        // Change color and retain arrow head feature of edges who are part of shortest path in current directionality
+                        if (path_edges[i].compare(compare_slice) == 0) {
+                            is_set = true;
+                            size_t j = 0;
+                            // Directly Replace as many characters as possible of preset color to designated color for shortest path edges
+                            for (; j < color_label.size(); j++) {
+                                
+                                line[begin_label + j] = color_label[j];
+                            }
+                            // Remove any Remaining characters of previous color
+                            line.erase(line.begin() + static_cast<long int>(begin_label) + static_cast<long int>(j), line.begin() + static_cast<long int>(end_label));
+                            
+                        }
+
+                        // Change color and retain arrow head feature of edges who are part of shortest path in opposite directionality
+                        if (path_edges[i].compare(reverse_compare_slice) == 0) {
+                            is_set = true;
+                            for (size_t m = 0; m < reverse_compare_slice.size(); m++) {
+                                line[m] = reverse_compare_slice[m];
+                            }
+
+                            size_t n = 0;
+                            for (; n < color_label.size(); n++) {
+                                
+                                line[begin_label + n] = color_label[n];
+                            }
+                            line.erase(line.begin() + static_cast<long int>(begin_label) + static_cast<long int>(n), line.begin() + static_cast<long int>(end_label));
+                        }
+                    }
+                    // If line defines an edge that is not part of the shortest path, remove arrow head feature and retain preset color
+                    if (!is_set) {
+                        line.insert(find_left_bracket + 1, arrow_label);
+                    } else {
+
+                    }
+                }
+                // Write each processed line that was intially read from read_file and write it into write_file
+                line.append("\n");
+                write_file.write(line.c_str(), static_cast<long int>(line.size()));
+            }
+
+        } else {
+            std::cerr << "ERROR: Failed to open file '" << dot_file << "' for writing!" << '\n';
+            read_file.close();
+            return -1;
+        }
+        // Check failbit for errors encountered during reading
+        if (read_file.fail()) {
+            // Since file pointers will be out of sync due to insertions into write file, ignore if failbit is for eof
+            if (read_file.eof()) {
+                read_file.close();
+                write_file.close();
+                return 0;
+            }
+            std::cerr << "ERROR: Failbit indicates an error occurred while reading\n";
+            read_file.close();
+            write_file.close();
+            return -1;
+        }
+
+        if (write_file.fail()) {
+            std::cerr << "ERROR: Failbit indicates an error occurrred while writing!\n";
+            read_file.close();
+            write_file.close();
+            return -1;
+        }
+        read_file.close();
+        write_file.close();
+    } else {
+        std::cerr << "Failed to open file '" << path_file << "' for reading!" << '\n';
+        return EXIT_FAILURE;
+    }
+
+    return 0;
+}
+
+
 int build_adjacency_list (std::string& filename, std::string& write_name, unsigned int vertex_count, main_hashmap<double>& adj_list) {
     std::fstream read_file;
     std::fstream write_file {write_name, write_file.trunc | write_file.out};
+
     read_file.open(filename);
     /*
     Try to open user-provided text file of graph edges `filename`, and if successful, try to open
@@ -203,9 +355,7 @@ int apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, std:
     auto vertex_count = static_cast<unsigned int>(vertex_list.size());
 
     auto visited_vertices = soa_hashmap<double>(vertex_count);
-    auto mhp = paired_min_heap<double>{};
-
-    // auto vertex_path = master_hashmap<std::string>::oa_hashmap(vertex_count);
+    std::unique_ptr<paired_min_heap<double>>  mhp = std::make_unique<paired_min_heap<double>>(vertex_count);
     auto vertex_path = soa_hashmap<std::string>(vertex_count);
 
     // Prefill visited verticies hashmap key-value pairs of each vertex with a floating infinity distance value
@@ -216,14 +366,15 @@ int apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, std:
     visited_vertices.add(s_vertex, 0.0);
 
     // Add source vertex to minimum heap
-    mhp.add_node(s_vertex, 0);
+    mhp -> add_node(s_vertex, 0);
     std::string popped_vertex;
     double popped_vertex_distance;
 
     // Initiate while loop until all verticies have been visited (minheap will be empty)
-    while (!mhp.is_empty()) {
+    while (!mhp -> is_empty()) {
         // Remove next vertex with smallest distance from minimum heap
-        std::tie(popped_vertex, popped_vertex_distance) = mhp.remove_min();
+        std::tie(popped_vertex, popped_vertex_distance) = mhp -> remove_min();
+        
         // Retrieve current distance from source vertex to extracted vertex held in visited verticies
         auto current_min_distance = visited_vertices.get_val(popped_vertex);
         // If distance value of extracted value is greater than stored value, extract next vertex from minheap
@@ -252,7 +403,6 @@ int apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, std:
                     // If new edge to be updated is the destination vertex, determine whether to update the vertices forming shortest path
                     if (des_vertex.compare(vertex_list[j]) == 0) {
                         gprintf("CURRENT VERTEX: ");
-                        // std::cout << test_path << '\n';
                         #ifdef NDEBUG
                         #else
                         std::cerr << visited_vertices << '\n';
@@ -267,7 +417,7 @@ int apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, std:
                     }
                     visited_vertices.add(vertex_list[j], di);
                     vertex_path.add(vertex_list[j], popped_vertex);              
-                    mhp.add_node(vertex_list[j], di);
+                    mhp -> add_node(vertex_list[j], di);
                 }
             }
         }
@@ -289,7 +439,7 @@ int apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, std:
     #endif
 
     std::cout << "The Shortest Path from " << s_vertex << " TO " << des_vertex << " : " << '\n';
-    auto path_map = soa_hashmap<double>(vertex_count);
+    auto path_map = soa_hashmap<double>(static_cast<unsigned int>(vertex_count));
     auto new_vertex = des_vertex;
     auto prev_vertex = vertex_path.get_val(des_vertex);
     std::string edge_name = "";
@@ -297,13 +447,13 @@ int apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, std:
     edge_name.append(" -> ");
     edge_name.append(underscore_spaces(new_vertex));
     path_map.add(edge_name, adj_list.get_key_val(new_vertex, prev_vertex));
-    auto shortest_path = dl_list<std::string>{};
-    shortest_path.add_to_front(des_vertex);
+    auto shortest_path = std::vector<std::string>{};
+    shortest_path.emplace( shortest_path.begin(), des_vertex);
 
     while (prev_vertex.compare(s_vertex) != 0) {
         new_vertex = prev_vertex;
-        shortest_path.add_to_front(prev_vertex);
-        prev_vertex = vertex_path.get_val(shortest_path.get_front());
+        shortest_path.emplace(shortest_path.begin(), prev_vertex);
+        prev_vertex = vertex_path.get_val(shortest_path.front());
 
         std::string next_edge = "";
         next_edge.append(underscore_spaces(prev_vertex));
@@ -312,13 +462,22 @@ int apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, std:
         path_map.add(next_edge, adj_list.get_key_val(new_vertex, prev_vertex));
     }
 
-    shortest_path.add_to_front(s_vertex);
-    shortest_path.print_nodes();
-
+    shortest_path.emplace(shortest_path.begin(), s_vertex);
+    print_shortest_path(shortest_path);
     int path_build = build_shortest_graph(path_filename, path_map, shortest_path);
     if (path_build < 0) {
         std::cerr << "There was an error in building shortest path graph!" << '\n';
+        return -1;
     }
+
+    std::string read_filename = "./dot_graphs/full_graph.gv";
+    std::string write_filename = "./dot_graphs/short_path_graph.gv";
+    int path_output = overlay_shortest_path(read_filename, write_filename, path_map);
+    if (path_output < 0) {
+        std::cerr << "There was an error in overlaying the full graph with the shortest path" << '\n';
+        return -1;
+    }
+
     std::cout << "Total Distance: " << visited_vertices.get_val(des_vertex) << '\n';
     std::cout << '\n';
     return 0;
@@ -328,33 +487,47 @@ int apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, std:
 
 
 int apply_prims_algorithm(std::string s_vertex, main_hashmap<double>& adj_list) {
-    auto MST_verticies = std::vector<std::tuple<std::string, std::string>>{};
-    auto MST_traversal = dl_list<std::string>{};
-    // auto MST_traversal = std::vector<std::string>{};
+    auto MST_verticies = std::vector<std::pair<std::string, std::string>>{};
+    // auto MST_traversal = dl_list<std::string>{};
+    auto MST_traversal = std::vector<std::string>{};
     double MST_sum = 0;
-    auto mhp = paired_min_heap<double>{};
+
     // auto vertex_list = adj_list.get_master_keys();
     auto vertex_list = adj_list.get_main_keys();
-
+    auto vertex_count = static_cast<unsigned int>(vertex_list.size());
+    std::unique_ptr<paired_min_heap<double>>  mhp = std::make_unique<paired_min_heap<double>>(vertex_count); 
+    // auto mhp = paired_min_heap<double>(vertex_count);
+    // std::priority_queue<std::pair<double, std::string>, std::vector<std::pair<double, std::string>>, std::greater<std::pair<double, std::string>>> min_heap;
     auto source_vertex = s_vertex;
-    MST_traversal.add_to_back(source_vertex);
-    mhp.add_node(source_vertex, 0);
+    // MST_traversal.add_to_back(source_vertex);
+    MST_traversal.emplace_back(source_vertex);
+
+    mhp -> add_node(source_vertex, 0);
+    // min_heap.push(make_pair(0, source_vertex));
     std::string vertex;
     double distance = 0;
     std::string current_min_distance;
-    while ( vertex_list.size() > MST_traversal.get_size()) {
-        if (mhp.is_empty()) {
+    while ( vertex_list.size() > MST_traversal.size()) {
+        // if (min_heap.empty()) {
+        //     std::cerr << "ERROR: Provided Graph is not a connected graph, so no valid Minimum Spanning tree exists!" << '\n';
+        //     std::cerr << "Please ensure the graph is connected (a path exists between all verticies) to generate a valid MST" << '\n';
+        //     return -1;
+        // }
+        if (mhp -> is_empty()) {
             std::cerr << "ERROR: Provided Graph is not a connected graph, so no valid Minimum Spanning tree exists!" << '\n';
             std::cerr << "Please ensure the graph is connected (a path exists between all verticies) to generate a valid MST" << '\n';
             return -1;
         }
-        std::tie(vertex, distance) = mhp.remove_min();
+        std::tie(vertex, distance) = mhp -> remove_min();
+        // std::tie(distance, vertex) = min_heap.top();
+        // min_heap.pop();
         auto adjacent_vertex_list = adj_list.get_key_list(vertex);
         #ifdef NDEBUG
         #else
         gprintf("\nExtracted VERTEX is: %s with a DISTANCE of %.2lf", vertex.c_str(), distance);
         gprintf("\nThe Minimum HEAP currently contains: ");
         std::cerr << mhp << '\n';
+        // std::cerr << min_heap << '\n';
         gprintf("\nThe list of ADJACENT vertices for %s is: ", vertex.c_str());
 
         std::cerr << adjacent_vertex_list << '\n';
@@ -365,13 +538,28 @@ int apply_prims_algorithm(std::string s_vertex, main_hashmap<double>& adj_list) 
         } else {
             current_min_distance = adj_list.get_key_by_value(vertex, distance);
         }
-        /// If extracted vertex has not been visited before, mark as visited and add edge to MST 
-        if (!MST_traversal.contains_node(vertex)) {
-            MST_traversal.add_to_back(vertex);
-            auto new_path = std::tuple<std::string, std::string>(current_min_distance, vertex);
-            MST_verticies.push_back(new_path);
+        bool is_visited = false;
+        /// If extracted vertex has not been visited before, mark as visited and add edge to MST
+        for ( size_t i = 0; i < MST_traversal.size(); i++) {
+            if (MST_traversal[i].compare(vertex) == 0) {
+                is_visited = true;
+                break;
+            }
+
+        }
+        if (!is_visited) {
+            MST_traversal.emplace_back(vertex);
+            // auto new_path = make_pair(current_min_distance, vertex);
+            auto new_path = std::pair<std::string, std::string>(current_min_distance, vertex);
+            MST_verticies.emplace_back(new_path);
             MST_sum += distance;
         }
+        // if (!MST_traversal.contains_node(vertex)) {
+        //     MST_traversal.add_to_back(vertex);
+        //     auto new_path = std::tuple<std::string, std::string>(current_min_distance, vertex);
+        //     MST_verticies.push_back(new_path);
+        //     MST_sum += distance;
+        // }
 
         /// If any verticies adjacent to extracted vertex
         auto adjacent_verticies = adjacent_vertex_list.get_keys();
@@ -380,15 +568,29 @@ int apply_prims_algorithm(std::string s_vertex, main_hashmap<double>& adj_list) 
         gprintf("\nChecking list of verticies for those not visited yet");
         #endif
         for (unsigned int j = 0; j < adjacent_verticies.size(); j++) {
-            if (!MST_traversal.contains_node(adjacent_verticies[j])) {
+            bool contains_adjacent = false;
+            for (size_t k = 0; k < MST_traversal.size(); k++) {
+                if (MST_traversal[k].compare(adjacent_verticies[j]) == 0){
+                    contains_adjacent = true;
+                    break;
+                }
+            }
+            if(!contains_adjacent) {
                 auto weight = adjacent_vertex_list.get_val(adjacent_verticies[j]);
-                mhp.add_node(adjacent_verticies[j], weight);
+                // min_heap.push(make_pair(weight, adjacent_verticies[j]));
+                mhp -> add_node(adjacent_verticies[j], weight);
                 #ifdef NDEBUG
                 #else
                 gprintf("\nAdding vertex %s to Minimum HEAP", adjacent_verticies[j].c_str());
+                    // std::cerr << "HEAP is now: " << min_heap << '\n';
                 std::cerr << "HEAP is now: " << mhp << '\n';
                 #endif
             }
+            // if (!MST_traversal.contains_node(adjacent_verticies[j])) {
+            //     auto weight = adjacent_vertex_list.get_val(adjacent_verticies[j]);
+            //     mhp.add_node(adjacent_verticies[j], weight);
+
+            
         }
     }
     std::cout << "The Minimum Spanning Tree is formed from the Edges of:" << '\n';
@@ -428,11 +630,41 @@ bool is_connected (main_hashmap<double>& adj_list, std::string& source_vertex) {
     return is_connected;
 }
 
-int build_shortest_graph(std::string& dot_file, soa_hashmap<double>& path_map, dl_list<std::string>& path) {
+int copy_file(std::string& origin_file, std::string& origin_path, std::string& new_file, std::string& new_path) {
+    char bash_path[] = "/bin/cp";
+    std::string source_path = origin_path.append(origin_file);
+    std::string dest_path = new_path.append(new_file);
+    const char *source_arg = source_path.c_str();
+    const char *dest_arg = dest_path.c_str();
+     // char copy_command[] = "cp ./dot_graphs/full_graph.gv ./dot_graphs/overlay_graph.gv";
+    pid_t copy_pid = fork();
+    int childStatus;
+    switch(copy_pid) {
+        case -1:
+            perror("fork");
+            errno = -1;
+            break;
+        case 0:
+            std::cout << "Copying contents of '" << origin_file << "' into '" << new_file << "'... " << '\n';
+            execl(bash_path, bash_path, source_arg, dest_arg, nullptr);
+            perror("execl");
+            errno = -1;
+            break;
+        default:
+            copy_pid = waitpid(copy_pid, &childStatus, 0);
+            std::cout << "Copy operation successful!\n" << "Copied file can now be found at '" << dest_path << '\n';
+    }
+    return errno;
+}
+
+
+
+// int build_shortest_graph(std::string& dot_file, soa_hashmap<double>& path_map, dl_list<std::string>& path) {
+int build_shortest_graph(std::string& dot_file, soa_hashmap<double>& path_map, std::vector<std::string>& path) {
     std::fstream read_file {dot_file, read_file.trunc | read_file.out };
     std::string graph_type = "directed";
-    std::string s_vertex = path.get_front();
-    std::string d_vertex = path.get_back(); 
+    std::string s_vertex = path.front();
+    std::string d_vertex = path.back(); 
     std::string title = "Shortest Path from ";
     title.append(s_vertex).append(" TO ").append(d_vertex);
     if (read_file.is_open()) {
@@ -444,7 +676,7 @@ int build_shortest_graph(std::string& dot_file, soa_hashmap<double>& path_map, d
             return -1;
         }
 
-        for (size_t m = 0; m < path.get_size(); m++) {
+        for (size_t m = 0; m < path.size(); m++) {
             auto path_vertex = underscore_spaces(path[m]);
             int vertex_write = write_vertex_node(read_file, path_vertex);
             if (vertex_write < 0) {
