@@ -28,6 +28,7 @@ if [[ "$Platform" == 'Linux' ]]; then
         echo "Failed to install package dependencies"
         echo "All dependencies are required in order to properly utlize the project."
         echo "Please ensure you have not moved \"requirements.txt\" from its original position within the cloned repository"
+        echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
         kill -INT 0
     fi
 
@@ -36,11 +37,13 @@ elif [[ "$Platform" == 'MAC_OS_X' ]]; then
     echo "Mac OS detected. Please run the \"macOS_setup.sh\" script intended for MacOSX users."
     echo "Please ensure you have homebrew installed before running \"macOS_setup.sh\"!"
     echo "You can install the latest version of homebrew at https://brew.sh/"
+    echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
     kill -INT 0
 
 # If OS is not recognized, exit with notification
 else
     echo "Unrecognized distribution. Please run \"os_check.sh\" to determine whether your system is compatible with either bash script"
+    echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
     kill -INT 0
 fi
 
@@ -51,6 +54,7 @@ if [ $? -ne 0 ]; then
     echo "Failed to change to \"graph_repo\" directory from current working directory of ${PWD}."
     echo "Please ensure bash script is called at current working directory one level above directory containing git repository (level at which git clone was called)"
     echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script according to README instructions"
+    echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
     kill -INT 0
 fi
 
@@ -60,6 +64,7 @@ if [ $? -ne 0 ]; then
     echo "Failed to create \"build\" directory in cloned repo directory."
     echo "Aborting setup process..."
     echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script according to README instructions"
+    echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
     kill -INT 0
 else
     echo "\"build\" directory successfully created."
@@ -71,6 +76,7 @@ if [ $? -ne 0 ]; then
     echo "Failed to create \"build/release/\" subdirectory in cloned repo directory."
     echo "Aborting setup process.."
     echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script according to README instructions"
+    echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
     kill -INT 0
 else
     echo "\"release\" subdirectory successfully created."
@@ -82,6 +88,7 @@ if [ $? -ne 0 ]; then
     echo "Failed to create \"build/debug/\" subdirectory in cloned repo directory."
     echo "Aborting setup process.."
     echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script according to README instructions"
+    echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
     kill -INT 0
 else
     echo "\"debug\" subdirectory successfully created."
@@ -97,6 +104,7 @@ if [ $? -ne 0 ]; then
     echo "Failed to create CMake \"Release\" Configuaration in \"build/release/\" subdirectory in cloned repo directory."
     echo "Please ensure you are calling script from top level directory. Aborting setup process.."
     echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script according to README instructions"
+    echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
     kill -INT 0
 else
     echo "Attempting to build \"Release\" configuration using generated CMakefile..."
@@ -108,6 +116,7 @@ if [ $? -ne 0 ]; then
     echo "Failed to build CMake \"Release\" Configuaration in \"build/release/\" subdirectory in cloned repo directory."
     echo "Please ensure you are calling script from top level directory. Aborting setup process.."
     echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script according to README instructions"
+    echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
     kill -INT 0
 else
     echo "\"Release\" Configuration of CMake Project successfully built!"
@@ -122,6 +131,7 @@ if [ $? -ne 0 ]; then
     echo "Failed to create CMake \"Debug\" Configuaration in \"build/debug/\" subdirectory in cloned repo directory."
     echo "Please ensure you are calling script from top level directory. Aborting setup process.."
     echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script according to README instructions"
+    echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
     kill -INT 0
 else
 echo "Attempting to build \"Debug\" configuration using generated CMakefile..."
@@ -133,6 +143,7 @@ if [ $? -ne 0 ]; then
     echo "Failed to build CMake \"Debug\" Configuaration in \"build/debug/\" subdirectory in cloned repo directory."
     echo "Please ensure you are calling script from top level directory. Aborting setup process.."
     echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script according to README instructions"
+    echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
     kill -INT 0
 else
     echo "\"Debug\" Configuration of CMake Project successfully built!"
@@ -147,3 +158,4 @@ echo "To Run the Program in Release Mode, Enter into the Terminal: \"./build/rel
 echo "To Run the Program in Debug Mode, Enter into the Terminal: \"./build/debug/Graph_TIProject\""
 echo "EXECUTING TESTING SUITE:"
 echo "To Run all tests within GoogleTest testing suite, Enter: \"./build/debug/tests\""
+echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
