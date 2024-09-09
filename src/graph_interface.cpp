@@ -18,7 +18,6 @@
 #include "../includes/derived_hashmap.hpp"
 // #include "../includes/master_hashmap.hpp"
 #include "../includes/graph_ops.hpp"
-#include "../includes/gprintf.hpp"
 
 // std::ostream& operator<<(std::ostream& out, const std::vector<std::tuple<std::string, std::string>>& vertex_list) {
 //     out << "[ ";
@@ -48,24 +47,47 @@ int main(void) {
     std::string path_filename = "./dot_graphs/shortest_path.gv";
     std::string read_name;
     /// Determine and present acceptable files from designated directory for user-provided graph text files
-    int file_output = get_graph_filename(rel_path, read_name);
+    int file_output = 0;
+    try {
+        file_output = get_graph_filename(rel_path, read_name);
+    } catch (std::exception& e) {
+        std::cerr << e.what() << std::endl;
+    }
+    // int file_output = get_graph_filename(rel_path, read_name);
     if (file_output < 0) {
         return EXIT_SUCCESS;
     }
 
     /// Handle User Input For Total Number of Verticies in Submitted Graph
     long int vertex_count;
-    int vertex_output = get_graph_vertex_count(vertex_count);
+    int vertex_output = 0;
+    try {
+        vertex_output = get_graph_vertex_count(vertex_count);
+    } catch (std::exception& e) {
+        std::cerr << e.what() << std::endl;
+    }
+    // int vertex_output = get_graph_vertex_count(vertex_count);
     if (vertex_output < 0) {
         return EXIT_SUCCESS;
     }
+    
     /// Build main_hashmap data struct to store a relevant graphical information extracted from user-provided graph file
-    /// Write relevant extracted information in dot language format to designated .gv file for building graph visualization 
-    auto main = main_hashmap<double>(static_cast<unsigned int>(vertex_count));
+    /// Write relevant extracted information in dot language format to designated .gv file for building graph visualization
+    auto main = std::make_unique<main_hashmap<double>>(static_cast<unsigned int>(vertex_count)); 
+    // auto main = main_hashmap<double>(static_cast<unsigned int>(vertex_count));
     std::cout << "Building graph from '" << read_name << "' file contents..." << '\n';
     std::cout << "Writing graph information to file '" << graph_filename << "' for image processing..." << '\n';
+    
+    int output = 0;
     unsigned int file_vertex_count = static_cast<unsigned int>(vertex_count);
-    int output = build_adjacency_list(rel_path, graph_filename, file_vertex_count, main);
+    try {
+        output = build_adjacency_list(rel_path, graph_filename, file_vertex_count, std::move(*main));
+        // output = build_adjacency_list(rel_path, graph_filename, file_vertex_count, main);
+    } catch(std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return -1;
+    }
+    // int output = build_adjacency_list(rel_path, graph_filename, file_vertex_count, main);
     if (output < 0) {
         return EXIT_FAILURE;
     }
@@ -73,7 +95,15 @@ int main(void) {
     /// Handle User Input for Preferred Calculation to Apply using Extracted Information
     std::cout << "Graph Successfully Built!" << '\n' << '\n';
     std::string algorithm_type;
-    int request_output = get_requested_algorithm (algorithm_type, main, path_filename);
+    int request_output = 0;
+    try {
+        request_output = get_requested_algorithm (algorithm_type, std::move(*main), path_filename);
+        // request_output = get_requested_algorithm (algorithm_type, main, path_filename);
+    } catch (std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return -1;
+    }
+    // int request_output = get_requested_algorithm (algorithm_type, main, path_filename);
     if (request_output < 0) {
         return EXIT_FAILURE;
     }
