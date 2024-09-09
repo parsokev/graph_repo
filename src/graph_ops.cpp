@@ -34,7 +34,8 @@ static void print_shortest_path(std::vector<std::string>& path_list) {
     return;
 }
 
-int overlay_shortest_path(std::string& dot_file, std::string& path_file, soa_hashmap<double>& path_map) {
+int overlay_shortest_path(std::string& dot_file, std::string& path_file, std::vector<std::string>& path_list, soa_hashmap<double>&& path_map) {
+// int overlay_shortest_path(std::string& dot_file, std::string& path_file, soa_hashmap<double>& path_map) {
 
     std::string full_write_path = path_file;
     std::string full_read_path = dot_file;
@@ -52,7 +53,7 @@ int overlay_shortest_path(std::string& dot_file, std::string& path_file, soa_has
             auto get_first_g = line.find('g');
             // If leading 'g' is not found, format of reading file is incorrect, abort program.
             if (get_first_g == line.npos) {
-                std::cerr << "ERROR: expected at least once occurence in 'g' in first line of '" << dot_file << "' file\n";
+                std::cerr << "\nERROR: expected at least once occurence in 'g' in first line of '" << dot_file << "' file\n";
                 return -1;
             }
             assert(get_first_g != line.npos);
@@ -67,13 +68,13 @@ int overlay_shortest_path(std::string& dot_file, std::string& path_file, soa_has
                 auto find_first_dash = line.find('-');   // Position of first dash character ('-')
                 auto find_second_dash = line[find_first_dash + 1]; // Position of character immediately following first dash character
                 bool has_double_dash = find_second_dash == '-';     // True if current line contains "--" substring
-
+                auto compare_slice = line.substr(0, find_left_bracket - static_cast<size_t>(1));    // Substring of line[0 : left_bracket] (not including)
 
                 // Determine if current line contains a left bracket and has dashes indicating it defines an edge
                 if (find_left_bracket != line.npos && find_first_dash != line.npos && has_double_dash) {
                     std::string arrow_label = "arrowsize=0 ";   // Edges not part of shortest path do not have arrows
                     std::string color_label = "darkcyan";       // Edges that are part of shortest path
-                    auto compare_slice = line.substr(0, find_left_bracket - static_cast<size_t>(1));    // Substring of line[0 : left_bracket] (not including)
+                    // auto compare_slice = line.substr(0, find_left_bracket - static_cast<size_t>(1));    // Substring of line[0 : left_bracket] (not including)
                     auto bracket_slice = line.substr(find_left_bracket, line.size());   // Substring of line[left_bracket : end] (inclusive)
                     auto get_color = bracket_slice.find('c') + compare_slice.size();    // Position of 'c' character for 'color' definition of current line
                     auto begin_label = get_color + 8;      // Position of first character following first double quote(") character in 'color' definition of line
@@ -124,17 +125,39 @@ int overlay_shortest_path(std::string& dot_file, std::string& path_file, soa_has
                     // If line defines an edge that is not part of the shortest path, remove arrow head feature and retain preset color
                     if (!is_set) {
                         line.insert(find_left_bracket + 1, arrow_label);
+                        
+                        // line.insert(line.begin() + find_left_bracket + 1 + arrow_label.size(), text_label);
                     } else {
-
+                        auto find_right_bracket = line.rfind(']');
+                        std::string text_label = " fontcolor=\"";
+                        std::string text_color = "darkcyan";
+                        text_label.append(text_color).append("\" ");
+                        line.insert(find_right_bracket, text_label);
+                    }
+                } else {
+                    std::string node_label = " fontcolor=\"";
+                    std::string node_color = "firebrick";
+                    node_label.append(node_color).append("\" ");
+                    auto find_underscore = compare_slice.find("_");
+                    if (find_underscore != compare_slice.npos) {
+                        compare_slice.replace(compare_slice.begin() + static_cast<long int>(find_underscore), compare_slice.begin() + static_cast<long int>(find_underscore + 1), " ");
+                    }
+                    // auto first_space = compare_slice.find(" "); // Position of whitespace between first vertex name and dash character ('-')
+                    // std::string vertex1 = compare_slice.substr(0, first_space); // Substring containing first vertex name
+                    for (const auto& vertex : path_list) {
+                        if (compare_slice.compare(vertex) == 0) {
+                            line.insert(find_left_bracket + 1, node_label);
+                        }
                     }
                 }
+            
                 // Write each processed line that was intially read from read_file and write it into write_file
                 line.append("\n");
                 write_file.write(line.c_str(), static_cast<long int>(line.size()));
             }
 
         } else {
-            std::cerr << "ERROR: Failed to open file '" << dot_file << "' for writing!" << '\n';
+            std::cerr << "\nERROR: Failed to open file '" << dot_file << "' for writing!" << '\n';
             read_file.close();
             return -1;
         }
@@ -146,14 +169,14 @@ int overlay_shortest_path(std::string& dot_file, std::string& path_file, soa_has
                 write_file.close();
                 return 0;
             }
-            std::cerr << "ERROR: Failbit indicates an error occurred while reading\n";
+            std::cerr << "\nERROR: Failbit indicates an error occurred while reading\n";
             read_file.close();
             write_file.close();
             return -1;
         }
 
         if (write_file.fail()) {
-            std::cerr << "ERROR: Failbit indicates an error occurrred while writing!\n";
+            std::cerr << "\nERROR: Failbit indicates an error occurrred while writing!\n";
             read_file.close();
             write_file.close();
             return -1;
@@ -161,7 +184,7 @@ int overlay_shortest_path(std::string& dot_file, std::string& path_file, soa_has
         read_file.close();
         write_file.close();
     } else {
-        std::cerr << "Failed to open file '" << path_file << "' for reading!" << '\n';
+        std::cerr << "\nFailed to open file '" << path_file << "' for reading!" << '\n';
         return EXIT_FAILURE;
     }
 
@@ -169,7 +192,7 @@ int overlay_shortest_path(std::string& dot_file, std::string& path_file, soa_has
 }
 
 
-int build_adjacency_list (std::string& filename, std::string& write_name, unsigned int vertex_count, main_hashmap<double>& adj_list) {
+int build_adjacency_list (std::string& filename, std::string& write_name, unsigned int vertex_count, main_hashmap<double>&& adj_list) {
     std::fstream read_file;
     std::fstream write_file {write_name, write_file.trunc | write_file.out};
 
@@ -186,7 +209,7 @@ int build_adjacency_list (std::string& filename, std::string& write_name, unsign
             std::string title = write_name;
             int header_write = write_graph_header(write_file, graph_type, write_name);
             if (header_write < 0) {
-                std::cerr << "ERROR encountered while writing header to graph file '" << write_name << "'!" << '\n';
+                std::cerr << "\nERROR encountered while writing header to graph file '" << write_name << "'!" << '\n';
                 return -1;
             }
             
@@ -194,8 +217,8 @@ int build_adjacency_list (std::string& filename, std::string& write_name, unsign
 
             // Process each line according to expected format, notify user of any detected deviation
             while (getline(read_file, line)) {
-                auto hash_tab1 = soa_hashmap<double>(vertex_count);
-                auto hash_tab2 = soa_hashmap<double>(vertex_count);
+                // auto hash_tab1 = soa_hashmap<double>(vertex_count);
+                // auto hash_tab2 = soa_hashmap<double>(vertex_count);
                 std::istringstream line_read(line);
                 size_t line_length = line.size();
                 long int spacer = 2;
@@ -203,35 +226,47 @@ int build_adjacency_list (std::string& filename, std::string& write_name, unsign
 
                 // Ensure comma separating vertex 1 and 2 is found
                 if (end == line.npos) {
-                    std::cerr << "FILE ERROR: Comma separating first vertex from second vertex not found!" << '\n';
+                    std::cerr << "\nFILE ERROR: Comma separating first vertex from second vertex not found!" << '\n';
                     std::cerr << "Please ensure each line follows format:\n\t VERTEX1_NAME, VERTEX2_NAME, DISTANCE_BETWEEN_VERTICIES" << '\n';
+                    read_file.close();
+                    write_file.close();
+                    return -1;
                 }
-                assert(end != line.npos);
+                // assert(end != line.npos);
                 std::string vertex = line.substr(0, end);
 
                 // Ensure comma separting vertex 2 and the edge weight is found
                 auto end_2 = line.rfind(',');
                 if (end == line.npos) {
-                    std::cerr << "FILE ERROR: Comma separating second vertex from edge weight between vertex 1 and 2 not found!" << '\n';
+                    std::cerr << "\nFILE ERROR: Comma separating second vertex from edge weight between vertex 1 and 2 not found!" << '\n';
                     std::cerr << "Please ensure each line follows format:\n\t VERTEX1_NAME, VERTEX2_NAME, DISTANCE_BETWEEN_VERTICIES" << '\n';
+                    read_file.close();
+                    write_file.close();
+                    return -1;
                 }
-                assert(end != line.npos);
+                // assert(end != line.npos);
 
                 // Ensure vertex 1 is found after a comma and a space 
                 long int vertex_size = static_cast<long int>(vertex.size());
                 if (vertex_size <= 0) {
-                    std::cerr << "FILE ERROR: No vertex name found after first comma!" << '\n';
+                    std::cerr << "\nFILE ERROR: No vertex name found after first comma!" << '\n';
                     std::cerr << "Please ensure each line follows format:\n\t VERTEX1_NAME, VERTEX2_NAME, DISTANCE_BETWEEN_VERTICIES" << '\n';
+                    read_file.close();
+                    write_file.close();
+                    return -1;
                 }
-                assert(vertex_size > 0);
+                // assert(vertex_size > 0);
 
                 // Ensure vertex 2 is found before end of the current line
                 line_read.seekg(line_read.tellg() + spacer + vertex_size);
                 if (line_read.tellg() == -1) {
-                    std::cerr << "FILE ERROR: Expected position of vertex 2 was not found (out of bounds)!" << '\n';
+                    std::cerr << "\nFILE ERROR: Expected position of vertex 2  or weight was not found (out of bounds)!" << '\n';
                     std::cerr << "Please ensure each line follows format:\n\t VERTEX1_NAME, VERTEX2_NAME, DISTANCE_BETWEEN_VERTICIES" << '\n';
+                    read_file.close();
+                    write_file.close();
+                    return -1;
                 }
-                assert(line_read.tellg() != -1);
+                // assert(line_read.tellg() != -1);
 
                 size_t next_word = static_cast<size_t>(line_read.tellg());
                 std::string vertex_2 = line.substr(next_word, end_2 - next_word);
@@ -239,18 +274,24 @@ int build_adjacency_list (std::string& filename, std::string& write_name, unsign
                 // Ensure vertex 2 is found between space after first comma and space before second comma
                 long int vertex2_size = static_cast<long int>(vertex_2.size());
                 if (vertex2_size <= 0) {
-                    std::cerr << "FILE ERROR: Second vertex name was not found after second comma!" << '\n';
+                    std::cerr << "\nFILE ERROR: Second vertex name was not found after second comma!" << '\n';
                     std::cerr << "Please ensure each line follows format:\n\t VERTEX1_NAME, VERTEX2_NAME, DISTANCE_BETWEEN_VERTICIES" << '\n';
+                    read_file.close();
+                    write_file.close();
+                    return -1;
                 }
-                assert(vertex2_size > 0);
+                // assert(vertex2_size > 0);
 
                 // Ensure edge weight between verticies is found before end of current line
                 line_read.seekg(line_read.tellg() + vertex2_size + spacer);
                 if (line_read.tellg() == -1) {
-                    std::cerr << "FILE ERROR: Expected position of vertex 2 was not found (out of bounds)!" << '\n';
+                    std::cerr << "\nFILE ERROR: Expected position of vertex 2 was not found (out of bounds)!" << '\n';
                     std::cerr << "Please ensure each line follows format:\n\t VERTEX1_NAME, VERTEX2_NAME, DISTANCE_BETWEEN_VERTICIES" << '\n';
+                    read_file.close();
+                    write_file.close();
+                    return -1;
                 }
-                assert(line_read.tellg() != -1);
+                // assert(line_read.tellg() != -1);
 
                 size_t final_word = static_cast<size_t>(line_read.tellg());
                 std::string weight_str = line.substr(final_word, line_length - final_word);
@@ -258,13 +299,16 @@ int build_adjacency_list (std::string& filename, std::string& write_name, unsign
 
                 // Ensure edge weight contains a numerical value
                 if (weight == std::numeric_limits<double>::infinity() || weight <= 0) {
-                    std::cerr << "FILE ERROR: Entered value did not contain any non-zero numerical digits" << '\n';
+                    std::cerr << "\nFILE ERROR: Entered value did not contain any non-zero numerical digits" << '\n';
                     std::cerr << "Please ensure each line follows format:\n\t VERTEX1_NAME, VERTEX2_NAME, DISTANCE_BETWEEN_VERTICIES" << '\n';
+                    read_file.close();
+                    write_file.close();
+                    return -1;
                 }
-                assert(weight != std::numeric_limits<double>::infinity() && weight > 0);
+                // assert(weight != std::numeric_limits<double>::infinity() && weight > 0);
                 
-                hash_tab1.add(vertex_2, weight);
-                hash_tab2.add(vertex, weight);
+                // hash_tab1.add(vertex_2, weight);
+                // hash_tab2.add(vertex, weight);
                 /// Replace whitespace within multi-word verticies with underscores to adhere to dot language format
                 std::string vertex1_name = underscore_spaces(vertex);
                 std::string vertex2_name = underscore_spaces(vertex_2);
@@ -273,11 +317,14 @@ int build_adjacency_list (std::string& filename, std::string& write_name, unsign
                 with its associated key, `vertex`, to main hashmap
                 */ 
                 if (!adj_list.contains_key(vertex)) {
-                    adj_list.add_key(vertex, hash_tab1);
+                    auto hash_tab1 = std::make_unique<soa_hashmap<double>>(static_cast<unsigned int>(vertex_count));
+                    hash_tab1 -> add(vertex_2, weight);
+                    adj_list.add_key(vertex, std::move(*hash_tab1));
+                    // adj_list.add_key(vertex, hash_tab1);
                     /// Write new vertex in dot language format to `write_name` file
                     int write_vertex = write_vertex_node(write_file, vertex1_name);
                     if (write_vertex < 0) {
-                        std::cerr << "ERROR encountered while writing vertex node '" << vertex1_name <<"' to file '" << write_name << "' !" << '\n';
+                        std::cerr << "\nERROR encountered while writing vertex node '" << vertex1_name <<"' to file '" << write_name << "' !" << '\n';
                         return -1;
                     }
                 } else {
@@ -285,20 +332,30 @@ int build_adjacency_list (std::string& filename, std::string& write_name, unsign
                     If hashmap associated with `vertex` key already exists in main hashmap but does not yet contain edge
                     with `vertex_2` key, add edge with `vertex_2` to hashmap associated with `vertex` key 
                     */
-                    if (!adj_list.get_key_list(vertex).contains_key(vertex_2)) {
-                        adj_list.get_key_list(vertex).add(vertex_2, weight);
+                    try {
+                        if (!adj_list.get_hash_key(vertex).contains_key(vertex_2)) {
+                            adj_list.get_hash_key(vertex).add(vertex_2, weight);
+                        }
+                    } catch (std::exception& e) {
+                        std::cerr << e.what() << '\n';
                     }
+                    // if (!adj_list.get_key_list(vertex).contains_key(vertex_2)) {
+                    //     adj_list.get_key_list(vertex).add(vertex_2, weight);
+                    // }
                 }
                 /*
                 If main hashmap does not contain any hashmaps associated with `vertex_2` key, add this new hashmap (now containing its first edge)
                 with its associated key, `vertex_2`, to main hashmap
                 */ 
                 if (!adj_list.contains_key(vertex_2)) {
-                    adj_list.add_key(vertex_2, hash_tab2);
+                    auto hash_tab2 = std::make_unique<soa_hashmap<double>>(static_cast<unsigned int>(vertex_count));
+                    hash_tab2 -> add(vertex, weight);
+                    adj_list.add_key(vertex_2, std::move(*hash_tab2));
+                    // adj_list.add_key(vertex_2, hash_tab2);
                     /// Write new vertex in dot language format to `write_name` file
                     int write_vertex2 = write_vertex_node(write_file, vertex2_name);
                     if (write_vertex2 < 0) {
-                        std::cerr << " WRITE ERROR encountered while writing vertex node '" << vertex2_name <<"' to file '" << write_name << "' !" << '\n';
+                        std::cerr << "\nWRITE ERROR encountered while writing vertex node '" << vertex2_name <<"' to file '" << write_name << "' !" << '\n';
                         return -1;
                     }
 
@@ -307,41 +364,47 @@ int build_adjacency_list (std::string& filename, std::string& write_name, unsign
                     If hashmap associated with `vertex_2` key already exists in main hashmap but does not yet contain edge
                     with `vertex` key, add edge with `vertex` to hashmap associated with `vertex_2` key 
                     */
-                    if (!adj_list.get_key_list(vertex_2).contains_key(vertex)) {
-                        adj_list.get_key_list(vertex_2).add(vertex, weight);                           
+                    try {
+                        if (!adj_list.get_hash_key(vertex_2).contains_key(vertex)) {
+                            adj_list.get_hash_key(vertex_2).add(vertex, weight);                           
+                        }
+                    } catch (std::exception& e) {
+                        std::cerr << e.what() << '\n';
                     }
+                    // if (!adj_list.get_key_list(vertex_2).contains_key(vertex)) {
+                    //     adj_list.get_key_list(vertex_2).add(vertex, weight);                           
+                    // }
                 }
                 /// Write new edge in dot language format to `write_name` file
                 int write_new_edge = write_edge(write_file, vertex1_name, vertex2_name, weight, graph_type);
                 if (write_new_edge < 0) {
-                    std::cerr << " WRITE ERROR encountered while writing the edge between '" << vertex << "' and '" << vertex_2 << "' on '" << write_name << "'!" << '\n';
+                    std::cerr << "\nWRITE ERROR encountered while writing the edge between '" << vertex << "' and '" << vertex_2 << "' on '" << write_name << "'!" << '\n';
                     return -1;
                 }
-                
             }
             write_file.write(close_brace.c_str(), static_cast<long int>(close_brace.size()));
             read_file.close();
             write_file.close();
         } else {
-            std::cerr << "FILE ERROR: Opening file '" << write_name << "' failed!" << '\n';
+            std::cerr << "\nFILE ERROR: Opening file '" << write_name << "' failed!" << '\n';
             return -1;
         }
         
     } else {
-        std::cerr << "FILE ERROR: Opening file '" << filename << "' failed!" << '\n';
+        std::cerr << "\nFILE ERROR: Opening file '" << filename << "' failed!" << '\n';
         return -1; 
     }
     return 0;
 }
 
-
-int apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, std::string& path_filename, main_hashmap<double>& adj_list) {
+int apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, std::string& path_filename, main_hashmap<double>&& adj_list) {
+// int apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, std::string& path_filename, main_hashmap<double>& adj_list) {
     #ifdef NDEBUG
     #else
     std::cerr << "ENTIRE LIST OF ALL GRAPH VERTICIES AND THEIR CORRESPONDING ADJACENT VERTICIES:" << '\n';
     std::cerr << adj_list << '\n';
     #endif
-
+    // int return_val = 0;
     if (s_vertex.compare(des_vertex) == 0) {
         std::string empty_path = s_vertex;
         empty_path.append(" -> ").append(des_vertex).append("\n");
@@ -353,30 +416,52 @@ int apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, std:
 
     auto vertex_list = adj_list.get_main_keys();
     auto vertex_count = static_cast<unsigned int>(vertex_list.size());
+    // auto vertex_count = static_cast<unsigned int>(vertex_list.size());
 
     auto visited_vertices = soa_hashmap<double>(vertex_count);
     std::unique_ptr<paired_min_heap<double>>  mhp = std::make_unique<paired_min_heap<double>>(vertex_count);
-    auto vertex_path = soa_hashmap<std::string>(vertex_count);
+    auto vertex_path = soa_hashmap<std::string>(vertex_count / 2);
 
     // Prefill visited verticies hashmap key-value pairs of each vertex with a floating infinity distance value
     for (unsigned int i = 0; i < vertex_list.size(); i++) {
         visited_vertices.add(vertex_list[i], std::numeric_limits<double>::infinity());
     }
+    // for (unsigned int i = 0; i < vertex_list.size(); i++) {
+    //     visited_vertices.add(vertex_list[i], std::numeric_limits<double>::infinity());
+    // }
     // Set source vertex's distance to 0
     visited_vertices.add(s_vertex, 0.0);
 
     // Add source vertex to minimum heap
     mhp -> add_node(s_vertex, 0);
     std::string popped_vertex;
-    double popped_vertex_distance;
-
+    double popped_vertex_distance = 0;
+    double current_min_distance = 0;
+    // soa_hashmap<double> adjacent_vertex_list(vertex_count / 2);
+    // auto adjacent_vertex_list = std::make_unique<soa_hashmap<double>>(vertex_count / 2);
     // Initiate while loop until all verticies have been visited (minheap will be empty)
     while (!mhp -> is_empty()) {
         // Remove next vertex with smallest distance from minimum heap
-        std::tie(popped_vertex, popped_vertex_distance) = mhp -> remove_min();
-        
-        // Retrieve current distance from source vertex to extracted vertex held in visited verticies
-        auto current_min_distance = visited_vertices.get_val(popped_vertex);
+        try {
+            std::tie(popped_vertex, popped_vertex_distance) = mhp -> remove_min();
+        } catch (std::exception& e) {
+            std::cerr << e.what() << std::endl;
+            return -1;
+            // return_val = -1;
+        }
+        // std::tie(popped_vertex, popped_vertex_distance) = mhp -> remove_min();
+
+       // Retrieve current distance from source vertex to extracted vertex held in visited verticies
+        try {
+            current_min_distance = visited_vertices.get_val(popped_vertex);
+        } catch (std::exception& e) {
+            std::cerr << e.what() << '\n';
+            return -1;
+            // return_val = -1;
+        }
+        // auto current_min_distance = visited_vertices.get_val(popped_vertex);
+
+ 
         // If distance value of extracted value is greater than stored value, extract next vertex from minheap
         if (popped_vertex_distance > current_min_distance) {
             continue;
@@ -386,85 +471,182 @@ int apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, std:
             break;
         }
         // Retrieve list of adjacent verticies for extracted vertex
-        auto adjacent_vertex_list = adj_list.get_key_list(popped_vertex);
+        // try {
+        //     adjacent_vertex_list = adj_list.get_hash_key(popped_vertex);
+        // } catch (std::exception& e) {
+        //     std::cerr << e.what() << '\n';
+        //     return -1;
+        //     // return_val = -1;
+        // }
+        // auto adjacent_vertex_list = adj_list.get_key_list(popped_vertex);
+        double weight = 0;
+        double di = 0;
         // Iterate through list of all verticies present in graph to identify and access edge weights for each adjacent vertex
         for (unsigned int j = 0; j < vertex_list.size(); j++){
             // If vertex is found in list of verticies adjacent to extracted vertex, retrieve its weight
-            if (adjacent_vertex_list.contains_key(vertex_list[j])) {
+            if (adj_list.get_hash_key(popped_vertex).contains_key(vertex_list[j])) {
+            // if (adjacent_vertex_list.contains_key(vertex_list[j])) {
                 gprintf("VISITING VERTEX OF %s with ADJACENT VERTEX %s", popped_vertex.c_str(), vertex_list[j].c_str());
-                auto weight = adjacent_vertex_list.get_val(vertex_list[j]);
+
+                try {
+                    weight = adj_list.get_hash_key(popped_vertex).get_val(vertex_list[j]);
+                    // weight = adjacent_vertex_list.get_val(vertex_list[j]);
+                } catch (std::exception& e) {
+                    std::cerr << e.what() << '\n';
+                    return -1;
+                    // return_val = -1;
+                }
+                // auto weight = adjacent_vertex_list.get_val(vertex_list[j]);
+
                 // Check if sum of current distance and edge formed with adjacent vertex is less than current distance associated with vertex in shortest distance list
                 // distance = distance from source to extracted vertex
                 // weight = distance between extracted vertex and adjacent vertex
                 // di = total distance from source vertex to adjacent vertex
-                double di = weight + popped_vertex_distance;
-                // If new edge creates a shorter path to adjacent vertex, update distance associated with adjacent vertex to shortest distance list
-                if (di < visited_vertices.get_val(vertex_list[j])) {
-                    // If new edge to be updated is the destination vertex, determine whether to update the vertices forming shortest path
-                    if (des_vertex.compare(vertex_list[j]) == 0) {
-                        gprintf("CURRENT VERTEX: ");
-                        #ifdef NDEBUG
-                        #else
-                        std::cerr << visited_vertices << '\n';
-                        #endif
-                        gprintf("UPDATING MINIMUM DISTANCE/PATH FROM SOURCE VERTEX TO DESTINATION VERTEX");
-                        gprintf("Current vertex is %s", popped_vertex.c_str());
+                di = weight + popped_vertex_distance;
+                try {
+                    // If new edge creates a shorter path to adjacent vertex, update distance associated with adjacent vertex to shortest distance list
+                    if (di < visited_vertices.get_val(vertex_list[j])) {
+                        // If new edge to be updated is the destination vertex, determine whether to update the vertices forming shortest path
+                        if (des_vertex.compare(vertex_list[j]) == 0) {
+                            gprintf("CURRENT VERTEX: ");
+                            #ifdef NDEBUG
+                            #else
+                            std::cerr << visited_vertices << '\n';
+                            #endif
+                            gprintf("UPDATING MINIMUM DISTANCE/PATH FROM SOURCE VERTEX TO DESTINATION VERTEX");
+                            gprintf("Current vertex is %s", popped_vertex.c_str());
 
-                        gprintf("Weight of edge between %s and %s is %.2lf", popped_vertex.c_str(), vertex_list[j].c_str(), weight);
-                        gprintf("Current Distance from Source (%s) is %.2lf", s_vertex.c_str(), popped_vertex_distance);
-                        gprintf("Previous minimum distance to destination vertex is %.2lf", visited_vertices.get_val(des_vertex));
-                        gprintf("Updated minimum distance from to destination vertex is %.2lf\n", di);
+                            gprintf("Weight of edge between %s and %s is %.2lf", popped_vertex.c_str(), vertex_list[j].c_str(), weight);
+                            gprintf("Current Distance from Source (%s) is %.2lf", s_vertex.c_str(), popped_vertex_distance);
+                            gprintf("Previous minimum distance to destination vertex is %.2lf", visited_vertices.get_val(des_vertex));
+                            gprintf("Updated minimum distance from to destination vertex is %.2lf\n", di);
+                        }
+                        visited_vertices.add(vertex_list[j], di);
+                        vertex_path.add(vertex_list[j], popped_vertex);              
+                        mhp -> add_node(vertex_list[j], di);
                     }
-                    visited_vertices.add(vertex_list[j], di);
-                    vertex_path.add(vertex_list[j], popped_vertex);              
-                    mhp -> add_node(vertex_list[j], di);
+
+                } catch (std::exception& e) {
+                    std::cerr << e.what() << '\n';
+                    return -1;
                 }
+                // If new edge creates a shorter path to adjacent vertex, update distance associated with adjacent vertex to shortest distance list
+                // if (di < visited_vertices.get_val(vertex_list[j])) {
+                //     // If new edge to be updated is the destination vertex, determine whether to update the vertices forming shortest path
+                //     if (des_vertex.compare(vertex_list[j]) == 0) {
+                //         gprintf("CURRENT VERTEX: ");
+                //         #ifdef NDEBUG
+                //         #else
+                //         std::cerr << visited_vertices << '\n';
+                //         #endif
+                //         gprintf("UPDATING MINIMUM DISTANCE/PATH FROM SOURCE VERTEX TO DESTINATION VERTEX");
+                //         gprintf("Current vertex is %s", popped_vertex.c_str());
+
+                //         gprintf("Weight of edge between %s and %s is %.2lf", popped_vertex.c_str(), vertex_list[j].c_str(), weight);
+                //         gprintf("Current Distance from Source (%s) is %.2lf", s_vertex.c_str(), popped_vertex_distance);
+                //         gprintf("Previous minimum distance to destination vertex is %.2lf", visited_vertices.get_val(des_vertex));
+                //         gprintf("Updated minimum distance from to destination vertex is %.2lf\n", di);
+                //     }
+                //     visited_vertices.add(vertex_list[j], di);
+                //     vertex_path.add(vertex_list[j], popped_vertex);              
+                //     mhp -> add_node(vertex_list[j], di);
+                // }
             }
         }
     }
-    if (visited_vertices.get_val(des_vertex) == std::numeric_limits<double>::infinity()) {
-        std::cerr << "ERROR: No path exists between '" << s_vertex << "' and '" << des_vertex << "'!" << '\n';
-        std::cerr << "Please ensure your submitted graph file is a connected graph(a path exists between all nodes)!" << '\n';
-        return -1; 
+    try {
+        if (visited_vertices.get_val(des_vertex) == std::numeric_limits<double>::infinity()) {
+            std::cerr << "ERROR: No path exists between '" << s_vertex << "' and '" << des_vertex << "'!" << '\n';
+            std::cerr << "Please ensure your submitted graph file is a connected graph(a path exists between all nodes)!" << '\n';
+            return -1; 
+        }
+        gprintf("LIST OF SHORTEST DISTANCES FROM %s to EACH LABELED VERTEX", s_vertex.c_str());
+        #ifdef NDEBUG
+        #else
+        std::cerr << visited_vertices << '\n';
+        #endif
+        gprintf("LIST OF LAST VERTEX TO VISIT EACH LABELED VERTEX");
+        #ifdef NDEBUG
+        #else
+        std::cerr << vertex_path << '\n';
+        #endif
+
+    } catch (std::exception& e) {
+        std::cerr << e.what() << '\n';
+        return -1;
     }
-    gprintf("LIST OF SHORTEST DISTANCES FROM %s to EACH LABELED VERTEX", s_vertex.c_str());
-    #ifdef NDEBUG
-    #else
-    std::cerr << visited_vertices << '\n';
-    #endif
-    gprintf("LIST OF LAST VERTEX TO VISIT EACH LABELED VERTEX");
-    #ifdef NDEBUG
-    #else
-    std::cerr << vertex_path << '\n';
-    #endif
+    // if (visited_vertices.get_val(des_vertex) == std::numeric_limits<double>::infinity()) {
+    //     std::cerr << "ERROR: No path exists between '" << s_vertex << "' and '" << des_vertex << "'!" << '\n';
+    //     std::cerr << "Please ensure your submitted graph file is a connected graph(a path exists between all nodes)!" << '\n';
+    //     return -1; 
+    // }
+    // gprintf("LIST OF SHORTEST DISTANCES FROM %s to EACH LABELED VERTEX", s_vertex.c_str());
+    // #ifdef NDEBUG
+    // #else
+    // std::cerr << visited_vertices << '\n';
+    // #endif
+    // gprintf("LIST OF LAST VERTEX TO VISIT EACH LABELED VERTEX");
+    // #ifdef NDEBUG
+    // #else
+    // std::cerr << vertex_path << '\n';
+    // #endif
 
     std::cout << "The Shortest Path from " << s_vertex << " TO " << des_vertex << " : " << '\n';
-    auto path_map = soa_hashmap<double>(static_cast<unsigned int>(vertex_count));
+    auto path_map = std::make_unique<soa_hashmap<double>>(static_cast<unsigned int>(vertex_count / 2));
+    // auto path_map = soa_hashmap<double>(static_cast<unsigned int>(vertex_count));
     auto new_vertex = des_vertex;
-    auto prev_vertex = vertex_path.get_val(des_vertex);
+    std::string prev_vertex;
+    try {
+        prev_vertex = vertex_path.get_val(des_vertex);
+    } catch (std::exception& e) {
+        std::cerr << e.what() << '\n';
+        return -1;
+        // return_val = -1;
+    }
+    // auto prev_vertex = vertex_path.get_val(des_vertex);
+
     std::string edge_name = "";
     edge_name.append(underscore_spaces(prev_vertex));
     edge_name.append(" -> ");
     edge_name.append(underscore_spaces(new_vertex));
-    path_map.add(edge_name, adj_list.get_key_val(new_vertex, prev_vertex));
+    path_map -> add(edge_name, std::move(adj_list.get_key_val(new_vertex, prev_vertex)));
+    // path_map.add(edge_name, adj_list.get_key_val(new_vertex, prev_vertex));
     auto shortest_path = std::vector<std::string>{};
     shortest_path.emplace( shortest_path.begin(), des_vertex);
 
     while (prev_vertex.compare(s_vertex) != 0) {
         new_vertex = prev_vertex;
         shortest_path.emplace(shortest_path.begin(), prev_vertex);
-        prev_vertex = vertex_path.get_val(shortest_path.front());
+        try {
+            prev_vertex = vertex_path.get_val(shortest_path.front());
+        } catch (std::exception& e) {
+            std::cerr << e.what() << '\n';
+            return -1;
+            // return_val = -1;
+        }
+        // prev_vertex = vertex_path.get_val(shortest_path.front());
 
         std::string next_edge = "";
         next_edge.append(underscore_spaces(prev_vertex));
         next_edge.append(" -> ");
         next_edge.append(underscore_spaces(new_vertex));
-        path_map.add(next_edge, adj_list.get_key_val(new_vertex, prev_vertex));
+        path_map -> add(next_edge, std::move(adj_list.get_key_val(new_vertex, prev_vertex)));
+        // path_map.add(next_edge, adj_list.get_key_val(new_vertex, prev_vertex));
     }
 
     shortest_path.emplace(shortest_path.begin(), s_vertex);
     print_shortest_path(shortest_path);
-    int path_build = build_shortest_graph(path_filename, path_map, shortest_path);
+    int path_build = 0;
+    try {
+        path_build = build_shortest_graph(path_filename, std::move(*path_map), shortest_path);
+        // path_build = build_shortest_graph(path_filename, path_map, shortest_path);
+    } catch (std::exception& e) {
+        std::cerr << e.what() << '\n';
+        return -1;
+        // return_val = -1;
+    }
+    // int path_build = build_shortest_graph(path_filename, path_map, shortest_path);
+
     if (path_build < 0) {
         std::cerr << "There was an error in building shortest path graph!" << '\n';
         return -1;
@@ -472,7 +654,8 @@ int apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, std:
 
     std::string read_filename = "./dot_graphs/full_graph.gv";
     std::string write_filename = "./dot_graphs/short_path_graph.gv";
-    int path_output = overlay_shortest_path(read_filename, write_filename, path_map);
+    int path_output = overlay_shortest_path(read_filename, write_filename, shortest_path, std::move(*path_map));
+    // int path_output = overlay_shortest_path(read_filename, write_filename, path_map);
     if (path_output < 0) {
         std::cerr << "There was an error in overlaying the full graph with the shortest path" << '\n';
         return -1;
@@ -485,59 +668,79 @@ int apply_djikstras_algorithm(std::string s_vertex, std::string des_vertex, std:
 
 
 
-
-int apply_prims_algorithm(std::string s_vertex, main_hashmap<double>& adj_list) {
+int apply_prims_algorithm(std::string s_vertex, main_hashmap<double>&& adj_list) {
+// int apply_prims_algorithm(std::string s_vertex, main_hashmap<double>& adj_list) {
+    // int return_val = 0;
     auto MST_verticies = std::vector<std::pair<std::string, std::string>>{};
-    // auto MST_traversal = dl_list<std::string>{};
+
     auto MST_traversal = std::vector<std::string>{};
     double MST_sum = 0;
 
-    // auto vertex_list = adj_list.get_master_keys();
+
     auto vertex_list = adj_list.get_main_keys();
     auto vertex_count = static_cast<unsigned int>(vertex_list.size());
     std::unique_ptr<paired_min_heap<double>>  mhp = std::make_unique<paired_min_heap<double>>(vertex_count); 
-    // auto mhp = paired_min_heap<double>(vertex_count);
-    // std::priority_queue<std::pair<double, std::string>, std::vector<std::pair<double, std::string>>, std::greater<std::pair<double, std::string>>> min_heap;
     auto source_vertex = s_vertex;
     // MST_traversal.add_to_back(source_vertex);
     MST_traversal.emplace_back(source_vertex);
 
     mhp -> add_node(source_vertex, 0);
-    // min_heap.push(make_pair(0, source_vertex));
+
     std::string vertex;
     double distance = 0;
     std::string current_min_distance;
-    while ( vertex_list.size() > MST_traversal.size()) {
-        // if (min_heap.empty()) {
-        //     std::cerr << "ERROR: Provided Graph is not a connected graph, so no valid Minimum Spanning tree exists!" << '\n';
-        //     std::cerr << "Please ensure the graph is connected (a path exists between all verticies) to generate a valid MST" << '\n';
-        //     return -1;
-        // }
+    // auto adjacent_vertex_list = soa_hashmap<double>(vertex_count / 2);
+    while (vertex_list.size() > MST_traversal.size()) {
+
         if (mhp -> is_empty()) {
             std::cerr << "ERROR: Provided Graph is not a connected graph, so no valid Minimum Spanning tree exists!" << '\n';
             std::cerr << "Please ensure the graph is connected (a path exists between all verticies) to generate a valid MST" << '\n';
             return -1;
         }
-        std::tie(vertex, distance) = mhp -> remove_min();
+        try { 
+            std::tie(vertex, distance) = mhp -> remove_min();
+        } catch (std::exception& e) {
+            std::cerr << e.what() << std::endl;
+            return -1;
+            // return_val = -1;
+        }
+
         // std::tie(distance, vertex) = min_heap.top();
-        // min_heap.pop();
-        auto adjacent_vertex_list = adj_list.get_key_list(vertex);
+
+
+        // try {
+        //     adjacent_vertex_list = adj_list.get_key_list(vertex);
+        // } catch (std::exception& e) {
+        //     std::cerr << e.what() << '\n';
+        //     return -1;
+        //     // return_val = -1;
+        // }
+        // auto adjacent_vertex_list = adj_list.get_key_list(vertex);
+
         #ifdef NDEBUG
         #else
         gprintf("\nExtracted VERTEX is: %s with a DISTANCE of %.2lf", vertex.c_str(), distance);
         gprintf("\nThe Minimum HEAP currently contains: ");
-        std::cerr << mhp << '\n';
-        // std::cerr << min_heap << '\n';
-        gprintf("\nThe list of ADJACENT vertices for %s is: ", vertex.c_str());
+        std::cerr << *mhp << '\n';
+  
+        // gprintf("\nThe list of ADJACENT vertices for %s is: ", vertex.c_str());
 
-        std::cerr << adjacent_vertex_list << '\n';
+        // std::cerr << adjacent_vertex_list << '\n';
         #endif
 
         if (vertex.compare(source_vertex) == 0) {
             current_min_distance = source_vertex;
         } else {
-            current_min_distance = adj_list.get_key_by_value(vertex, distance);
+            try {
+                current_min_distance = adj_list.get_key_by_value(vertex, distance);
+            } catch (std::exception& e) {
+                std::cerr << e.what() << '\n';
+                return -1;
+                // return_val = -1;
+            }
+            // current_min_distance = adj_list.get_key_by_value(vertex, distance);
         }
+
         bool is_visited = false;
         /// If extracted vertex has not been visited before, mark as visited and add edge to MST
         for ( size_t i = 0; i < MST_traversal.size(); i++) {
@@ -562,7 +765,8 @@ int apply_prims_algorithm(std::string s_vertex, main_hashmap<double>& adj_list) 
         // }
 
         /// If any verticies adjacent to extracted vertex
-        auto adjacent_verticies = adjacent_vertex_list.get_keys();
+        auto adjacent_verticies = adj_list.get_hash_key(vertex).get_keys();
+        // auto adjacent_verticies = adjacent_vertex_list.get_keys();
         #ifdef NDEBUG
         #else
         gprintf("\nChecking list of verticies for those not visited yet");
@@ -575,15 +779,25 @@ int apply_prims_algorithm(std::string s_vertex, main_hashmap<double>& adj_list) 
                     break;
                 }
             }
+            double weight;
             if(!contains_adjacent) {
-                auto weight = adjacent_vertex_list.get_val(adjacent_verticies[j]);
-                // min_heap.push(make_pair(weight, adjacent_verticies[j]));
+                try {
+                    weight = adj_list.get_hash_key(vertex).get_val(adjacent_verticies[j]);
+                    // weight = adjacent_vertex_list.get_val(adjacent_verticies[j]);
+                } catch (std::exception& e) {
+                    std::cerr << e.what() << '\n';
+                    return -1;
+                    // return_val = -1;
+                }
+                // auto weight = adjacent_vertex_list.get_val(adjacent_verticies[j]);
+
+
                 mhp -> add_node(adjacent_verticies[j], weight);
                 #ifdef NDEBUG
                 #else
                 gprintf("\nAdding vertex %s to Minimum HEAP", adjacent_verticies[j].c_str());
                     // std::cerr << "HEAP is now: " << min_heap << '\n';
-                std::cerr << "HEAP is now: " << mhp << '\n';
+                std::cerr << "HEAP is now: " << *mhp << '\n';
                 #endif
             }
             // if (!MST_traversal.contains_node(adjacent_verticies[j])) {
@@ -607,28 +821,28 @@ int apply_prims_algorithm(std::string s_vertex, main_hashmap<double>& adj_list) 
     return 0;
 }
 
-bool is_connected (main_hashmap<double>& adj_list, std::string& source_vertex) {
+// bool is_connected (main_hashmap<double>& adj_list, std::string& source_vertex) {
 
-    auto vertex_list = adj_list.get_main_keys();
-    auto stack_vert = dl_list<std::string>{};
-    auto visited_verticies = dl_list<std::string>{};
-    bool is_connected = false;
-    stack_vert.add_to_back(source_vertex);
-    while (stack_vert.get_size() > 0) {
-        std::string next_vertex = stack_vert.pop();
-        auto adj_verticies = adj_list.get_key_list(next_vertex).get_keys();
-        if (!visited_verticies.contains_node(next_vertex)) {
-            visited_verticies.add_to_back(next_vertex);
-            for (size_t i = 0; i < adj_verticies.size(); i++) {
-                stack_vert.add_to_back(adj_verticies[i]);
-            }
-        }
-    }
-    if (visited_verticies.get_size() == static_cast<unsigned int>(vertex_list.size())) {
-        is_connected = true;
-    }
-    return is_connected;
-}
+//     auto vertex_list = adj_list.get_main_keys();
+//     auto stack_vert = dl_list<std::string>{};
+//     auto visited_verticies = dl_list<std::string>{};
+//     bool is_connected = false;
+//     stack_vert.add_to_back(source_vertex);
+//     while (stack_vert.get_size() > 0) {
+//         std::string next_vertex = stack_vert.pop();
+//         auto adj_verticies = adj_list.get_key_list(next_vertex).get_keys();
+//         if (!visited_verticies.contains_node(next_vertex)) {
+//             visited_verticies.add_to_back(next_vertex);
+//             for (size_t i = 0; i < adj_verticies.size(); i++) {
+//                 stack_vert.add_to_back(adj_verticies[i]);
+//             }
+//         }
+//     }
+//     if (visited_verticies.get_size() == static_cast<unsigned int>(vertex_list.size())) {
+//         is_connected = true;
+//     }
+//     return is_connected;
+// }
 
 int copy_file(std::string& origin_file, std::string& origin_path, std::string& new_file, std::string& new_path) {
     char bash_path[] = "/bin/cp";
@@ -660,7 +874,8 @@ int copy_file(std::string& origin_file, std::string& origin_path, std::string& n
 
 
 // int build_shortest_graph(std::string& dot_file, soa_hashmap<double>& path_map, dl_list<std::string>& path) {
-int build_shortest_graph(std::string& dot_file, soa_hashmap<double>& path_map, std::vector<std::string>& path) {
+int build_shortest_graph(std::string& dot_file, soa_hashmap<double>&& path_map, std::vector<std::string>& path) {
+    int return_val = 0;
     std::fstream read_file {dot_file, read_file.trunc | read_file.out };
     std::string graph_type = "directed";
     std::string s_vertex = path.front();
@@ -684,9 +899,18 @@ int build_shortest_graph(std::string& dot_file, soa_hashmap<double>& path_map, s
                 return -1;
             }
         }
+        double edge_weight;
         auto path_edges = path_map.get_keys();
         for (size_t n = 0; n < path_edges.size(); n++) {
-            auto edge_weight = path_map.get_val(path_edges[n]);
+            try {
+                edge_weight = path_map.get_val(path_edges[n]);
+            } catch (std::exception& e) {
+                std::cerr << e.what() << '\n';
+                return -1;
+                // return_val = -1;
+            }
+            // auto edge_weight = path_map.get_val(path_edges[n]);
+
             if constexpr (std::is_same_v<decltype(edge_weight), std::string>) {
                 std::cerr << "Weight value must be a numerical value!" << '\n';
                 return -1;
@@ -711,7 +935,7 @@ int build_shortest_graph(std::string& dot_file, soa_hashmap<double>& path_map, s
         std::cerr << "FILE ERROR: Opening file '" << dot_file << "' failed!" << '\n';
         return -1; 
     }
-    return 0;
+    return return_val;
 }
 
 std::string underscore_spaces(const std::string& target_string) {
@@ -768,6 +992,7 @@ int write_graph_header(std::fstream& graph_file, std::string& graph_type, std::s
     graph_file.write(header.c_str(), static_cast<long int>(header.size()));
     graph_file.write(sub_header.c_str(), static_cast<long int>(sub_header.size()));
     if (graph_file.bad()) {
+        std::cerr << "Failbit set in writing operation" << '\n';
         return -1;
     }
     return 0;
@@ -783,35 +1008,11 @@ int write_vertex_node (std::fstream& graph_file, std::string& vertex_name) {
     node_line.append(" [").append("label=\"").append(vertex_name).append("\" id=\"");
     node_line.append(vertex_name).append("\" fontsize=").append(node_font_size).append(" shape=");
     node_line.append(node_shape).append(" tooltip=\"").append(vertex_name).append("\" color=\"");
-    node_line.append(node_border_color).append("\"fillcolor=\"").append(node_inside_color).append("\"]\n");
-    // node_line.append("\" fillcolor=\"");
-    // node_line.append(node_fill_color);
-    // node_line.append("\"]\n");
-    // std::string node_color = "#b20400";
-    // std::string node_fill_color = "#edd6d5";
+    node_line.append(node_border_color).append("\" fillcolor=\"").append(node_inside_color).append("\"]\n");
 
-    // node_line.append(" [");
-    // node_line.append("label=\"");
-    // node_line.append(vertex_name);
-    // node_line.append("\" id=\"");
-    // node_line.append(vertex_name);
-    // node_line.append("\" fontsize=");
-    // node_line.append(node_font_size);
-    // node_line.append(" shape=");
-    // node_line.append(node_shape);
-    // node_line.append(" tooltip=\"");
-    // node_line.append(vertex_name);
-    // node_line.append("\" color=\"");
-    // // node_line.append("\" color=\"");
-    // node_line.append(node_color1);
-    // node_line.append("\"fillcolor=\"");
-    // node_line.append(node_color2);
-    // node_line.append("\"]\n");
-    // node_line.append("\" fillcolor=\"");
-    // node_line.append(node_fill_color);
-    // node_line.append("\"]\n");
     graph_file.write(node_line.c_str(), static_cast<long int>(node_line.size()));
     if (graph_file.bad()) {
+        std::cerr << "Failbit set in writing operation" << '\n';
         return -1;
     }
     return 0;
