@@ -14,7 +14,6 @@
 #include "../includes/graph_input.hpp"
 #include "../includes/graph_ops.hpp"
 
-
 std::ostream& operator<<(std::ostream& out, const std::vector<std::string>& string_list) {
     out << "[ ";
     // for (unsigned int i = 0; i < string_list.size(); i++) {
@@ -76,8 +75,10 @@ int get_graph_filename(std::string& directory_name, std::string& user_file) {
         std::cout << "Exiting Program... Goodbye" << std::endl;
         return -1;
     }
+    
     /// Clear error flags for next user testing phase
     std::cin.clear();
+
     // Update relative path to user-provided graph_file for reading operation
     directory_name.append(user_file);
     std::cout << '\n';
@@ -87,16 +88,17 @@ int get_graph_filename(std::string& directory_name, std::string& user_file) {
 int get_graph_vertex_count(long int& vertex_count) {
     /// Handle user provided value for total number of unique verticies in provided graph file
     std::cout << "Please Enter the Approximate Number of Unique Verticies (or Enter \"0\" to abort): ";
-    while(!(std::cin >> vertex_count) || vertex_count > UINT32_MAX) {
+    while(!(std::cin >> vertex_count) || vertex_count > UINT32_MAX || vertex_count < 0) {
 
-        /// Handle when user provides non-integer value
-        if (std::cin.fail()) {
-            std::cerr << "Invalid Vertex Count: Number of Verticies must be a positive integer value greater than zero (and preferably much less than 4294967294)." << '\n';
+        /// Handle when user provides a negative integer or a non-integer value
+        if (std::cin.fail() || vertex_count < 0) {
+            std::cerr << "Invalid Vertex Count: Number of Verticies must be a positive integer value greater than zero" << '\n';
         }
         /// Handle when user provides an integer value larger than maximum size used for storage in hashmap objects
         if (vertex_count > UINT32_MAX) {
             std::cerr << "Invalid Vertex Count: Number exceeding maximum acceptable size of 4294967294 detected" << '\n';
         }
+
         // Clear failbit error flag
         std::cin.clear();
         // Discard rest of string line from standard input stream
@@ -104,22 +106,37 @@ int get_graph_vertex_count(long int& vertex_count) {
         // Ask for user input
         std::cout << "Please Enter the Approximate Number of Unique Verticies (or Enter \"0\" to abort): ";
     }
-    /// Convert negative integer to positive integer if provided by user
-    if (vertex_count < 0) {
-        vertex_count *= -1;
-        std::cerr << "Negative integer value entered, changing value to " << vertex_count << '\n';
-    }
+
     /// Convert zero values to default size of 5
     if (vertex_count == 0) {
         std::cerr << "Recognized exit value of \"0\" detected. Closing Program... Goodbye!" << '\n';
         return -1;
     }
 
+    /// Prompt user for confirmation when number of unique verticies within graph exceed 1000 before proceeding further
+    if (vertex_count > 1000) {
+        std::string conf_line;
+        std::cout << "Please confirm '" << vertex_count << "' is the expected number of UNIQUE verticies: [y/n]: ";
+        std::getline(std::cin >> std::ws, conf_line);
+        while(conf_line.compare("y") != 0 && conf_line.compare("n") != 0) {
+            std::cerr << "ERROR: The entered value of '" << conf_line << "' is not a recognized entry\n";
+            std::cout << "Please enter either 'y' or 'n' to confirm whether '" << vertex_count << "' is the expected number of UNIQUE verticies within the graph to be processed: ";
+            std::getline(std::cin >> std::ws, conf_line);
+        }
+        if (conf_line.compare("n") == 0) {
+            std::cout << "\nUnintended vertex count entry confirmed.\n";
+            std::cout << "You may restart the program at any time to re-enter the intended number of unique verticies within the graph to be processed. Goodbye!\n";
+            return -1;
+        } else {
+            std::cout << "Confirmation of '" << vertex_count << "' unique verticies within the graph to be processed received!\n";
+        }
+    }
     std::cout << '\n';
     return 0;
 }
 
-int get_shortest_path(main_hashmap<double>& main, std::string& path_filename) {
+int get_shortest_path(main_hashmap<double>&& main, std::string& path_filename) {
+// int get_shortest_path(main_hashmap<double>& main, std::string& path_filename) {
     /// Provide User with All Possible Verticies Extracted From User-Provided Graph File
     std::cout << '\n';
     std::cout << "Shortest Path Calculation Selected" << '\n';
@@ -162,14 +179,23 @@ int get_shortest_path(main_hashmap<double>& main, std::string& path_filename) {
         return 0;
     }
     /// Generate MST from user-provided graph file
-    int valid_path = apply_djikstras_algorithm(source_vertex, dest_vertex, path_filename, main);
+    int valid_path = 0;
+    try {
+        valid_path = apply_djikstras_algorithm(source_vertex, dest_vertex, path_filename, std::move(main));
+        // valid_path = apply_djikstras_algorithm(source_vertex, dest_vertex, path_filename, main);
+    } catch (std::exception& e) {
+        std::cerr << e.what() << '\n';
+        return -1;
+    }
+
     if (valid_path < 0) {
         return -1;
     }
     return 0;
 }
 
-int get_requested_algorithm (std::string& algorithm_type, main_hashmap<double>& main, std::string& path_filename) {
+int get_requested_algorithm (std::string& algorithm_type, main_hashmap<double>&& main, std::string& path_filename) {
+// int get_requested_algorithm (std::string& algorithm_type, main_hashmap<double>& main, std::string& path_filename) {
     /// Generate Requested Output based on User Request
     std::cout << "For Calculating the Minimum Spanning Tree, Enter \"M\"" << '\n';
     std::cout << "For Calculating the Shortest Path Between Two Verticies, Enter \"S\"" << '\n';
@@ -194,7 +220,14 @@ int get_requested_algorithm (std::string& algorithm_type, main_hashmap<double>& 
         std::cout << '\n';
         std::cout << "Minimum Spanning Tree Calculations Selected" << '\n';
         std::string start_vertex = main.get_main_keys()[0];
-        int valid_tree = apply_prims_algorithm(start_vertex, main);
+        int valid_tree = 0;
+        try {
+            valid_tree = apply_prims_algorithm(start_vertex, std::move(main));
+            // valid_tree = apply_prims_algorithm(start_vertex, main);
+        } catch (std::exception& e) {
+            std::cerr << e.what() << '\n';
+        }
+        // int valid_tree = apply_prims_algorithm(start_vertex, main);
         if (valid_tree < 0) {
             return -1;
         }
@@ -202,7 +235,15 @@ int get_requested_algorithm (std::string& algorithm_type, main_hashmap<double>& 
 
     /// User wishes to have shortest path calculated using provided graph
     if (algorithm_type.compare("S") == 0) {
-        int path_output = get_shortest_path(main, path_filename);
+        int path_output = 0;
+        try {
+            path_output = get_shortest_path(std::move(main), path_filename);
+            // path_output = get_shortest_path(main, path_filename);
+        } catch (std::exception& e) {
+            std::cerr << e.what() << '\n';
+            // return -1;
+        }
+        // int path_output = get_shortest_path(main, path_filename);
         if (path_output < 0) {
             return -1;
         }
