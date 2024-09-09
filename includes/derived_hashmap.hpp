@@ -7,8 +7,11 @@
 #include <cassert>
 #include <cmath>
 #include <string>
+#include <stdexcept>
+#include <memory>
+#include <tuple>
+#include <utility>
 
-#include "gprintf.hpp"
 /**
  * Applies customized hash function to generate a hash index based on
  * characters of string argument `key`
@@ -42,6 +45,49 @@ class soa_hashmap {
         soa_hashmap(unsigned int c): size(0), capacity(c) {fill_buckets();} // Constructor builds underlying storage array with a starting bucket capacity of `c`
         soa_hashmap(): size(0), capacity(5) {fill_buckets();} // Constructor defaults to capacity of 5 if no capacity argument is provided
         
+        // /// Copy Constructor 
+        // soa_hashmap(soa_hashmap<Hash_Type>& copy_hash): size{copy_hash.size}, capacity{copy_hash.capacity},
+        // hash_bucket{copy_hash.hash_bucket} {}
+        
+
+        // /// Copy Assignment
+        // soa_hashmap<Hash_Type> operator=(soa_hashmap<Hash_Type>& copy_hashmap) {
+        //     size = copy_hashmap.size;
+        //     capacity = copy_hashmap.capacity;
+        //     hash_bucket = copy_hashmap.hash_bucket;
+        //     return *this;
+        // }
+
+        /// Constructor for initialization with provided vector of key: value pairs
+        soa_hashmap(std::vector<std::pair<std::string, Hash_Type>>& heap_array): size(0), capacity(0) {
+            
+            capacity = static_cast<unsigned int>(heap_array.size());
+            fill_buckets();
+            std::string key;
+            Hash_Type value;
+
+            for (size_t s = 0; s < heap_array.size(); s++) {
+                std::tie(key, value) = heap_array[s];
+                add(key, value);
+            }
+            heap_array.clear();
+        }
+
+        /// Move Constructor for soa_hashmap objects
+        soa_hashmap(soa_hashmap<Hash_Type>&& old_shashmap): size{std::exchange(old_shashmap.size, 0)},
+        capacity{std::exchange(old_shashmap.capacity, 0)},
+        hash_bucket{std::move(old_shashmap.hash_bucket)},
+        keys{std::move(old_shashmap.keys)} {}
+
+        /// Move operator overloading function for transferring ownership between soa_hashmap objects
+        soa_hashmap<Hash_Type>& operator=(soa_hashmap<Hash_Type>&& old_shashmap) {
+            size = std::exchange(old_shashmap.size, 0);
+            capacity = std::exchange(old_shashmap.capacity, 0);
+            hash_bucket = std::move(old_shashmap.hash_bucket);
+            keys = std::move(old_shashmap.keys);
+            return *this;
+        }
+
         /**
          * Pre-fills `soa_hashmap`'s underlying vector-type storage array, `hash_bucket` with `capacity`
          * number of empty `hash_entry` structs used to hold key : value pairs
@@ -54,8 +100,8 @@ class soa_hashmap {
                 assert(capacity == 5);
             }
             for (unsigned int i = 0; i < capacity; i++) {
-                hash_entry new_val;
-                hash_bucket.insert(hash_bucket.begin() + i, new_val);
+                hash_entry new_val{};
+                hash_bucket.insert(hash_bucket.begin() + i, std::move(new_val));
             }
         }
 
@@ -81,7 +127,7 @@ class soa_hashmap {
          * Retrieves current array of key values stored within `key` member of calling `soa_hashmap` class object
          * @return vector-type array holding all keys currently held within calling `soa_hashmap` class object
          */
-        std::vector<std::string> get_keys() {
+        std::vector<std::string>& get_keys() {
             return keys;
         }
 
@@ -148,8 +194,8 @@ class soa_hashmap {
             keys.clear();
             assert(keys.empty());
             for (unsigned int i = 0; i < new_capacity; i++) {
-                hash_entry new_val;
-                hash_bucket.insert(hash_bucket.begin() + i, new_val);
+                hash_entry new_val{};
+                hash_bucket.insert(hash_bucket.begin() + i, std::move(new_val));
             }
 
             /// Rehash values according to newly increased capacity within newly reset array
@@ -238,9 +284,12 @@ class soa_hashmap {
         Hash_Type get_val(std::string key) {
             /// If `soa_hashmap` has no stored values, notify user of error type before assertion
             if (size == 0) {
-                std::cerr << "Key '" << key << "' contains no values!" << '\n';
+                std::string explain = "Key '";
+                explain.append(key).append("' contains no values!");
+                throw(std::runtime_error(explain.c_str()));
+                // std::cerr << "Key '" << key << "' contains no values!" << '\n';
             }              
-            assert(size > 0);
+            // assert(size > 0);
             /// Generate the hash index returned by the hashing function
             unsigned int hash_func_val = apply_hash_function(key);
             unsigned int hash_index = hash_func_val % capacity;
@@ -339,7 +388,7 @@ class soa_hashmap {
             unsigned int hash_func_val = apply_hash_function(key);
             unsigned int hash_index = hash_func_val % capacity;
 
-            int j = 0;
+            unsigned int j = 0;
             unsigned int next_index = hash_index + (j * j);
             if (next_index >= capacity) {
                 next_index = (hash_index + (j * j)) % capacity;
@@ -370,8 +419,8 @@ class soa_hashmap {
             assert(hash_bucket.empty());
             assert(keys.empty());
             for (unsigned int i = 0; i < capacity; i++) {
-                hash_entry new_val;
-                hash_bucket.insert(hash_bucket.begin() + i, new_val);
+                hash_entry new_val{};
+                hash_bucket.insert(hash_bucket.begin() + i, std::move(new_val));
             }
             size = 0;
         }
@@ -411,6 +460,18 @@ class soa_hashmap {
             bool is_tombstone = false;
             /// @brief Boolean indicator for detecting `hash_entry` structs with no pre-assigned attribute values
             bool is_empty = true;
+
+            hash_entry(): is_tombstone{false}, is_empty{true} {}
+            hash_entry(std::string k, Hash_Type v, bool t, bool e): key{k}, value{v}, is_tombstone{t}, is_empty{e} {} 
+            hash_entry(hash_entry&& other_hash): key{std::move(other_hash.key)},
+            value{std::move(other_hash.value)}, is_tombstone{std::move(other_hash.is_tombstone)},
+            is_empty{std::move(other_hash.is_empty)} {}
+
+            hash_entry& operator=(hash_entry&& old_hash) {
+                key = std::move(old_hash.key);
+                value = std::move(old_hash.value);
+                return *this;
+            }
         };
         /// @brief Underlying storage array of `soa_hashmap` class object
         std::vector<hash_entry> hash_bucket{};
@@ -446,14 +507,52 @@ class main_hashmap {
          * 
          * Upon initialization of `main_hashmap`, all indices between 0 and `capacity` can be dynamically accessed
         */
+        // main_hashmap(std::vector<std::pair<std::string, soa_hashmap<Type>>>& hash_array): main_size(0), main_capacity(0) {
+            
+        //     main_capacity = static_cast<unsigned int>(hash_array.size());
+        //     fill_buckets();
+        //     std::string key;
+        //     soa_hashmap<Type> value;
+
+        //     for (size_t s = 0; s < hash_array.size(); s++) {
+        //         std::tie(std::move(key), std::move(*value)) = hash_array[s];
+        //         add_key(key, value);
+        //     }
+        //     hash_array.clear();
+        // }
+
+        ///
+
+        /// Move Constructor for main_hashmap objects
+        main_hashmap(main_hashmap<Type>&& old_mashmap): main_size{std::exchange(old_mashmap.main_size, 0)},
+        main_capacity{std::exchange(old_mashmap.main_capacity, 0)},
+        main_hash_bucket{std::move(old_mashmap.main_hash_bucket)},
+        main_keys{std::move(old_mashmap.main_keys)} {}
+
+        /// Move operator overloading function for transferring ownership between soa_hashmap objects
+        main_hashmap<Type>& operator=(main_hashmap<Type>&& old_mashmap) {
+            main_size = std::exchange(old_mashmap.main_size, 0);
+            main_capacity = std::exchange(old_mashmap.main_capacity, 0);
+            main_hash_bucket = std::move(old_mashmap.main_hash_bucket);
+            main_keys = std::move(old_mashmap.main_keys);
+            return *this;
+        }
+
+        // soa_hashmap<Type>& soa_hashmap<Type>::operator=(soa_hashmap<Type>&& old_shash) {
+        //     size = std::exchange(old_shashmap.size, 0);
+        //     capacity = std::exchange(old_shashmap.capacity, 0);
+        //     hash_bucket = std::exchange(old_shashmap.hash_bucket, nullptr);
+        //     return *this;
+        // }
+
         void fill_buckets() {
             if (main_capacity < 5) {
                 main_capacity = 5;
                 assert(main_capacity == 5);
             }
             for (unsigned int i = 0; i < main_capacity; i++) {
-                hash_table new_val;
-                main_hash_bucket.insert(main_hash_bucket.begin() + i, new_val);
+                hash_table new_val{};
+                main_hash_bucket.insert(main_hash_bucket.begin() + i, std::move(new_val));
             }
         }
 
@@ -515,14 +614,14 @@ class main_hashmap {
 
 
             for (unsigned int i = 0; i < new_capacity; i++) {
-                hash_table new_val;
-                main_hash_bucket.insert(main_hash_bucket.begin() + i, new_val);
+                hash_table new_val{};
+                main_hash_bucket.insert(main_hash_bucket.begin() + i, std::move(new_val));
             }
             /// Rehash values according to newly increased capacity within newly reset array
             for (unsigned int j = 0; j < prev_cap; j++) {
 
                 if (old_heap_bucket[j].is_empty != true  && old_heap_bucket[j].is_tombstone == false) {
-                    add_key(old_heap_bucket[j].main_key, old_heap_bucket[j].entry);
+                    add_key(old_heap_bucket[j].main_key, std::move(old_heap_bucket[j].entry));
                 }
             }
         }
@@ -549,17 +648,89 @@ class main_hashmap {
          */
         void print_main_keys() {
             std::cout << "[ ";
-            for (unsigned int i = 0; i < main_keys.size(); i++) {
+            for (const auto& key : main_keys) {
                 
-                if ( i == main_keys.size() - 1) {
-                    std::cout << main_keys[i];
+                if ( key == main_keys.back()) {
+                    std::cout << key;
                 } else {
-                    std::cout << main_keys[i] << ", ";
+                    std::cout << key << ", ";
                 }
             }
+            // for (unsigned int i = 0; i < main_keys.size(); i++) {
+                
+            //     if ( i == main_keys.size() - 1) {
+            //         std::cout << main_keys[i];
+            //     } else {
+            //         std::cout << main_keys[i] << ", ";
+            //     }
+            // }
             std::cout << " ]";
         }
+        // /**
+        //  * If a `hash_table` struct with matching `key` attribute already exists within the calling `main_hashmap` class object,
+        //  * replaces the `soa_hashmap` class object (and its contents) orginally associated with the `entry` attribute of the `soa_hashmap` object
+        //  *  with the `soa_hashmap` object referenced by the `hash_list` value.
+        //  * 
+        //  * Else, places a new `hash_table` struct with its `key` attribute assigned to the passed `key` and its `entry` attribute assigned to
+        //  * the `soa_hashmap` object at the next empty index position within calling `main_hashmap`'s underlying storage array `main_hash_bucket`
+        //  * 
+        //  * @param key String-type value representing the key attribute of `hash_table` struct to be added or modified
+        //  * @param hash_list The `soa_hashmap` class object to be added or modified within the `hash_table` struct with the matching `key`
+        //  */
+        // void add_key(std::string key, soa_hashmap<Type>& hash_list) {
+        //     /// Check current table load and readjust storage capacity if necessary
+        //     double tl = table_load();
+        //     if (tl >= 0.5) {
+        //         resize_table(main_capacity * 2);
+        //     }
 
+        //     /// Generate the hash index returned by the hashing function
+        //     unsigned int hash_func_val = apply_hash_function(key);
+        //     unsigned int hash_index = hash_func_val % main_capacity;
+
+        //     /// Apply quadratic probing to minimize chance of collisions
+        //     unsigned int j = 0;
+        //     unsigned int next_index = hash_index + (j * j);
+
+        //     if (next_index >= main_capacity) {
+        //         next_index = (hash_index + (j * j)) % main_capacity;
+        //     }
+        //     /**
+        //      * Either:
+        //      * 
+        //      * Replaces the existing `entry` attribute of the `hash_table` struct holding the matching `key` attribute
+        //      * with the `soa_hashmap` class object referenced by `hash_list` and sets `is_tombstone` to indicate 
+        //      * values that the existing `hash_table` holds now 'exist'
+        //      * 
+        //      * OR
+        //      * 
+        //      * Places a new `hash_table` struct with its `key` and `entry` attributes set to the argument values at the 
+        //      * next empty index position within the `hash_bucket` array
+        //      */
+        //     while (main_hash_bucket[next_index].is_empty != true) {
+        //         if (main_hash_bucket[next_index].main_key.compare(key) == 0) {
+        //             main_hash_bucket[next_index].entry = hash_list;
+        //             if (main_hash_bucket[next_index].is_tombstone) {
+        //                 main_hash_bucket[next_index].is_tombstone = false;
+        //                 main_size++;
+        //             }
+        //             return;
+        //         }
+
+        //         j++;
+        //         next_index = hash_index + (j * j);
+        //         if(next_index >= main_capacity) {
+        //             next_index = (hash_index + (j*j)) % main_capacity;
+        //         }
+        //     }
+        //     main_hash_bucket[next_index].main_key = key;
+        //     main_hash_bucket[next_index].entry = hash_list;
+        //     /// Sets `is_empty` to `false` to indicate `hash_table` struct is no longer empty
+        //     main_hash_bucket[next_index].is_empty = false;
+
+        //     main_keys.push_back(key);
+        //     main_size++;
+        // }
 
         /**
          * If a `hash_table` struct with matching `key` attribute already exists within the calling `main_hashmap` class object,
@@ -572,7 +743,7 @@ class main_hashmap {
          * @param key String-type value representing the key attribute of `hash_table` struct to be added or modified
          * @param hash_list The `soa_hashmap` class object to be added or modified within the `hash_table` struct with the matching `key`
          */
-        void add_key(std::string key, soa_hashmap<Type>& hash_list) {
+        void add_key(std::string key, soa_hashmap<Type>&& hash_list) {
             /// Check current table load and readjust storage capacity if necessary
             double tl = table_load();
             if (tl >= 0.5) {
@@ -603,8 +774,8 @@ class main_hashmap {
              * next empty index position within the `hash_bucket` array
              */
             while (main_hash_bucket[next_index].is_empty != true) {
-                if (main_hash_bucket[next_index].main_key.compare(key) == 0) {
-                    main_hash_bucket[next_index].entry = hash_list;
+                if (main_hash_bucket[next_index]. main_key.compare(key) == 0) {
+                    main_hash_bucket[next_index].entry = std::move(hash_list);
                     if (main_hash_bucket[next_index].is_tombstone) {
                         main_hash_bucket[next_index].is_tombstone = false;
                         main_size++;
@@ -619,7 +790,7 @@ class main_hashmap {
                 }
             }
             main_hash_bucket[next_index].main_key = key;
-            main_hash_bucket[next_index].entry = hash_list;
+            main_hash_bucket[next_index].entry = std::move(hash_list);
             /// Sets `is_empty` to `false` to indicate `hash_table` struct is no longer empty
             main_hash_bucket[next_index].is_empty = false;
 
@@ -635,12 +806,15 @@ class main_hashmap {
          * @param key String-type value representing the key attribute of `hash_table` struct to be located
          * @return `soa_hashmap` class object stored in `hash_table` struct with matching `key` attribute
          */
-        soa_hashmap<Type>& get_key_list(std::string key) {
+        soa_hashmap<Type>& get_hash_key(std::string key) {
             /// Notify user of empty hashmap error before assertions aborts program
             if (main_size == 0) {
-                std::cerr << "Hashmap for key " << key << " is empty!" << '\n';
+                std::string explain = "Hashmap for key '";
+                explain.append(key).append("' is empty!");
+                throw(std::runtime_error(explain.c_str()));
+                // std::cerr << "Hashmap for key " << key << " is empty!" << '\n';
             }
-            assert(main_size > 0);
+            // assert(main_size > 0);
             /// Generate hash_index from output of hash function
             unsigned int hash_func_val = apply_hash_function(key);
             unsigned int hash_index = hash_func_val % main_capacity;
@@ -667,11 +841,76 @@ class main_hashmap {
             }
             /// Notify user that `main_hashmap` does not contain any `hash_table` structs with corresponding `key`
             if (main_hash_bucket[next_index].main_key.compare(key) != 0 || main_hash_bucket[next_index].is_tombstone) {
-                std::cerr << "Main Hashmap does not contain an existing hashmap for '" << key << "'!" << '\n';
+                std::string explain2 = "Main Hashmap does not contain an existing hashmap for '";
+                explain2.append(key).append("'!");
+                throw(std::runtime_error(explain2.c_str()));
+                // std::cerr << "Main Hashmap does not contain an existing hashmap for '" << key << "'!" << '\n';
             }
-            assert(main_hash_bucket[next_index].main_key.compare(key) == 0 && !main_hash_bucket[next_index].is_tombstone);
+            // auto target_hash = main_hash_bucket[next_index].entry.get_hash_bucket();
+            // return target_hash;
+            // auto target_hash = soa_hashmap<Type>();
+            // target_hash.keys = main_hash_bucket[next_index].entry.get_keys();
+            // target_hash.hash_bucket = main_hash_bucket[next_index].entry.get_hash_bucket();
+            // target_hash.size = main_hash_bucket[next_index].entry.get_size();
+            // target_hash.capacity = main_hash_bucket[next_index].entry.get_capacity();
+             // assert(main_hash_bucket[next_index].main_key.compare(key) == 0 && !main_hash_bucket[next_index].is_tombstone);
+            // return target_hash;
+
+            // auto target_hash(main_hash_bucket[next_index].entry)
             return main_hash_bucket[next_index].entry;
         }
+
+        // /**
+        //  * Retrieves the `soa_hashmap` class object stored within the `hash_table` struct with
+        //  * the matching `key` attribute from within calling `main_hashmap` object
+        //  * (Fails if not found within calling `main_hashmap` object)
+        //  * 
+        //  * @param key String-type value representing the key attribute of `hash_table` struct to be located
+        //  * @return `soa_hashmap` class object stored in `hash_table` struct with matching `key` attribute
+        //  */
+        // soa_hashmap<Type>& get_key_list(std::string key) {
+        //     /// Notify user of empty hashmap error before assertions aborts program
+        //     if (main_size == 0) {
+        //         std::string explain = "Hashmap for key '";
+        //         explain.append(key).append("' is empty!");
+        //         throw(std::runtime_error(explain.c_str()));
+        //         // std::cerr << "Hashmap for key " << key << " is empty!" << '\n';
+        //     }
+        //     // assert(main_size > 0);
+        //     /// Generate hash_index from output of hash function
+        //     unsigned int hash_func_val = apply_hash_function(key);
+        //     unsigned int hash_index = hash_func_val % main_capacity;
+
+        //     /// Apply quadratic probing to minimize collisions
+        //     unsigned int j = 0;
+        //     unsigned int next_index = hash_index + (j * j);
+        //     if (next_index >= main_capacity) {
+        //         next_index = (hash_index + (j * j)) % main_capacity;
+        //     }
+
+        //     /// If search operation locates an existing `hash_table` struct with matching `key` attribute, returns its 
+        //     /// stored `soa_hashmap` object
+        //     while (main_hash_bucket[next_index].is_empty != true) {
+        //         if (main_hash_bucket[next_index].main_key.compare(key) == 0 && !main_hash_bucket[next_index].is_tombstone) {
+        //             break;             
+        //         }
+ 
+        //         j++;
+        //         next_index = hash_index + (j * j);
+        //         if(next_index >= main_capacity ) {
+        //             next_index = (hash_index + (j*j)) % main_capacity;
+        //         }
+        //     }
+        //     /// Notify user that `main_hashmap` does not contain any `hash_table` structs with corresponding `key`
+        //     if (main_hash_bucket[next_index].main_key.compare(key) != 0 || main_hash_bucket[next_index].is_tombstone) {
+        //         std::string explain2 = "Main Hashmap does not contain an existing hashmap for '";
+        //         explain2.append(key).append("'!");
+        //         throw(std::runtime_error(explain2.c_str()));
+        //         // std::cerr << "Main Hashmap does not contain an existing hashmap for '" << key << "'!" << '\n';
+        //     }
+        //     // assert(main_hash_bucket[next_index].main_key.compare(key) == 0 && !main_hash_bucket[next_index].is_tombstone);
+        //     return main_hash_bucket[next_index].entry;
+        // }
 
         /**
          * Retrieves the `value` attribute of the `hash_entry` struct with`key` attribute matching `target_key`
@@ -685,9 +924,10 @@ class main_hashmap {
         Type get_key_val(std::string main_key, std::string target_key) {
             /// Notify user that calling hashmap has no key with value before assertion
             if (main_size == 0) {
-                std::cerr << "The Main Hashmap is empty!" << '\n';
+                throw(std::runtime_error("Cannot return key values from an empty main_hashmap object!"));
+                // std::cerr << "The Main Hashmap is empty!" << '\n';
             }
-            assert(main_size > 0);
+            // assert(main_size > 0);
 
             /// Generate hash_index from output of hash function
             unsigned int hash_func_val = apply_hash_function(main_key);
@@ -706,9 +946,12 @@ class main_hashmap {
                 if (main_hash_bucket[next_index].main_key.compare(main_key) == 0 && !main_hash_bucket[next_index].is_tombstone) {
                     /// Notify user that target_key is not in existing hashmap of main_key before assertion
                     if (!main_hash_bucket[next_index].entry.contains_key(target_key)) {
-                        std::cerr << "The Existing Hashmap '" << main_key << "' does not contain the key '" << target_key << "'!" << '\n';
+                        std::string explain = "The Existing Hashmap '";
+                        explain.append(main_key).append("' does not contain the key '").append(target_key).append("'!");
+                        throw(std::runtime_error(explain.c_str()));
+                        // std::cerr << "The Existing Hashmap '" << main_key << "' does not contain the key '" << target_key << "'!" << '\n';
                     }
-                    assert(main_hash_bucket[next_index].entry.contains_key(target_key));
+                    // assert(main_hash_bucket[next_index].entry.contains_key(target_key));
                     break;
                 }
                 j++;
@@ -719,9 +962,12 @@ class main_hashmap {
             }
             /// Notify user that main_key does not exist in main hashmap object before assertion
             if (main_hash_bucket[next_index].main_key.compare(main_key) != 0 || main_hash_bucket[next_index].is_tombstone) {
-                std::cerr << "The key '" << main_key << "' does not exist in calling main_hashmap object!" << '\n';
+                std::string explain2 = "The key '";
+                explain2.append(main_key).append("' does not exist in calling main_hashmap object!");
+                throw(std::runtime_error(explain2.c_str()));
+                // std::cerr << "The key '" << main_key << "' does not exist in calling main_hashmap object!" << '\n';
             }
-            assert(main_hash_bucket[next_index].main_key.compare(main_key) == 0 && !main_hash_bucket[next_index].is_tombstone);
+            // assert(main_hash_bucket[next_index].main_key.compare(main_key) == 0 && !main_hash_bucket[next_index].is_tombstone);
             return main_hash_bucket[next_index].entry.get_val(target_key);
         }
         
@@ -735,9 +981,12 @@ class main_hashmap {
         std::string get_key_by_value(std::string main_key, Type value) {
             std::string key_val = "";
             if (main_size == 0) {
-                std::cerr << "Main Hashmap '" << main_key << "is empty!" << '\n';
+                std::string explain = "Cannot return keys associated to a value when main_hashmap '";
+                explain.append(main_key).append("' is empty!");
+                throw(std::runtime_error(explain.c_str()));
+                // std::cerr << "Main Hashmap '" << main_key << "is empty!" << '\n';
             }
-            assert(main_size > 0);
+            // assert(main_size > 0);
 
             /// Generate hash_index from output of hash function
             unsigned int hash_func_val = apply_hash_function(main_key);
@@ -756,11 +1005,13 @@ class main_hashmap {
             while (main_hash_bucket[next_index].is_empty != true) {
                 /// Check if `hash_table` struct with matching `main_key` attribute exists within calling `main_hashmap` object
                 if (main_hash_bucket[next_index].main_key.compare(main_key) == 0 && !main_hash_bucket[next_index].is_tombstone) {
+                    // std::cout << "Recognized main key of " << main_key << '\n';
                     auto entry_hash_keys = main_hash_bucket[next_index].entry.get_keys();
                     /// Search through the existing keys of current `hash_entry` struct for any key with matching value
                     for (unsigned int k = 0; k < entry_hash_keys.size(); k++) {
                         /// If expected value type is a string, ensure proper string comparison operation at runtime
                         if constexpr (std::is_same_v<std::string, Type>) {
+                            // std::cout << "Evaluated to string value" << '\n';
                             if (main_hash_bucket[next_index].entry.get_val(entry_hash_keys[k]).compare(value) == 0) {
                                     key_val = entry_hash_keys[k];
                                     found_val = true;
@@ -768,6 +1019,7 @@ class main_hashmap {
                             }
                         /// Else, conduct default comparison operation                            
                         } else {
+                            // std::cout << "Evaluated to numerical value" << '\n';
                             if (main_hash_bucket[next_index].entry.get_val(entry_hash_keys[k]) == value) {
                                     key_val = entry_hash_keys[k];
                                     found_val = true;
@@ -787,20 +1039,27 @@ class main_hashmap {
             }
             /// Notify user if value was not found within keys of an existing `hash_table` with `main_key` attr before assertion
             if (!found_val && main_hash_bucket[next_index].main_key.compare(main_key) == 0) {
-                std::cerr << "The Existing Hashmap '" << main_key << "' does not contain any keys with the value '" << value << "'!" << '\n';
+                std::string explain2 = "The Existing Hashmap '";
+                explain2.append(main_key).append("' does not contain any keys with the entered value!");
+                throw(std::runtime_error(explain2.c_str()));
+                // std::cerr << "The Existing Hashmap '" << main_key << "' does not contain any keys with the value '" << value << "'!" << '\n';
             }
 
             /// Notify user if `main_key` does not exist within calling `main_hashmap` object before assertion
             if (main_hash_bucket[next_index].main_key.compare(main_key) != 0) {
-                std::cerr << "The Main Hashmap does not contain any existing hashmap with key of '" << main_key << "'!" << '\n';
+                std::string explain3 = "The Main Hashmap does not contain any existing hashmap with key of '";
+                explain3.append(main_key).append("'!");
+                throw(std::runtime_error(explain3.c_str()));
+                // std::cerr << "The Main Hashmap does not contain any existing hashmap with key of '" << main_key << "'!" << '\n';
             }
-            assert(found_val && main_hash_bucket[next_index].main_key.compare(main_key) == 0);
+            // assert(found_val && main_hash_bucket[next_index].main_key.compare(main_key) == 0);
 
             /// Ensure value returned to user is not an empty string value (should not be reachable)
             if (key_val.compare("") == 0) {
-                std::cerr << "An error has occured in returning the argument value (may be due to unexpected type)!" << '\n';
+                throw(std::runtime_error("An error has occurred in returning the argument value (may be due to unexepcted typename)"));
+                // std::cerr << "An error has occured in returning the argument value (may be due to unexpected type)!" << '\n';
             }
-            assert(key_val.compare("") != 0);
+            // assert(key_val.compare("") != 0);
 
             return key_val;
         }
@@ -903,8 +1162,8 @@ class main_hashmap {
             assert(main_hash_bucket.empty());
             assert(main_keys.empty());
             for (unsigned int i = 0; i < main_capacity; i++) {
-                hash_table new_val;
-                main_hash_bucket.insert(main_hash_bucket.begin() + i, new_val);
+                hash_table new_val{};
+                main_hash_bucket.insert(main_hash_bucket.begin() + i, std::move(new_val));
             }
             main_size = 0;
         }
@@ -944,10 +1203,28 @@ class main_hashmap {
             bool is_tombstone = false;
             /// @brief Boolean indicator for detecting `hash_table` structs with no pre-assigned attribute values
             bool is_empty = true;
+            hash_table() : is_tombstone(false), is_empty(true) {}
+
+            hash_table(std::string key, soa_hashmap<Type> hash, bool t, bool e): main_key(key),
+            entry(std::move(hash)), is_tombstone(t), is_empty(e) {}
+
+            hash_table(hash_table&& old_hasht): main_key{std::move(old_hasht.main_key)},
+            entry{std::move(old_hasht.entry)},
+            is_tombstone{std::move(old_hasht.is_tombstone)},
+            is_empty{std::move(old_hasht.is_empty)} {}
+
+            hash_table& operator=(hash_table&& old_hash) {
+                entry = std::move(old_hash.entry);
+                main_key = std::move(old_hash.main_key);
+                is_tombstone = std::move(old_hash.is_tombstone);
+                is_empty = std::move(old_hash.is_empty);
+                return *this;
+            }
         };
         /// @brief Underlying storage array of `main_hashmap` class object
         std::vector<std::string> main_keys {};
         /// @brief Array containing all currently existing keys stored in `main_hashmap` class object
         std::vector<hash_table> main_hash_bucket{};
+        // std::vector<hash_table> main_hash_bucket{};
 };
 
