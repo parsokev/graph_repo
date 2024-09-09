@@ -8,10 +8,12 @@
 #include <cassert>
 #include <memory>
 #include <utility>
+#include <stdexcept>
 
 #include "gprintf.hpp"
 #include "derived_hashmap.hpp"
-#include "graph_ops.hpp"
+
+
 
 
 /**
@@ -77,9 +79,10 @@ class paired_min_heap {
         std::pair<std::string, Type> get_min() {
             /// Notify user of error type before assertion
             if (heap_size == 0) {
-                std::cerr << "Heap is empty!" << '\n';
+                throw(std::runtime_error("ERROR: Cannot return minimum value of an empty paired_minheap object!\n"));
+                // std::cerr << "Heap is empty!" << '\n';
             }
-            assert(heap_size > 0);
+            // assert(heap_size > 0);
             return start_heap[0] -> value_pair;
         }
 
@@ -125,10 +128,10 @@ class paired_min_heap {
             std::string key_val = key;
             auto pair_val = make_pair(key_val, data_val);
             std::unique_ptr<vertex_pair> new_pair = std::make_unique<vertex_pair>(std::move(pair_val));
+            gprintf("ADDED NODE: %s : ", std::get<0>(new_pair -> value_pair).c_str());
+            #ifndef NDEBUG
 
-            #ifdef NDEBUG
-            #else
-            std::cerr << "ADDED NODE: " << std::get<0>(new_pair -> value_pair) << " : " << std::get<1>(new_pair -> value_pair) << '\n';
+            std::cerr << std::get<1>(new_pair -> value_pair) << '\n';
             #endif
             start_heap.emplace_back(std::move(new_pair));
             heap_size++;
@@ -137,22 +140,20 @@ class paired_min_heap {
             if (heap_size - 1 == 0) {
                 return;
             }
-        
+            gprintf("STARTING HEAP : [ ");        
             int new_val_index = heap_size - 1;
-            #ifdef NDEBUG
-            #else
-            std::cerr << " STARTING HEAP : " << '\n';
-            std::cerr << "[ ";
-            for (unsigned int k = 0; k < static_cast<unsigned int>(start_heap.size()); k++) {
+            #ifndef NDEBUG
 
-                if (k == static_cast<unsigned int>(start_heap.size() - 1)) {
-                    std::cerr << std::get<0>(start_heap[k] -> value_pair) << " : " << std::get<1>(start_heap[k] -> value_pair);
+            for (const auto& ptr_val : start_heap) {
+                if (ptr_val == start_heap.back()) {
+                    std::cerr << std::get<0>(ptr_val -> value_pair) << " : " << std::get<1>(ptr_val -> value_pair);
                 } else {
-                    std::cerr << std::get<0>(start_heap[k] -> value_pair) << " : " << std::get<1>(start_heap[k] -> value_pair) << ", ";
+                    std::cerr << std::get<0>(ptr_val -> value_pair) << " : " << std::get<1>(ptr_val -> value_pair) << ", ";
                 }
             }
-            std::cerr << " ]" << '\n';
-            #endif  
+            std::cerr << " ]\n";
+            #endif
+
             /// Initialize tuple to temporarily store key : pair values during swapping operations
             /**
              * Calculate index position of parent node of newly added node according to array representation and
@@ -169,34 +170,37 @@ class paired_min_heap {
              * will continue swapping index positions with each updated parent node while its new
              * index position is not 0 and its data value is less than that of its current parent
             */
-            #ifdef NDEBUG
-            #else
-            std::cerr << "STARTING PARENT INDEX AND NEWLY ADDED INDEX VALUES:" << '\n';
-            std::cerr << "Calculated next_parent_index is " << next_parent_index << std::get<1>(start_heap[static_cast<size_t>(next_parent_index)] -> value_pair) << '\n';
-            std::cerr << "Calculated new_val_index is " << new_val_index <<'\n';
-            std::cerr << "next_parent_index value is " << std::get<1>(start_heap[static_cast<size_t>(next_parent_index)] -> value_pair) << '\n';
-            std::cerr << "ENTERING WHILE LOOP FOR POSITION SWAPPING" << '\n';
-            #endif
+            gprintf("\nSTARTING POSITIONS FOR NEXT PARENT INDEX AND ADDED NODE INDEX\n");
+            #ifndef NDEBUG
 
+            std::cerr << "next_parent_index: " << "START_HEAP[" << next_parent_index << "] = ";
+            print_value_pair(start_heap[static_cast<size_t>(next_parent_index)] -> value_pair, std::cerr);
+            std::cerr << "\nnew_val_index: " << "START_HEAP[" << new_val_index << "] = ";
+            print_value_pair(start_heap[static_cast<size_t>(new_val_index)] -> value_pair, std::cerr);
+            std::cerr << '\n';
+
+            #endif
+            gprintf("ENTERING WHILE LOOP FOR POSITION SWAPPING\n");
             size_t i = 0;
             while (next_parent_index >= 0 && data_val < std::get<1>(next_parent_pair)){
-                #ifdef NDEBUG
-                #else
-                std::cerr << "LOOP NUMBER: " << i << '\n';
-                std::cerr << "next_parent_index is " << next_parent_index << '\n';
-                std::cerr << "new_val_index is " << new_val_index << '\n';
-                std::cerr << "next_parent_index value is " << std::get<1>(start_heap[static_cast<size_t>(next_parent_index)] -> value_pair) << '\n';
-                std::cerr << "next_parent_pair value is " << std::get<0>(next_parent_pair) << " : "  << std::get<1>(next_parent_pair)<< '\n';
-                std::cerr << "prox_parent_pair value is " << std::get<0>(prox_parent_pair) << " : "  << std::get<1>(prox_parent_pair)<< '\n';
-                #endif
-                /// Initiate swapping operation with parent using temporary pair
+                // #ifndef NDEBUG
+                // std::cerr << "\nLOOP NUMBER: " << i << '\n';
+                // std::cerr << "next_parent_index: " << "START_HEAP[" << next_parent_index << "] = ";
+                // print_value_pair(start_heap[static_cast<size_t>(next_parent_index)] -> value_pair, std::cerr);
+                // std::cerr << "\nnew_val_index: " << "START_HEAP[" << new_val_index << "] = ";
+                // print_value_pair(start_heap[static_cast<size_t>(new_val_index)] -> value_pair, std::cerr);
+                // #endif
+
+                // Initiate swapping operation with parent using temporary pair
                 prox_parent_pair = next_parent_pair;
                 
-                #ifdef NDEBUG
-                #else
-                std::cerr << "Swapping " << std::get<0>(start_heap[static_cast<size_t>(next_parent_index)] -> value_pair) << " : " << std::get<1>(start_heap[static_cast<size_t>(next_parent_index)] -> value_pair);
-                std::cerr << " with " << std::get<0>(start_heap[static_cast<size_t>(new_val_index)] -> value_pair) << " : " << std::get<1>(start_heap[static_cast<size_t>(new_val_index)] -> value_pair) << '\n';
-                #endif
+                // #ifndef NDEBUG
+                // std::cerr << "\nSwapping ";
+                // print_value_pair(start_heap[static_cast<size_t>(next_parent_index)] -> value_pair, std::cerr);
+                // std::cerr << " with ";
+                // print_value_pair(start_heap[static_cast<size_t>(new_val_index)] -> value_pair, std::cerr);
+                // std::cerr << '\n';
+                // #endif
                 
                 std::swap(start_heap[static_cast<size_t>(next_parent_index)], start_heap[static_cast<size_t>(new_val_index)]);
                 data_val = std::get<1>(start_heap[static_cast<size_t>(next_parent_index)] -> value_pair);
@@ -204,38 +208,36 @@ class paired_min_heap {
                 /// Recalculate and update new parent node's index position
                 new_val_index = next_parent_index;
                 next_parent_index = (new_val_index - 1) / 2;
-                #ifdef NDEBUG
-
-                #else
-                std::cerr << "Updated PARENT INDEX to " << next_parent_index << "and Updated Position of ADDED NODE INDEX to " << new_val_index << '\n';
-                #endif
+                
+                // #ifndef NDEBUG
+                // std::cerr << "Updated PARENT INDEX to " << next_parent_index << "and Updated Position of ADDED NODE INDEX to " << new_val_index << '\n';
+                // #endif
+                
                 /// Update parent node's value with next index while it remains within bounds
                 if (next_parent_index >= 0) {
-                    #ifdef NDEBUG
-                    #else
-                    std::cerr << "Updating next_parent_pair to " << std::get<0>(start_heap[static_cast<size_t>(next_parent_index)] -> value_pair) << " : ";
-                    std::cerr << std::get<1>(start_heap[static_cast<size_t>(next_parent_index)] -> value_pair) << '\n';
-                    #endif
+                    // #ifndef NDEBUG
+                    // std::cerr << "Updating next_parent_pair to ";
+                    // print_value_pair(start_heap[static_cast<size_t>(next_parent_index)] -> value_pair, std::cerr);
+                    // std::cerr <<'\n';
+                    // #endif
 
                     next_parent_pair = start_heap[static_cast<size_t>(next_parent_index)] -> value_pair;
                 }
-                #ifdef NDEBUG
-                #else
-                std::cerr << " UPDATED HEAP at END of LOOP " << i << " : " << '\n';
-                std::cerr << "[ ";
-                for (unsigned int k = 0; k < static_cast<unsigned int>(start_heap.size()); k++) {
- 
-                    if (k == static_cast<unsigned int>(start_heap.size() - 1)) {
-                        std::cerr << std::get<0>(start_heap[k] -> value_pair) << " : " << std::get<1>(start_heap[k] -> value_pair);
-                    } else {
-                        std::cerr << std::get<0>(start_heap[k] -> value_pair) << " : " << std::get<1>(start_heap[k] -> value_pair) << ", ";
-                    }
-                }
-                std::cerr << " ]" << '\n';
-                #endif
                 i++;
             }
-                /// If calculated parent index is out of bounds, newly added node is at front index now
+
+            #ifndef NDEBUG
+            gprintf("HEAP AFTER ADDING NODE: [ ");
+            for (const auto& ptr_val : start_heap) {
+                if (ptr_val == start_heap.back()) {
+                    std::cerr << std::get<0>(ptr_val -> value_pair) << " : " << std::get<1>(ptr_val -> value_pair);
+                } else {
+                    std::cerr << std::get<0>(ptr_val -> value_pair) << " : " << std::get<1>(ptr_val -> value_pair) << ", ";
+                }
+            }
+            std::cerr << " ]\n";
+            #endif
+            /// If calculated parent index is out of bounds, newly added node is at front index now
         }
         
 
@@ -251,7 +253,7 @@ class paired_min_heap {
             int heap_length = heap_size - 1;
             /// Notify user of error type before assertion
             if (index > heap_length || index < 0) {
-                std::cerr << "Passed index is out of bounds of array!" << '\n';
+                throw(std::runtime_error("Index to be percolated is outside the bounds of the heap array!"));
             }
             assert(index <= heap_length && index >= 0);
 
@@ -261,6 +263,13 @@ class paired_min_heap {
             // Calculate maximum depth of current heap, which will be equal to maximum number of possible swapping operations
             int max_loops_req = heap_size / 2;
             int perc_index = index;
+
+            #ifndef NDEBUG
+            gprintf("\nBEGINNING PERCOLATION with: ");
+            print_value_pair(start_heap[static_cast<size_t>(perc_index)] -> value_pair, std::cerr);
+            std::cerr << '\n';
+            #endif
+
             // For loop iterates until percolating node has either reached maximum depth or cannot swap downward further in heap
             for (int i = 0; i < max_loops_req; i++) {
                 /// Extract and store key:value pair for current position of percolating node
@@ -274,11 +283,10 @@ class paired_min_heap {
                 if ( right_child_index >= 0 && right_child_index <= heap_length) {
                     right_child_index = (perc_index * 2) + 2;
                 }
-                #ifdef NDEBUG
-                #else
-                std::cerr << "PERCOLATING..." << '\n';
-                #endif
-                /// Pass index position and key:pair value of percolating node along with index positions of its children to helper function 
+                #ifndef NDEBUG
+                std::cerr << "EVALUATING children from PERCOLATED NODE'S CURRENT POSITION OF: " << perc_index << '\n';
+                #endif 
+                /// Pass index position and key:pair value of percolating node along with index positions of its children to helper function
                 int end_check = evaluate_children(left_child_index, right_child_index, perc_element_pair, perc_index);
                 /**
                  * If swapping function returns 0, percolation is complete and the loop is exited. Otherwise, percolation continues
@@ -288,11 +296,10 @@ class paired_min_heap {
                     break;
                 }
             }
-            #ifdef NDEBUG
-            #else
-            std::cerr << "Percolation Complete!" << '\n';
-            #endif
 
+            #ifndef NDEBUG
+            gprintf("PERCOLATION COMPLETE!\n");
+            #endif
         }
         /**
          * Swaps positions of percolating node at index position of `perc_index` containing the key:value pair within `perc_pair`
@@ -304,6 +311,7 @@ class paired_min_heap {
          * @return 1 if percolating node has swapped positions (percolation is not complete), else 0 (percolation is complete)
          */
         int evaluate_children(int left_child_index, int right_child_index, std::pair<std::string, Type>& perc_pair, int& perc_index) {
+
             int heap_length = heap_size - 1;
             /// Check if percolating node has any children
             if (left_child_index >= 0 && left_child_index <= heap_length) {
@@ -312,10 +320,7 @@ class paired_min_heap {
                         /// Percolating node has both a left child node and right child node
                         std::pair<std::string, Type> left_child_pair = start_heap[static_cast<size_t>(left_child_index)] -> value_pair;
                         std::pair<std::string, Type> right_child_pair = start_heap[static_cast<size_t>(right_child_index)] -> value_pair;
-                        #ifdef NDEBUG
-                        #else
-                        std::cerr << "LEFT CHILD NODE IS " << std::get<1>(left_child_pair) << " and RIGHT_CHILD_NODE IS " << std::get<1>(right_child_pair) << '\n';
-                        #endif
+
                         /// If left child node has the minimum value and value of percolating node is greater than it
                         if (std::get<1>(left_child_pair) < std::get<1>(right_child_pair) && std::get<1>(perc_pair) > std::get<1>(left_child_pair)) {
                             /// Percolating node swaps positions with left child
@@ -364,13 +369,26 @@ class paired_min_heap {
         //  * @return Tuple of key : value pair containing the lowest value currently stored within the instance
         //  */
         std::pair<std::string, Type> remove_min() {
+
+            std::pair<std::string, Type> root_pair;
             /// Notfies user of error type before assertion
             if (heap_size == 0) {
-                std::cerr << "Heap is empty!" << std::endl;
+                throw (std::runtime_error("Cannot remove minimum value from an empty paired_minheap object!"));
             }
             assert(heap_size > 0);
             /// Retrieves tuple with minimum value (held at index 0)
-            std::pair<std::string, Type> root_pair = get_min();
+            try {
+                root_pair = get_min();
+            } catch (const std::exception &e) {
+                std::cerr << e.what() << '\n';
+            }
+
+            #ifndef NDEBUG
+            gprintf("REMOVING NODE WITH MINIMUM VALUE: ");
+            print_value_pair(start_heap[0] -> value_pair, std::cerr);
+            std::cerr << '\n';
+            #endif
+
             /// Removes node and replaces it with node at last index position
             std::swap(start_heap[0], start_heap[static_cast<size_t>(heap_size - 1)]);
             start_heap.pop_back();
@@ -381,10 +399,17 @@ class paired_min_heap {
                 return root_pair;
             }
             /// If more than one node remains, percolate replacing node downward to maintain proper min heap
-            min_percolate(0);
+            try {
+                min_percolate(0);
+            } catch (const std::exception& e) {
+                std::cerr << e.what() << '\n';
+            }
             return root_pair;
         }
-       
+
+        void print_value_pair(const std::pair<std::string, Type>& print_val, std::ostream& stream_type) {
+            stream_type << std::get<0>(print_val) << " : " << std::get<1>(print_val);
+        }
         /**
          * Prints valid formats for `paired_min_heap` class instance declarations
          */
@@ -407,13 +432,20 @@ class paired_min_heap {
          */        
         friend std::ostream& operator<<(std::ostream& out, const paired_min_heap& mh) {
             out << "[ ";
-            for (unsigned int i = 0; i < static_cast<unsigned int>(mh.heap_size); i++) {
-                if (i == static_cast<unsigned int>(mh.heap_size - 1)) {
-                    out << std::get<0>(mh.start_heap[i] -> value_pair) << " : " << std::get<1>(mh.start_heap[i] -> value_pair);
+            for (auto const& value : mh.start_heap) {
+                if (value == mh.start_heap.back()) {
+                    out << std::get<0>(value -> value_pair) << " : " << std::get<1>(value -> value_pair);
                 } else {
-                    out << std::get<0>(mh.start_heap[i] -> value_pair) << " : " << std::get<1>(mh.start_heap[i] -> value_pair) << ", ";
+                    out << std::get<0>(value -> value_pair) << " : " << std::get<1>(value -> value_pair) << ", ";
                 }
             }
+            // for (unsigned int i = 0; i < static_cast<unsigned int>(mh.heap_size); i++) {
+            //     if (i == static_cast<unsigned int>(mh.heap_size - 1)) {
+            //         out << std::get<0>(mh.start_heap[i] -> value_pair) << " : " << std::get<1>(mh.start_heap[i] -> value_pair);
+            //     } else {
+            //         out << std::get<0>(mh.start_heap[i] -> value_pair) << " : " << std::get<1>(mh.start_heap[i] -> value_pair) << ", ";
+            //     }
+            // }
             out << " ]";
             return out;
         }
