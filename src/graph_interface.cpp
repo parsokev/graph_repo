@@ -13,39 +13,20 @@
 #include <memory>
 
 #include "../includes/graph_input.hpp"
-#include "../includes/linked_list.hpp"
 #include "../includes/pair_minheap.hpp"
 #include "../includes/derived_hashmap.hpp"
-// #include "../includes/master_hashmap.hpp"
-#include "../includes/graph_ops.hpp"
+#include "../includes/graph_processing.hpp"
 
-// std::ostream& operator<<(std::ostream& out, const std::vector<std::tuple<std::string, std::string>>& vertex_list) {
-//     out << "[ ";
-//     for (unsigned int i = 0; i < vertex_list.size(); i++) {
-//         std::string vertex1;
-//         std::string vertex2;
-//         std::tie(vertex1, vertex2) = vertex_list[i];
-//         out << "( " << vertex1 << ", " << vertex2 << " )";
-//         if (i != vertex_list.size() - 1) {
-//             out << ", ";
-//         }
-//     }
-//     return out;
-// }
-// std::ostream& operator<<(std::ostream& out, const std::pair<std::string, double>& pair_val) {
-//     out << "{ ";
-//     out << std::get<0>(pair_val) << " : " << std::get<1>(pair_val) << " }";
-//     return out;
-// }
 
 int main(void) {
 
     /// Establish preset file paths for reading and writing operations
     std::string graph_filename = "./dot_graphs/full_graph.gv";
-    // std::string graph_filename = "./dot_graphs/full_graph.gv";
     std::string rel_path = "sample_graphs/";
-    std::string path_filename = "./dot_graphs/shortest_path.gv";
+    std::string path_filename = "./dot_graphs/shortest_path_overlay.gv";
+    std::string MST_filename = "./dot_graphs/MST_overlay.gv";
     std::string read_name;
+    
     /// Determine and present acceptable files from designated directory for user-provided graph text files
     int file_output = 0;
     try {
@@ -53,7 +34,7 @@ int main(void) {
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
-    // int file_output = get_graph_filename(rel_path, read_name);
+
     if (file_output < 0) {
         return EXIT_SUCCESS;
     }
@@ -65,8 +46,9 @@ int main(void) {
         vertex_output = get_graph_vertex_count(vertex_count);
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
+        return -1;
     }
-    // int vertex_output = get_graph_vertex_count(vertex_count);
+
     if (vertex_output < 0) {
         return EXIT_SUCCESS;
     }
@@ -74,7 +56,6 @@ int main(void) {
     /// Build main_hashmap data struct to store a relevant graphical information extracted from user-provided graph file
     /// Write relevant extracted information in dot language format to designated .gv file for building graph visualization
     auto main = std::make_unique<main_hashmap<double>>(static_cast<unsigned int>(vertex_count)); 
-    // auto main = main_hashmap<double>(static_cast<unsigned int>(vertex_count));
     std::cout << "Building graph from '" << read_name << "' file contents..." << '\n';
     std::cout << "Writing graph information to file '" << graph_filename << "' for image processing..." << '\n';
     
@@ -82,12 +63,11 @@ int main(void) {
     unsigned int file_vertex_count = static_cast<unsigned int>(vertex_count);
     try {
         output = build_adjacency_list(rel_path, graph_filename, file_vertex_count, std::move(*main));
-        // output = build_adjacency_list(rel_path, graph_filename, file_vertex_count, main);
     } catch(std::exception& e) {
         std::cerr << e.what() << std::endl;
         return -1;
     }
-    // int output = build_adjacency_list(rel_path, graph_filename, file_vertex_count, main);
+
     if (output < 0) {
         return EXIT_FAILURE;
     }
@@ -97,39 +77,47 @@ int main(void) {
     std::string algorithm_type;
     int request_output = 0;
     try {
-        request_output = get_requested_algorithm (algorithm_type, std::move(*main), path_filename);
-        // request_output = get_requested_algorithm (algorithm_type, main, path_filename);
+        request_output = get_requested_algorithm (algorithm_type, std::move(*main), graph_filename, path_filename, MST_filename);
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
         return -1;
     }
-    // int request_output = get_requested_algorithm (algorithm_type, main, path_filename);
     if (request_output < 0) {
         return EXIT_FAILURE;
     }
 
-    /// Run Bash Script for Generating Graph Images
-    char visualize_script_path[] = "./scripts/visualize_graph.sh";
+    // Preset Script Path and Graph Image Locations based on User Requested Information
+    std::string script_path;
+    std::string_view request_type;
+    std::string_view image_path;
+    if (algorithm_type.compare("S") == 0) {
+        script_path = "./scripts/visualize_graph_SP.sh";
+        request_type = "Shortest Path";
+        image_path = "./graph_images/shortest_path_overlay.png";
+    } else {
+        script_path = "./scripts/visualize_graph_MST.sh";
+        request_type = "Minimum Spanning Tree";
+        image_path = "./graph_images/MST_overlay.png";
+    }
+
+    /// Run Appropriate Bash Script for Generating Graph Images
     char bash_path[] = "/bin/bash";
     // char bash_path[] = "/opt/homebrew/bin/bash"
     pid_t pid = fork();
-    int childStatus;
+    int child_status;
     switch(pid) {
         case -1:
             perror("fork");
             break;
         case 0:
-            std::cout << "Running \"visualize_graph.sh\" to build graphs from graph information..." << '\n';
-            execl(bash_path, bash_path, visualize_script_path, nullptr);
+        std::cout << "Executing \"" << script_path << "\" to overlay the " << request_type << " using the processed graphical information..." << '\n';
+            execl(bash_path, bash_path, script_path.c_str(), nullptr);
             perror("execl");
             break;
         default:
-            pid = waitpid(pid, &childStatus, 0);
-
+            pid = waitpid(pid, &child_status, 0);
             std::cout << "Graph generation complete!\nThe generated image of the complete graph within the \"graph_images\" directory as \"full_graph.png\".\n";
-            if (algorithm_type.compare("S") == 0) {
-                std::cout << "The generated image of the shortest path from your provided verticies will be within \"shortest_path.png\"" << std::endl;
-            }
+            std::cout << "The generated image of the " << request_type << " will be within \"" << image_path << "\"" << std::endl;
     }
     return EXIT_SUCCESS;
 }
