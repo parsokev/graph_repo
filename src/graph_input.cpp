@@ -10,19 +10,11 @@
 #include <algorithm>
 
 #include "../includes/derived_hashmap.hpp"
-#include "../includes/linked_list.hpp"
 #include "../includes/graph_input.hpp"
-#include "../includes/graph_ops.hpp"
+#include "../includes/graph_processing.hpp"
 
 std::ostream& operator<<(std::ostream& out, const std::vector<std::string>& string_list) {
     out << "[ ";
-    // for (unsigned int i = 0; i < string_list.size(); i++) {
-    //     if ( i == string_list.size() - 1) {
-    //         out << string_list[i];
-    //     } else {
-    //         out << string_list[i] << ", ";
-    //     }
-    // }
     for (std::string key : string_list) {
         if ( key == string_list.back()) {
             out << key;
@@ -34,7 +26,7 @@ std::ostream& operator<<(std::ostream& out, const std::vector<std::string>& stri
     return out;
 }
 
- static void print_list(std::list<std::string>& list_s) {
+static void print_list(std::list<std::string>& list_s) {
     std::cout << "[ ";
     for (std::string i : list_s) {
         if ( i == list_s.back()) {
@@ -65,7 +57,7 @@ int get_graph_filename(std::string& directory_name, std::string& user_file) {
     getline(std::cin>>std::ws, user_file);
     // while(!file_list.contains_node(user_file) && user_file.compare("exit now") != 0) {
     while(std::find(file_list.begin(), file_list.end(), user_file) == file_list.end() && user_file.compare("exit now") != 0) {
-        std::cerr << "Error: Filename of '" << user_file << "' not found in \"sample_graphs\" directory" << '\n';
+        std::cerr << "\nERROR: Filename of '" << user_file << "' not found in \"sample_graphs\" directory" << '\n';
         std::cout << "If you wish to Exit, Enter \"exit now\" instead." << '\n';
         std::cout << "Please Enter the Filename of file within \"sample_graphs\" directory containing the Weight Graph Edges: ";
         std::getline(std::cin >> std::ws, user_file);
@@ -135,8 +127,7 @@ int get_graph_vertex_count(long int& vertex_count) {
     return 0;
 }
 
-int get_shortest_path(main_hashmap<double>&& main, std::string& path_filename) {
-// int get_shortest_path(main_hashmap<double>& main, std::string& path_filename) {
+int get_shortest_path(main_hashmap<double>&& main, std::string& graph_filename, std::string& path_filename) {
     /// Provide User with All Possible Verticies Extracted From User-Provided Graph File
     std::cout << '\n';
     std::cout << "Shortest Path Calculation Selected" << '\n';
@@ -181,8 +172,7 @@ int get_shortest_path(main_hashmap<double>&& main, std::string& path_filename) {
     /// Generate MST from user-provided graph file
     int valid_path = 0;
     try {
-        valid_path = apply_djikstras_algorithm(source_vertex, dest_vertex, path_filename, std::move(main));
-        // valid_path = apply_djikstras_algorithm(source_vertex, dest_vertex, path_filename, main);
+        valid_path = find_shortest_path(source_vertex, dest_vertex, graph_filename, path_filename, std::move(main));
     } catch (std::exception& e) {
         std::cerr << e.what() << '\n';
         return -1;
@@ -194,8 +184,7 @@ int get_shortest_path(main_hashmap<double>&& main, std::string& path_filename) {
     return 0;
 }
 
-int get_requested_algorithm (std::string& algorithm_type, main_hashmap<double>&& main, std::string& path_filename) {
-// int get_requested_algorithm (std::string& algorithm_type, main_hashmap<double>& main, std::string& path_filename) {
+int get_requested_algorithm (std::string& algorithm_type, main_hashmap<double>&& main, std::string& graph_filename, std::string& path_filename, std::string& MST_filename) {
     /// Generate Requested Output based on User Request
     std::cout << "For Calculating the Minimum Spanning Tree, Enter \"M\"" << '\n';
     std::cout << "For Calculating the Shortest Path Between Two Verticies, Enter \"S\"" << '\n';
@@ -222,12 +211,11 @@ int get_requested_algorithm (std::string& algorithm_type, main_hashmap<double>&&
         std::string start_vertex = main.get_main_keys()[0];
         int valid_tree = 0;
         try {
-            valid_tree = apply_prims_algorithm(start_vertex, std::move(main));
-            // valid_tree = apply_prims_algorithm(start_vertex, main);
+            valid_tree = find_MST(start_vertex, graph_filename, MST_filename, std::move(main));
         } catch (std::exception& e) {
             std::cerr << e.what() << '\n';
         }
-        // int valid_tree = apply_prims_algorithm(start_vertex, main);
+
         if (valid_tree < 0) {
             return -1;
         }
@@ -237,13 +225,11 @@ int get_requested_algorithm (std::string& algorithm_type, main_hashmap<double>&&
     if (algorithm_type.compare("S") == 0) {
         int path_output = 0;
         try {
-            path_output = get_shortest_path(std::move(main), path_filename);
-            // path_output = get_shortest_path(main, path_filename);
+            path_output = get_shortest_path(std::move(main), graph_filename, path_filename);
         } catch (std::exception& e) {
             std::cerr << e.what() << '\n';
-            // return -1;
         }
-        // int path_output = get_shortest_path(main, path_filename);
+
         if (path_output < 0) {
             return -1;
         }
