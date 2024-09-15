@@ -20,9 +20,13 @@
 #include "../includes/gprintf.hpp"
 #include "../includes/graph_writing.hpp"
 
-
+/**
+ * Local function for printing vector container contents in linked-list style
+ * format to standard output to depict shortest path in direction of travel
+ * from source to destination
+ * @param path_list Vector-type container holding verticies composing the shortest path in order of traversal to destination
+ */
 static void print_shortest_path(const std::vector<std::string>& path_list) {
-
     for (std::string key : path_list) {
         if (key == path_list.back() ) {
             std::cout << key;
@@ -35,7 +39,7 @@ static void print_shortest_path(const std::vector<std::string>& path_list) {
 }
 
 
-int build_adjacency_list(std::string& filename, std::string& write_name, unsigned int vertex_count, main_hashmap<double>&& adj_list) {
+int build_adjacency_list(const std::string& filename, const std::string& write_name, unsigned int vertex_count, main_hashmap<double>&& adj_list) {
     std::fstream read_file;
     std::fstream write_file {write_name, write_file.trunc | write_file.out};
 
@@ -152,7 +156,7 @@ int build_adjacency_list(std::string& filename, std::string& write_name, unsigne
                 if (!adj_list.contains_key(vertex)) {
                     auto hash_tab1 = std::make_unique<soa_hashmap<double>>(static_cast<unsigned int>(vertex_count));
                     hash_tab1 -> add(vertex_2, weight);
-                    adj_list.add_key(vertex, std::move(*hash_tab1));
+                    adj_list.add(vertex, std::move(*hash_tab1));
 
                     /// Write new vertex in dot language format to `write_name` file
                     int write_vertex = write_vertex_node(write_file, vertex1_name);
@@ -180,7 +184,7 @@ int build_adjacency_list(std::string& filename, std::string& write_name, unsigne
                 if (!adj_list.contains_key(vertex_2)) {
                     auto hash_tab2 = std::make_unique<soa_hashmap<double>>(static_cast<unsigned int>(vertex_count));
                     hash_tab2 -> add(vertex, weight);
-                    adj_list.add_key(vertex_2, std::move(*hash_tab2));
+                    adj_list.add(vertex_2, std::move(*hash_tab2));
                     /// Write new vertex in dot language format to `write_name` file
                     int write_vertex2 = write_vertex_node(write_file, vertex2_name);
                     if (write_vertex2 < 0) {
@@ -225,23 +229,24 @@ int build_adjacency_list(std::string& filename, std::string& write_name, unsigne
 }
 
 
-int find_shortest_path(std::string& s_vertex, std::string& des_vertex, std::string& graph_filename, std::string& path_filename, main_hashmap<double>&& adj_list) {
+int find_shortest_path(const std::string& s_vertex, const std::string& des_vertex, const std::string& graph_filename, const std::string& path_filename, main_hashmap<double>&& adj_list) {
     #ifdef NDEBUG
     #else
     std::cerr << "ENTIRE LIST OF ALL GRAPH VERTICIES AND THEIR CORRESPONDING ADJACENT VERTICIES:" << '\n';
     std::cerr << adj_list << '\n';
     #endif
-
+    // If source vertex is also the destination vertex, simply return the vertex with a distance of 0
     if (s_vertex.compare(des_vertex) == 0) {
         std::string empty_path = s_vertex;
+    std::cout << "============================= SHORTEST PATH RESULTS ====================================\n";
         empty_path.append(" -> ").append(des_vertex).append("\n");
         std::cout << "The Shortest Path from " << s_vertex << " TO " << des_vertex << " : " << '\n';
         std::cout << empty_path;
-        std::cout << "Total Distance: " << 0 << '\n';
+        std::cout << "\nTOTAL COST/DISTANCE: " << 0 << '\n';
         return 0;
     }
-    /// Initialize data structures for more efficient processing of graph information using Djkstra's Algorithm
-    auto vertex_list = adj_list.get_main_keys();    // List of all verticies within graph
+    // Initialize data structures for more efficient processing of graph information using Djkstra's Algorithm
+    auto vertex_list = adj_list.get_keys();    // List of all verticies within graph
     auto vertex_count = static_cast<unsigned int>(vertex_list.size());      // User Provided number of unique verticies within graph
     auto visited_vertices = soa_hashmap<double>(vertex_count);      // Hashmap holding key:value pairs corresponding current minimum distance from source vertex to specified vertex key
     std::unique_ptr<paired_min_heap<double>>  mhp = std::make_unique<paired_min_heap<double>>(vertex_count);    // Customized Binary Minimum Heap for holding Minimum Distances
@@ -270,7 +275,6 @@ int find_shortest_path(std::string& s_vertex, std::string& des_vertex, std::stri
             std::cerr << e.what() << std::endl;
             return -1;
         }
-
        // Retrieve current distance from source vertex to extracted vertex held in visited verticies
         try {
             min_distance_edge = visited_vertices.get_val(popped_vertex);
@@ -278,7 +282,6 @@ int find_shortest_path(std::string& s_vertex, std::string& des_vertex, std::stri
             std::cerr << e.what() << '\n';
             return -1;
         }
-
         // If distance value of extracted value is greater than stored value, extract next vertex from minheap
         if (popped_vertex_distance > min_distance_edge) {
             continue;
@@ -295,14 +298,12 @@ int find_shortest_path(std::string& s_vertex, std::string& des_vertex, std::stri
             // If vertex is found in list of verticies adjacent to extracted vertex, retrieve its weight
             if (adj_list.get_hash_key(popped_vertex).contains_key(vertex_list[j])) {
                 gprintf("VISITING VERTEX OF %s with ADJACENT VERTEX %s", popped_vertex.c_str(), vertex_list[j].c_str());
-
                 try {
                     weight = adj_list.get_hash_key(popped_vertex).get_val(vertex_list[j]);
                 } catch (std::exception& e) {
                     std::cerr << e.what() << '\n';
                     return -1;
                 }
-
                 /**
                  * Check if sum of current distance and edge formed with adjacent vertex is less than current distance associated with vertex in shortest distance list
                  *      distance = distance from source to extracted vertex
@@ -338,7 +339,7 @@ int find_shortest_path(std::string& s_vertex, std::string& des_vertex, std::stri
             }
         }
     }
-    /// If loop is exited and destination vertex has not been visited, no path exists between user-provided source and destination vertex
+    // If loop is exited and destination vertex has not been visited, no path exists between user-provided source and destination vertex
     try {
         if (visited_vertices.get_val(des_vertex) == std::numeric_limits<double>::infinity()) {
             std::cerr << "ERROR: No path exists between '" << s_vertex << "' and '" << des_vertex << "'!" << '\n';
@@ -360,10 +361,11 @@ int find_shortest_path(std::string& s_vertex, std::string& des_vertex, std::stri
         std::cerr << e.what() << '\n';
         return -1;
     }
-    /// Else, at least one path exists between source and destination vertex, with shortest path value being found
+    // Else, at least one path exists between source and destination vertex, with shortest path value being found
+    std::cout << "============================= SHORTEST PATH RESULTS ====================================\n";
     std::cout << "The Shortest Path from " << s_vertex << " TO " << des_vertex << " : " << '\n';
     auto path_map = std::make_unique<soa_hashmap<double>>(static_cast<unsigned int>(vertex_count / 2));     // Hashmap holding directed edges as keys and their corresponding weight values
-    /// Trace backward from destination vertex, visiting each subsequent last vertex visited until source vertex is reached
+    // Trace backward from destination vertex, visiting each subsequent last vertex visited until source vertex is reached
     auto new_vertex = des_vertex;
     std::string prev_vertex;
     try {
@@ -372,16 +374,16 @@ int find_shortest_path(std::string& s_vertex, std::string& des_vertex, std::stri
         std::cerr << e.what() << '\n';
         return -1;
     }
-    /// Fill separate hashmap with edge directionality between verticies in shortest path for shortest path visualization
+    // Fill separate hashmap with edge directionality between verticies in shortest path for shortest path visualization
     std::string edge_name = "";
     edge_name.append(underscore_spaces(prev_vertex));
     edge_name.append(" -> ");
     edge_name.append(underscore_spaces(new_vertex));
-    path_map -> add(edge_name, std::move(adj_list.get_key_val(new_vertex, prev_vertex)));
+    path_map -> add(edge_name, std::move(adj_list.get_val(new_vertex, prev_vertex)));
 
     auto shortest_path = std::vector<std::string>{};
     shortest_path.emplace( shortest_path.begin(), des_vertex);
-    /// When trace backward to source vertex is complete, all verticies traveled from source to destination in order will be held in shortest_path
+    // When trace backward to source vertex is complete, all verticies traveled from source to destination in order will be held in shortest_path
     while (prev_vertex.compare(s_vertex) != 0) {
         new_vertex = prev_vertex;
         shortest_path.emplace(shortest_path.begin(), prev_vertex);
@@ -391,19 +393,20 @@ int find_shortest_path(std::string& s_vertex, std::string& des_vertex, std::stri
             std::cerr << e.what() << '\n';
             return -1;
         }
-        /// Add new directed edge in shortest path to hashmap for holding all directed edges for subsequent writing of shortest path image
+        // Add new directed edge in shortest path to hashmap for holding all directed edges for subsequent writing of shortest path image
         std::string next_edge = "";
         next_edge.append(underscore_spaces(prev_vertex));
         next_edge.append(" -> ");
         next_edge.append(underscore_spaces(new_vertex));
-        path_map -> add(next_edge, std::move(adj_list.get_key_val(new_vertex, prev_vertex)));
+        path_map -> add(next_edge, std::move(adj_list.get_val(new_vertex, prev_vertex)));
     }
     shortest_path.emplace(shortest_path.begin(), s_vertex);
-    /// Print simplidied shortest path and its total cost/length to terminal output for user
+
+    // Print simplified shortest path and its total cost/length to terminal output for user
     print_shortest_path(shortest_path);
-    std::cout << "Total Distance: " << visited_vertices.get_val(des_vertex) << '\n';
+    std::cout << "\nTOTAL COST/DISTANCE: " << visited_vertices.get_val(des_vertex) << '\n';
     std::cout << '\n';
-    /// Pass hashmap containing directed edges of shortest path to function for writing graph file for visualizing shortest path overlaying entire graph 
+    // Pass hashmap containing directed edges of shortest path to function for writing graph file for visualizing shortest path overlaying entire graph 
     int path_output  = 0;
     try {
         path_output = write_shortest_path_overlay(graph_filename, path_filename, shortest_path, std::move(*path_map));
@@ -421,33 +424,32 @@ int find_shortest_path(std::string& s_vertex, std::string& des_vertex, std::stri
 
 
 
-int find_MST(std::string& s_vertex, std::string& graph_filename, std::string& MST_filename, main_hashmap<double>&& adj_list) {
-    /// Initialize data structures for more efficient processing of graph information using Prim's Algorithm
+int find_MST(std::string& source_vertex, const std::string& graph_filename, const std::string& MST_filename, main_hashmap<double>&& adj_list) {
+    // Initialize data structures for more efficient processing of graph information using Prim's Algorithm
     auto MST_edges = std::vector<std::pair<std::string, std::string>>{};    // Hashmap holding all edges comprising of MST and their corresponding weight values
     auto MST_traversal = std::vector<std::string>{};    // Array to be filled with all verticies that have already been visited before in traversal of graph
     double MST_sum = 0;     // Total accumulated cost/length of all edges that comprise MST
 
-    auto vertex_list = adj_list.get_main_keys();        // List of all unique verticies found within entire graph
+    auto vertex_list = adj_list.get_keys();        // List of all unique verticies found within entire graph
     auto vertex_count = static_cast<unsigned int>(vertex_list.size());      // User-provided number of unique verticies in entire graph
     std::unique_ptr<paired_min_heap<double>>  mhp = std::make_unique<paired_min_heap<double>>(vertex_count);    // Customized Binary Minimum Heap for holding Minimum Distances
     
-    /// Prefill traversal tracking structures with source vertex
-    auto source_vertex = s_vertex;
+    // Prefill traversal tracking structures with source vertex
     MST_traversal.emplace_back(source_vertex);
     mhp -> add_node(source_vertex, 0);
 
     std::string vertex;
     double distance = 0;
     std::string min_distance_edge;
-    /// Traversal continues until all verticies have been visited, at which point the MST will have been established
+    // Traversal continues until all verticies have been visited, at which point the MST will have been established
     while (vertex_list.size() > MST_traversal.size()) {
-        /// If user-provided graphical information represents an unconnected graph, no MST is possible and minimum heap will be emptied instead
+        // If user-provided graphical information represents an unconnected graph, no MST is possible and minimum heap will be emptied instead
         if (mhp -> is_empty()) {
             std::cerr << "ERROR: Provided Graph is not a connected graph, so no valid Minimum Spanning tree exists!" << '\n';
             std::cerr << "Please ensure the graph is connected (a path exists between all verticies) to generate a valid MST" << '\n';
             return -1;
         }
-        /// Extract next vertex with miminum distance 
+        // Extract next vertex with miminum edge cost/distance 
         try { 
             std::tie(vertex, distance) = mhp -> remove_min();
         } catch (std::exception& e) {
@@ -461,7 +463,7 @@ int find_MST(std::string& s_vertex, std::string& graph_filename, std::string& MS
         gprintf("\nThe Minimum HEAP currently contains: ");
         std::cerr << *mhp << '\n';
         #endif
-        /// Find vertex that forms edge with the currently smallest cost/distance with extracted vertex
+        // Find vertex that forms edge with the currently smallest cost/distance with extracted vertex
         if (vertex.compare(source_vertex) == 0) {
             min_distance_edge = source_vertex;
         } else {
@@ -474,7 +476,7 @@ int find_MST(std::string& s_vertex, std::string& graph_filename, std::string& MS
         }
 
         bool is_visited = false;
-        /// If extracted vertex has not been visited before, mark as visited and add edge to MST
+        // Determine whether extracted vertex has already been visited before
         for ( size_t i = 0; i < MST_traversal.size(); i++) {
             if (MST_traversal[i].compare(vertex) == 0) {
                 is_visited = true;
@@ -482,6 +484,7 @@ int find_MST(std::string& s_vertex, std::string& graph_filename, std::string& MS
             }
 
         }
+        // If extracted vertex has not been visited before, register as visited, add the edge to MST
         if (!is_visited) {
             MST_traversal.emplace_back(vertex);
             auto new_path = std::pair<std::string, std::string>(min_distance_edge, vertex);
@@ -489,13 +492,13 @@ int find_MST(std::string& s_vertex, std::string& graph_filename, std::string& MS
             MST_sum += distance;
         }
 
-        /// If any verticies adjacent to extracted vertex have not been visited, add them to binary heap for subsequent traversal
+        // Gather list of all verticies adjacent to extracted vertex
         auto adjacent_verticies = adj_list.get_hash_key(vertex).get_keys();
         #ifdef NDEBUG
         #else
         gprintf("\nChecking list of verticies for those not visited yet");
         #endif
-        /// Check for any adjacent verticies of extracted vertex that have not been visited yet
+        // Check for any adjacent verticies of extracted vertex that have not been visited yet
         for (unsigned int j = 0; j < adjacent_verticies.size(); j++) {
             bool contains_adjacent = false;
             for (size_t k = 0; k < MST_traversal.size(); k++) {
@@ -505,8 +508,10 @@ int find_MST(std::string& s_vertex, std::string& graph_filename, std::string& MS
                 }
             }
             double weight;
-            /// If any adjacent verticies of extracted vertex have not been visited yet, add them to minimum heap for subsequent traversal
-            /// Associate their edge weight with the extracted vertex in passing to minimum heap
+            /*
+            * If any adjacent verticies of extracted vertex have not been visited yet, add them to minimum heap for subsequent traversal
+            * and associate their edge weight with the extracted vertex in passing to minimum heap 
+            */
             if(!contains_adjacent) {
                 try {
                     weight = adj_list.get_hash_key(vertex).get_val(adjacent_verticies[j]);
@@ -523,9 +528,10 @@ int find_MST(std::string& s_vertex, std::string& graph_filename, std::string& MS
             }
         }
     }
-    /// After all verticies have been traversed, MST has been established and all directed edges comprising of MST are now stored within MST_edges
+    // After all verticies have been traversed, MST has been established and all directed edges comprising of MST are now stored within MST_edges
 
-    /// Print simplified list of all edges comprising of MST and its total cost/length to terminal output for user
+    // Print simplified list of all edges comprising of MST and its total cost/length to terminal output for user
+    std::cout << "============================= MST RESULTS ====================================\n";
     std::cout << "The Minimum Spanning Tree is formed from the Edges of:" << '\n';
     for (unsigned int i = 0; i < MST_edges.size(); i++) {  
         std::string source;
@@ -535,10 +541,10 @@ int find_MST(std::string& s_vertex, std::string& graph_filename, std::string& MS
         std::cout << source << " <----> " << dest << '\n';
     }
     std::cout << '\n';
-    std::cout << "With a Total Distance of " << MST_sum << '\n';
+    std::cout << "TOTAL COST/DISTANCE: " << MST_sum << '\n';
     std::cout << '\n';
     
-    /// MST_edges can be passed to function for writing graph file used for overlaying MST onto full graph
+    // MST_edges can then be passed to function for writing graph file used for generating image overlaying MST onto full graph
     int MST_output = 0;
     try {
         MST_output = write_MST_overlay(graph_filename, MST_filename, MST_edges);
