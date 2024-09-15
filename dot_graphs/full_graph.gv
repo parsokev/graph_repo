@@ -3,8 +3,7 @@ fontname="DejaVu Sans,Arial,sans-serif"
 node [fontname="Impact,Arial,sans-serif"]
 edge [fontname="Comic Sans,Arial,sans-serif"]
 node [style=filled fillcolor="darkolivegreen2"]
-ratio=auto
-landscape=false
+ratio=auto landscape=false bgcolor="gainsboro"
 subgraph cluster {"Full Graph" [shape=box fontsize=14 label="Full Graph" tooltip="All Nodes"] }
 San_Diego [label="San_Diego" id="San_Diego" fontsize=12 shape=box3d tooltip="San_Diego" color="darkgreen" fillcolor="darkolivegreen2"]
 Las_Vegas [label="Las_Vegas" id="Las_Vegas" fontsize=12 shape=box3d tooltip="Las_Vegas" color="darkgreen" fillcolor="darkolivegreen2"]
