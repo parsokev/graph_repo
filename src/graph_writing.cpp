@@ -227,6 +227,7 @@ int write_graph_header(std::fstream& graph_file, const std::string& graph_type, 
     std::string edge_font_name = "Comic Sans,Arial,sans-serif";
     std::string node_style = "filled";
     std::string landscape_enabled = "false";
+    std::string background_color = "gainsboro";
     std::string node_fill_color = "darkolivegreen2";
     std::string cluster_name = "Full Graph";
     std::string cluster_shape = "box";
@@ -236,7 +237,7 @@ int write_graph_header(std::fstream& graph_file, const std::string& graph_type, 
     /// Main Graph Features
     header.append(main_graph_name).append("{\nfontname=\"").append(main_graph_font_name).append("\"\nnode [fontname=\"").append(node_font_name).append("\"]\nedge [fontname=\"");
     header.append(edge_font_name).append("\"]\nnode [style=").append(node_style).append(" fillcolor=\"").append(node_fill_color).append("\"]\n");
-    header.append("ratio=").append(graph_ratio_setting).append("\nlandscape=").append(landscape_enabled).append("\n");
+    header.append("ratio=").append(graph_ratio_setting).append(" landscape=").append(landscape_enabled).append(" bgcolor=\"").append(background_color).append("\"\n");
     /// SubGraph Features
     std::string sub_header = "subgraph cluster {\"";
     sub_header.append(cluster_name).append("\" [shape=").append(cluster_shape).append(" fontsize=").append(cluster_fontsize).append(" label=\"");
