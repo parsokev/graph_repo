@@ -16,10 +16,19 @@
 #include "../includes/pair_minheap.hpp"
 #include "../includes/derived_hashmap.hpp"
 #include "../includes/graph_processing.hpp"
+#include "../includes/graph_writing.hpp"
 #include "../includes/gprintf.hpp"
 
 
+/**
+ * Modifies the line containing the graph title information in dot language format, `line`,
+ * to display the matching source and destination vertex names in graph visualization of shortest path
+ * extracted from `path_list`
+ * @param path_list Vector-type container holding all verticies within shortest path in order of traversal
+ * @param line Line matching dot language format for holding the graph title information
+ */
 static void write_path_title(std::vector<std::string>& path_list, std::string& line) {
+    // std::cout << "first edge of path_map is " << path_map.get_val("Total Distance") << '\n';
     auto start_title_pos = line.find("label=") + 7;
     auto end_title_pos = line.find('"', start_title_pos);
     std::string path_title = "Shortest Path FROM ";
@@ -41,7 +50,58 @@ static void write_path_title(std::vector<std::string>& path_list, std::string& l
     return;
 }
 
+/**
+ * Modifies line(s) defining a vertex node found within the shortest path in dot language format, `line`,
+ * to distinguish vertex nodes found in the shortest path in the corresponding graph visualization
+ * @param line Line matching dot language format for holding node information for a vertex found in the shortest path
+ * @param find_right_bracket Last index position in `line`, which is used for position referencing in insertion/removal operations
+ */
+static void write_path_node(std::string& line, size_t& find_right_bracket) {
+    // Set text color of vertex nodes found within shortest path to different color than default text 
+    std::string node_label = " fontcolor=\"";
+    std::string node_text_color = "darkorange1";
+    std::string node_fill_color = "darkslategrey";
+    node_label.append(node_text_color).append("\" ");
+    line.insert(find_right_bracket, node_label);
 
+    // Check if there is a preset fill color for vertex nodes found within shortest path
+    auto find_fill_label = line.find("fillcolor=");
+    if (find_fill_label != line.npos) {
+        // If a preset fillcolor is found, change fill color to a new chosen color to highlight vertex nodes within shortest path
+        auto fcolor_start_pos = find_fill_label + static_cast<size_t>(11);
+        auto fcolor_end_pos = line.find('"', fcolor_start_pos);
+        size_t n = 0;
+        // Directly replace as many characters as possible of previous color used as fillcolor with those of new color for shortest path image
+        for (; n < fcolor_end_pos - fcolor_start_pos && n < node_fill_color.size(); n++) {
+            line[fcolor_start_pos + n] = node_fill_color[n];
+        }
+        // Remove any remaining characters if name of previous fillcolor is longer than name of new color
+        if (node_fill_color.size() < fcolor_end_pos - fcolor_start_pos) {
+                line.erase(line.begin() + static_cast<long int>(fcolor_start_pos) + static_cast<long int>(n), line.begin() + static_cast<long int>(fcolor_end_pos));
+        } else {
+        // Insert any remaining characters of name of new color if it is longer than name of previous fillcolor
+            for (; n < node_fill_color.size(); n++) {
+                line.insert(line.begin() + static_cast<long int>(fcolor_start_pos) + static_cast<long int>(n), node_fill_color[n]);
+            }
+        }
+    } else {
+        // If no preset fillcolor is detected, add a new fillcolor setting for vertex nodes in shortest path
+        std::string fill_line = " fillcolor=\"";
+        fill_line.append(node_fill_color).append("\" ");
+        line.insert(find_right_bracket, fill_line);
+    }
+    return;
+}
+
+
+/**
+ * Modifies line containing edge information in dot language format, `line`,
+ * to distinguish edges that form the shortest path in graphical visualization of the shortest path 
+ * extracted from `path_edges`, using the ending index position of the first vertex, `first_sapce` for referencing
+ * @param first_space Index position within `line` at which the end of the first vertex name within edge depicted by `line` is located
+ * @param path_edges Vector-type container holding all edges in proper directionality that form shortest path, in dot language format
+ * @param line Line matching dot language format for holding a single edge's information and features
+ */
 static void write_path_edge(size_t& first_space, std::vector<std::string>& path_edges, std::string& line) {
     std::string arrow_label = "arrowsize=0 ";   // Edges not part of shortest path do not have arrows
     std::string color_label = "darkcyan";       // Edges that are part of shortest path
@@ -96,11 +156,9 @@ static void write_path_edge(size_t& first_space, std::vector<std::string>& path_
         line.insert(line.find('[') + 1, arrow_label);
     // If line defines an edge that is part of shortest path, change the text color of the weight label
     } else {
-        // auto find_fill_color = line.find(" fillcolor=\"");
         auto find_right_bracket = line.rfind(']');
-        // std::string fill_color = "darkslategrey";
         std::string text_label = " fontcolor=\"";
-        std::string text_color = "firebrick";
+        std::string text_color = "darkmagenta";
         text_label.append(text_color).append("\" ");
         line.insert(find_right_bracket, text_label);
     }
@@ -108,6 +166,11 @@ static void write_path_edge(size_t& first_space, std::vector<std::string>& path_
 }
 
 
+/**
+ * Modifies the line containing the graph title information in dot language format, `line`,
+ * to identify the graph visualization as depicting the Minimum Spanning Tree
+ * @param line Line matching dot language format for holding the graph title information
+ */
 static void write_MST_title( std::string& line) {
     auto start_title_pos = line.find("label=") + 7;
     auto end_title_pos = line.find('"', start_title_pos);
@@ -142,7 +205,7 @@ std::string underscore_spaces(const std::string& target_string) {
 }
 
 
-int write_graph_header(std::fstream& graph_file, std::string& graph_type, std::string& title) {
+int write_graph_header(std::fstream& graph_file, const std::string& graph_type, std::string& title) {
     // Write Graph File format according to provided graph type
     std::string g_type = "";
     if (graph_type.compare("undirected") == 0) {
@@ -190,7 +253,7 @@ int write_graph_header(std::fstream& graph_file, std::string& graph_type, std::s
 }
 
 
-int write_vertex_node (std::fstream& graph_file, std::string& vertex_name) {
+int write_vertex_node (std::fstream& graph_file, const std::string& vertex_name) {
     /// Provide Predefined Variables for Quick Manipulation of Individual Node Features
     std::string node_line = vertex_name;
     std::string node_shape = "box3d";
@@ -213,7 +276,7 @@ int write_vertex_node (std::fstream& graph_file, std::string& vertex_name) {
 }
 
 
-int write_edge(std::fstream& graph_file, std::string& vertex1_name, std::string& vertex2_name, double& weight, std::string& graph_type) {
+int write_edge(std::fstream& graph_file, const std::string& vertex1_name, const std::string& vertex2_name, double& weight, const std::string& graph_type) {
         // Convert provided edge weight to string for writing to graph file
         std::string weight_string = std::to_string(weight); 
         // Remove excessive trailing zeros for edge label values
@@ -249,7 +312,7 @@ int write_edge(std::fstream& graph_file, std::string& vertex1_name, std::string&
 }
 
 
-int write_shortest_path_overlay(std::string& graph_filename, std::string& path_filename, std::vector<std::string>& path_list, soa_hashmap<double>&& path_map) {
+int write_shortest_path_overlay(const std::string& graph_filename, const std::string& path_filename, std::vector<std::string>& path_list, soa_hashmap<double>&& path_map) {
     auto path_edges = path_map.get_keys();
     std::fstream write_file {path_filename, write_file.trunc | write_file.out};
     std::fstream read_file {graph_filename, read_file.in};
@@ -274,7 +337,8 @@ int write_shortest_path_overlay(std::string& graph_filename, std::string& path_f
                 auto begin = write_file.tellg();    // Capture starting file pointer position
                 auto find_left_bracket = line.find('['); // Position of left bracket character ('[')
                 auto find_double_dash = line.find("--"); // Position of existing "--" substring if present
-                auto find_first_space = line.find(" ");
+                auto find_first_space = line.find(" ");  // Position immediately following name of first vertex for lines representing vertex nodes and edges
+                auto find_right_bracket = line.find("]");   // Position of last expected character in current line ("]");
                 // Call function to edit title of shortest path image to match user-requested information
                 auto find_cluster_bracket = line.find('{');
                 if (find_cluster_bracket != line.npos) {
@@ -286,9 +350,10 @@ int write_shortest_path_overlay(std::string& graph_filename, std::string& path_f
                     write_path_edge(find_first_space, path_edges, line);
                 // If the line does not contain a double dash, it depicts an individual node/vertex instead
                 } else {
-                    std::string node_label = " fontcolor=\"";
-                    std::string node_color = "firebrick";
-                    node_label.append(node_color).append("\" ");
+                    // std::string node_label = " fontcolor=\"";
+                    // std::string node_color = "firebrick";
+                    // node_label.append(node_color).append("\" ");
+                    // std::string node_slice = line.substr(0, find_first_space);
                     std::string node_slice = line.substr(0, find_first_space);
                     // Replace single underscore with a space if found within the vertex extracted from the substring
                     auto find_underscore = node_slice.find("_");
@@ -298,7 +363,15 @@ int write_shortest_path_overlay(std::string& graph_filename, std::string& path_f
                     // Change the text color of extracted vertex if it is within the shortest path
                     for (const auto& vertex : path_list) {
                         if (node_slice.compare(vertex) == 0) {
-                            line.insert(find_left_bracket + 1, node_label);
+                            write_path_node(line, find_right_bracket);
+                            // auto find_fill_label = line.find("fillcolor=");
+                            // std::string node_fill_color = "darkslategrey";
+                            // std::string node_label = " fontcolor=\"";
+                            // std::string node_text_color = "firebrick";
+                            // node_label.append(node_text_color).append("\" ");
+                            
+                            // line.insert(find_left_bracket + 1, node_label);
+                            // line.insert(find_fill_label + 12, node_fill_color);
                         }
                     }
                 }
@@ -344,7 +417,7 @@ int write_shortest_path_overlay(std::string& graph_filename, std::string& path_f
 }
 
 
-int write_MST_overlay(std::string& graph_filename, std::string& MST_filename, std::vector<std::pair<std::string, std::string>>& MST_edges) {
+int write_MST_overlay(const std::string& graph_filename, const std::string& MST_filename, std::vector<std::pair<std::string, std::string>>& MST_edges) {
     std::fstream write_file {MST_filename, write_file.trunc | write_file.out};
     std::fstream read_file {graph_filename, read_file.in};
     if (read_file.is_open()) {
