@@ -19,7 +19,6 @@
 
 
 int main(void) {
-
     /// Establish preset file paths for reading and writing operations
     std::string graph_filename = "./dot_graphs/full_graph.gv";
     std::string rel_path = "sample_graphs/";
@@ -92,11 +91,11 @@ int main(void) {
     std::string_view image_path;
     if (algorithm_type.compare("S") == 0) {
         script_path = "./scripts/visualize_graph_SP.sh";
-        request_type = "Shortest Path";
+        request_type = "SHORTEST PATH";
         image_path = "./graph_images/shortest_path_overlay.png";
     } else {
         script_path = "./scripts/visualize_graph_MST.sh";
-        request_type = "Minimum Spanning Tree";
+        request_type = "MINIMUM SPANNING TREE";
         image_path = "./graph_images/MST_overlay.png";
     }
 
@@ -116,7 +115,8 @@ int main(void) {
             break;
         default:
             pid = waitpid(pid, &child_status, 0);
-            std::cout << "Graph generation complete!\nThe generated image of the complete graph within the \"graph_images\" directory as \"full_graph.png\".\n";
+            std::cout << "\n=============================== IMAGE GENERATION RESULTS ====================================\n";
+            std::cout << "Graph generation complete!\nThe generated image of the COMPLETE GRAPH within the \"graph_images\" directory as \"full_graph.png\".\n";
             std::cout << "The generated image of the " << request_type << " will be within \"" << image_path << "\"" << std::endl;
     }
     return EXIT_SUCCESS;
