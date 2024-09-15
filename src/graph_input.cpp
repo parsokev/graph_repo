@@ -13,6 +13,9 @@
 #include "../includes/graph_input.hpp"
 #include "../includes/graph_processing.hpp"
 
+/**
+ * Overloading function for printing string Vector-type container arrays to standard output stream
+ */
 std::ostream& operator<<(std::ostream& out, const std::vector<std::string>& string_list) {
     out << "[ ";
     for (std::string key : string_list) {
@@ -26,6 +29,10 @@ std::ostream& operator<<(std::ostream& out, const std::vector<std::string>& stri
     return out;
 }
 
+/**
+ * Local function for printing string List-type container array to standard output
+ * @param list_s List container holding string values to be printed in readable format
+ */
 static void print_list(std::list<std::string>& list_s) {
     std::cout << "[ ";
     for (std::string i : list_s) {
@@ -34,11 +41,11 @@ static void print_list(std::list<std::string>& list_s) {
         } else {
             std::cout << i << ", ";
         }
-        
     }
     std::cout << " ]" << '\n';
     return;
 }
+
 
 int get_graph_filename(std::string& directory_name, std::string& user_file) {
     /// Retrieve contents of designated directory for storing user-provided graph information 
@@ -76,6 +83,7 @@ int get_graph_filename(std::string& directory_name, std::string& user_file) {
     std::cout << '\n';
     return 0;
 }
+
 
 int get_graph_vertex_count(long int& vertex_count) {
     /// Handle user provided value for total number of unique verticies in provided graph file
@@ -127,14 +135,15 @@ int get_graph_vertex_count(long int& vertex_count) {
     return 0;
 }
 
-int get_shortest_path(main_hashmap<double>&& main, std::string& graph_filename, std::string& path_filename) {
+
+int get_shortest_path(main_hashmap<double>&& main, const std::string& graph_filename, const std::string& path_filename) {
     /// Provide User with All Possible Verticies Extracted From User-Provided Graph File
     std::cout << '\n';
     std::cout << "Shortest Path Calculation Selected" << '\n';
     std::cout << "If you wish to exit the program, enter \"exit now\" at any time" << '\n';
     std::cout << '\n';
     std::string source_vertex;
-    std::cout << "Your Verticies Include: " << main.get_main_keys() << '\n';
+    std::cout << "Your Verticies Include: " << main.get_keys() << '\n';
     
     /// Get User's Requested Source Vertex
     std::cout << "Please Enter The Source Vertex: ";
@@ -142,7 +151,7 @@ int get_shortest_path(main_hashmap<double>&& main, std::string& graph_filename, 
     while (!main.contains_key(source_vertex) && source_vertex.compare("exit now") != 0) {
         std::cout << '\n' << "Error: Entered Source Vertex of '" << source_vertex << "' not found Within Generated Graph." << '\n';
         std::cout << "Please try again or enter 'exit now' to exit." << '\n';
-        std::cout << "Your Verticies Include: " << main.get_main_keys() << '\n';
+        std::cout << "Your Verticies Include: " << main.get_keys() << '\n';
         std::cout << "Please Enter The Source Vertex: ";
         std::getline(std::cin >> std::ws, source_vertex);
     }
@@ -154,12 +163,12 @@ int get_shortest_path(main_hashmap<double>&& main, std::string& graph_filename, 
 
     /// Get User's Requested Destination Vertex
     std::string dest_vertex;
-    std::cout << '\n' << "Your Verticies Include: " << main.get_main_keys() << '\n';
+    std::cout << '\n' << "Your Verticies Include: " << main.get_keys() << '\n';
     std::cout << "Please Enter The Destination Vertex: ";
     std::getline(std::cin >> std::ws, dest_vertex);
     while (!main.contains_key(dest_vertex) && dest_vertex.compare("exit now") != 0) {
         std::cout << '\n' << "Error: Entered Destination Vertex of '" << dest_vertex << "' not found Within Generated Graph. Please try again or enter 'exit now' to exit." << '\n';
-        std::cout << "Your Verticies Include: " << main.get_main_keys() << '\n';
+        std::cout << "Your Verticies Include: " << main.get_keys() << '\n';
         std::cout << "Please Enter The Destination Vertex: ";
         std::getline(std::cin >> std::ws, dest_vertex);
     }
@@ -169,7 +178,7 @@ int get_shortest_path(main_hashmap<double>&& main, std::string& graph_filename, 
         std::cout << "Exiting Program... Goodbye!" << std::endl;
         return 0;
     }
-    /// Generate MST from user-provided graph file
+    /// Generate Shortest Path from user-provided graph file
     int valid_path = 0;
     try {
         valid_path = find_shortest_path(source_vertex, dest_vertex, graph_filename, path_filename, std::move(main));
@@ -184,7 +193,8 @@ int get_shortest_path(main_hashmap<double>&& main, std::string& graph_filename, 
     return 0;
 }
 
-int get_requested_algorithm (std::string& algorithm_type, main_hashmap<double>&& main, std::string& graph_filename, std::string& path_filename, std::string& MST_filename) {
+
+int get_requested_algorithm (std::string& algorithm_type, main_hashmap<double>&& main, const std::string& graph_filename, const std::string& path_filename, const std::string& MST_filename) {
     /// Generate Requested Output based on User Request
     std::cout << "For Calculating the Minimum Spanning Tree, Enter \"M\"" << '\n';
     std::cout << "For Calculating the Shortest Path Between Two Verticies, Enter \"S\"" << '\n';
@@ -208,7 +218,7 @@ int get_requested_algorithm (std::string& algorithm_type, main_hashmap<double>&&
     if (algorithm_type.compare("M") == 0) {
         std::cout << '\n';
         std::cout << "Minimum Spanning Tree Calculations Selected" << '\n';
-        std::string start_vertex = main.get_main_keys()[0];
+        std::string start_vertex = main.get_keys()[0];
         int valid_tree = 0;
         try {
             valid_tree = find_MST(start_vertex, graph_filename, MST_filename, std::move(main));
