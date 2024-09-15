@@ -258,6 +258,17 @@ To Rebuild the Debug and Release Configurations enter the following:
 ```
 make
 ```
+If files other than the main executable file, `graph_interface.cpp`, were modified and `graph_interface` was not,
+the files can be collectively erased and rebuilt by entering: 
+
+```
+# To remove all files
+make clean
+
+# To rebuild all files 
+make
+```
+
 
 > [!NOTE]
 > All above commands for the non-CMake build are intended to be run within the current working directory
