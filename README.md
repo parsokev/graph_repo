@@ -7,23 +7,17 @@ the well-known Djikstra's algorithm and Prim's algorithm to process and visualiz
 
 Instead of accepting graphical information in the traditional forms of adjacency matricies or adjacency
 lists, this program processes graphical information in a more human-friendly format for ease of access
-to individuals who wish to both provide and view graphical data in a more readily understood format. 
+to individuals who wish to both provide and view graphical data in a more widely understood format.
 
 
 ## Processing of User-Provided Graphical Information
 
-This program processes a text file where each line contains the information for each unique edge
+This program processes a text file, where each line contains the information for each unique edge
 in the graph to be processed. This line-by-line format is structured in the following way:
 
 ```
 vertex1_name, vertex2_name, distance_between_vertex1_and_vertex2
 ```
-
-The program will process the text file to generate a graphical representation to be
-utilized by customized Hashmap and Binary Minimum Heap data structures to:
-
-1.  Find the shortest path between a user-provided source vertex and destination vertex
-2.  Find the Minimum Spanning Tree given a user-provided source vertex
 
 For referencing purposes, several sample text files (of varying amounts of graphical densities)
 that adhere to the proper format for processing are included in the [sample_graphs](./sample_graphs/) directory.
@@ -31,12 +25,20 @@ that adhere to the proper format for processing are included in the [sample_grap
 Text files, whose contents match the outlined format and are placed within the `sample_graphs` directory,
 will be detected by the program and presented to the user in the terminal for selection upon starting the program.
 
-After recieving the required information from the user through the terminal, the program will then utilize 
-[Graphviz](https://www.graphviz.org/) to generate:
+After recieving the name of the text file to be processed, the program will utilize customized data structures and 
+[Graphviz](https://www.graphviz.org/) to generate a graphical representation of the entire graph overlayed with either:
 
-1. PNG-format image of the entire graph extracted from the user-selected text file in the `sample_graphs` directory.
-2. PNG-format depiction of the requested MST or Shortest Path generated (according to the type of request placed by
-   the user into the terminal).
+1.  The shortest path between a user-provided source vertex and destination vertex
+2.  The Minimum Spanning Tree (MST)
+
+
+Regardless of which type of request is placed by the user into the terminal, the program will produce:
+
+1. PNG-format image of the entire graph extracted from the user-selected text file in the `sample_graphs` directory
+   under the filename of `full_graph.png`.
+2. PNG-format depiction of the requested MST or Shortest Path placed over the intial generated image of `full_graph.png`
+   within the filenames of `MST_overlay.png` and `shortest_path_overlay.png`, respectively.
+
 
 Both of these images will be placed within the `graph_images` directory for viewing after completion.
 
@@ -267,26 +269,30 @@ make
 A GoogleTest Testing Suite is available for the **CMake** build of the project to implement testing scenarios
 for different functional aspects of the program.
 
->[!CAUTION]
-> Do not attempt to execute the GoogleTest Testing Suite using the **Release** Configuration.
-> The Testing Suite includes tests that require the use of assertions that will fail to properly
-> execute within the **Release** Configuration. Please use the **Debug** Configuration when
-> utilizing the GoogleTest Testing Suite.
 
 ## Executing The GoogleTest Testing Suite using the Command Line Interface
 
-After the appropriate initial setup shell script has completed, the file `tests.cc` can be executed to run any tests defined within by entering:
+After the appropriate initial setup shell script has completed, the file `tests.cc` can be executed in either configuration to run any tests defined within by entering:
 
 ```
 ./build/debug/tests
 ```
+
+
+OR
+
+
+```
+./build/release/tests
+```
+
 
 ## Executing The GoogleTest Testing Suite using the CMakeTools Extension
 
 After the appropriate initial setup shell script has completed, the file `tests.cc` can be executed to run any tests defined within using
 CMakeTools:
   1. Click the Icon to the right of the `Configure` Section Bar under the `Project Status` Section. 
-  2. Select the **Debug** Configuration Preset for the CMake Project, `Debug_DIR` from the Dropdown Command Palette.
+  2. Select the **Debug** or **Release** Configuration Preset for the CMake Project, `Debug_DIR` and `Release_DIR`, respectively, from the Dropdown Command Palette.
   3. Click the Icon to the right of the `Build` Section Bar under the `Project Status` Section to Rebuild the Project.
   4. Click ***Icon that appears immediately below the Play Icon*** in the right-hand corner of the `Launch` Section under the `Project Status` Section.
   5. Select the `tests` executable from Dropdown Command Palette to set it as the Launch Target.
