@@ -88,15 +88,12 @@ int main(void) {
     // Preset Script Path and Graph Image Locations based on User Requested Information
     std::string script_path;
     std::string_view request_type;
-    std::string_view image_path;
     if (algorithm_type.compare("S") == 0) {
         script_path = "./scripts/visualize_graph_SP.sh";
         request_type = "SHORTEST PATH";
-        image_path = "./graph_images/shortest_path_overlay.png";
     } else {
         script_path = "./scripts/visualize_graph_MST.sh";
         request_type = "MINIMUM SPANNING TREE";
-        image_path = "./graph_images/MST_overlay.png";
     }
 
     /// Run Appropriate Bash Script for Generating Graph Images
@@ -109,15 +106,13 @@ int main(void) {
             perror("fork");
             break;
         case 0:
-        std::cout << "Executing \"" << script_path << "\" to overlay the " << request_type << " using the processed graphical information..." << '\n';
+            std::cout << "Executing \"" << script_path << "\" to overlay the " << request_type << " using the processed graphical information..." << '\n';
+            std::cout << "\n=============================== IMAGE GENERATION RESULTS ====================================\n";
             execl(bash_path, bash_path, script_path.c_str(), nullptr);
             perror("execl");
             break;
         default:
             pid = waitpid(pid, &child_status, 0);
-            std::cout << "\n=============================== IMAGE GENERATION RESULTS ====================================\n";
-            std::cout << "Graph generation complete!\nThe generated image of the COMPLETE GRAPH within the \"graph_images\" directory as \"full_graph.png\".\n";
-            std::cout << "The generated image of the " << request_type << " will be within \"" << image_path << "\"" << std::endl;
     }
     return EXIT_SUCCESS;
 }
