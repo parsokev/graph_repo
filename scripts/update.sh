@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# MacOSX Homebrew Users:
+# MacOS Homebrew Users:
 # replace top line with line contained within <> if script does not run as is: <#!/opt/homebrew/bin/bash>
 
 echo "NOTE: If you wish to add or remove any original files from the \"src\" or \"includes\" directories,"
