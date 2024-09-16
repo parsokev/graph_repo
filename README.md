@@ -227,7 +227,15 @@ text editor may utilize the [CMakeTools](https://code.visualstudio.com/docs/cpp/
 
 The following are required to build the project utilizing the provided standalone Makefile:
 1. GCC Compiler using standard of C++20 (or newer)
+2. [Graphviz](https://www.graphviz.org/)
 
+> [!NOTE]
+> The scripts located at `./scripts/visualize_graph_MST.sh` and `./scripts/visualize/_graph_SP.sh` are automatically executed
+> at the conclusion of the program to generate the graphical image of the MST and shortest path, respectively. If these images are not
+> produced, the path to the local bash env folder (**path used by scripts is defined on first line**) may be incorrect and
+> will need to be changed to the correct local path to bash in order to execute properly. You may also simply copy and paste the commands
+> from the appropriate script to manually generate the image of the requested type after the program has finished.
+> **Please ensure you have preinstalled [Graphviz](https://www.graphviz.org/download/) before executing the program.**
 
 After cloning this repository in your preferred text editor, enter the commands into the terminal:
 
