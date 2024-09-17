@@ -152,10 +152,14 @@ fi
 cd ../../
 
 # Provide Usage Instructions
-echo "Both CMake projects have been successfully built and compiled!\n"
+echo ""
+echo "Both CMake projects have been successfully built and compiled!"
+echo ""
 echo "EXECUTING PROGRAM:"
 echo "To Run the Program in Release Mode, Enter into the Terminal: \"./build/release/Graph_TIProject\""
 echo "To Run the Program in Debug Mode, Enter into the Terminal: \"./build/debug/Graph_TIProject\""
+echo ""
 echo "EXECUTING TESTING SUITE:"
 echo "To Run all tests within GoogleTest testing suite, Enter: \"./build/release/tests\" or \"./build/debug/tests\" for additional reporting"
+echo ""
 echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"

@@ -19,13 +19,15 @@ esac
 # If Linux, attempt to update distribution and install dependencies
 if [[ "$Platform" == 'Linux' ]]; then
     echo "Linux or WSL detected"
-    echo "Run the \"linux_setup.sh\" script to build the CMake Project"
+    echo "Run the \"linux_setup.sh\" script to build the CMake Project by entering the following line in the terminal: "
+    echo "    \"source ./graph_repo/scripts/linux_setup.sh\""
     echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
 
 # If MacOSX, attempt to update Homebrew and install dependencies using Homebrew
 elif [[ "$Platform" == 'MAC_OS_X' ]]; then
     echo "Mac OS detected. Please ensure you have Homebrew installed before continuing!"
-    echo "Run the \"macOS_setup.sh\" script to build the CMake Project"
+    echo "Run the \"macOS_setup.sh\" script to build the CMake Project by entering the following line in the terminal"
+    echo "    \"source ./graph_repo/scripts/macOS_setup.sh\""
     echo "Checking for homebrew..."
     brew --version
     if [ $? -ne 0 ]; then 
