@@ -210,7 +210,7 @@ class paired_min_heap {
             int heap_length = heap_size - 1;
             // Notify user of error type and throw exception
             if (index > heap_length || index < 0) {
-                throw(std::runtime_error("Index to be percolated is outside the bounds of the heap array!"));
+                throw(std::runtime_error("ERROR: Index to be percolated is outside the bounds of the heap array!"));
             }
 
             // Calculate left child and right child index positions according to array representation of binary minimum heap
@@ -328,7 +328,7 @@ class paired_min_heap {
             std::pair<std::string, Type> root_pair;
             // Notfies user of error type and throws exception
             if (heap_size == 0) {
-                throw (std::runtime_error("Cannot remove minimum value from an empty paired_minheap object!"));
+                throw (std::runtime_error("ERROR: Cannot remove minimum value from an empty paired_minheap object!"));
             }
 
             // Retrieves tuple with minimum value (held at index 0)
@@ -413,8 +413,10 @@ class paired_min_heap {
          * `paired_min_heap` object to store the user-provided number of `vertex_pair` objects (`capacity`)
          */
         void fill_heap() {
-            if (capacity < 5) {
+            // Handle potentially negative values being entered in initialization
+            if (capacity < 5 || capacity == UINT32_MAX) {
                 capacity = 5;
+                assert(capacity == 5);
             }
             start_heap.reserve(static_cast<size_t>(capacity));
         }
