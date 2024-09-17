@@ -7,7 +7,7 @@
 dot -Tpng:cairo ./dot_graphs/full_graph.gv -o ./graph_images/full_graph.png
 if [ $? -ne 0 ]; then
     echo "" 
-    echo "ERROR DETECTED: An error was encountered while attempting to generate the image for the Complete Graph within \"full_graph.png\""
+    echo "VISUALIZATION ERROR DETECTED: An error was encountered while attempting to generate the image for the Complete Graph within \"full_graph.png\""
     echo "Please view the lines printed immediately above these to determine the potential nature of the detected errors"
     echo "For further information on feature access and troubleshooting please view the README: https://github.com/parsokev/graph_repo"
     echo ""
@@ -19,7 +19,7 @@ fi
 dot -Tpng:cairo ./dot_graphs/MST_overlay.gv -o ./graph_images/MST_overlay.png
 if [ $? -ne 0 ]; then
     echo ""
-    echo "ERROR DETECTED: An error was encountered while attempting to generate the image for the MST within \"MST_overlay.png\""
+    echo "VISUALIZATION ERROR DETECTED: An error was encountered while attempting to generate the image for the MST within \"MST_overlay.png\""
     echo "Please view the lines printed immediately above these to determine the potential nature of the detected errors"
     echo "For further information on feature access and troubleshooting please view the README: https://github.com/parsokev/graph_repo"
     echo ""
