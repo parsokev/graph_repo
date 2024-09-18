@@ -38,9 +38,9 @@ Regardless of which type of request is placed by the user into the terminal, the
    under the filename of `full_graph.png`.
 2. PNG-format depiction of the requested MST or Shortest Path placed over the intial generated image of `full_graph.png`
    within the filenames of `MST_overlay.png` and `shortest_path_overlay.png`, respectively.
+3. Summary of the accumulated cost/weight and verticies/edges corresponding to the generated MST/Shortest Path that is printed to the terminal.
 
-
-Both of these images will be placed within the `graph_images` directory for viewing after completion.
+Both of the generated images will be placed within the `graph_images` directory for viewing after completion.
 
 
 # Getting Started
