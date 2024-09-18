@@ -75,11 +75,18 @@ if [[ "$Platform" == 'Linux' ]]; then
     else
         echo "Linux distribution was unrecognized from list of distributions known to be compatible with graph visualization tools"
         echo "Please visit https://www.graphviz.org/download/ to ensure your Linux distribution is compatible."
-        echo "If you believe your linux distribution is compatible, please view \"requirements.txt\" and manually install these dependencies or try the following command:"
-        echo "      \"sudo yum -y --ignore-missing install $(< ./graph_repo/requirements.txt)\""
-        echo "You may still use the Unix Makefile to run the program without CMake"
+        echo "Attempting to install package dependencies using yum..."
+        sudo yum -y --ignore-missing install $(< ./graph_repo/requirements.txt)
+        if [ $? -ne 0]; then
+            echo "Failed to install package dependencies"
+            echo "All dependencies are required in order to properly utlize the project."
+            echo "Please ensure you have not moved \"requirements.txt\" from its original position within the cloned repository"
+            echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
+            kill -INT 0
+        fi
+        echo "Package dependencies successfully installed!"
+        echo "If your linux distribution is not listed as supported, you may still use the Unix Makefile to run the program without CMake or attempt to run the program"
         echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
-        kill -INT 0
     fi
 
 # If MacOSX, notify User to use macOS_setup script
