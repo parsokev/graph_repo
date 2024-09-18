@@ -106,7 +106,6 @@ int get_graph_vertex_count(long int& vertex_count) {
         if (vertex_count > UINT32_MAX) {
             std::cerr << "Invalid Vertex Count: Number exceeding maximum acceptable size of 4294967294 detected" << '\n';
         }
-
         // Clear failbit error flag
         std::cin.clear();
         // Discard rest of string line from standard input stream
@@ -115,6 +114,9 @@ int get_graph_vertex_count(long int& vertex_count) {
         std::cout << "Please Enter the Approximate Number of Unique Verticies (or Enter \"0\" to abort): ";
     }
 
+    // Discard values after decimal point from standard input stream if floating point value was entered
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    
     /// Convert zero values to default size of 5
     if (vertex_count == 0) {
         std::cerr << "Recognized exit value of \"0\" detected. Closing Program... Goodbye!" << '\n';
@@ -124,6 +126,7 @@ int get_graph_vertex_count(long int& vertex_count) {
     /// Prompt user for confirmation when number of unique verticies within graph exceed 1000 before proceeding further
     if (vertex_count > 1000) {
         std::string conf_line;
+        std::cout << "\nWARNING: Memory will be pre-allocated according to the provided number of total verticies to improve processing time\n";
         std::cout << "Please confirm '" << vertex_count << "' is the expected number of UNIQUE verticies: [y/n]: ";
         std::getline(std::cin >> std::ws, conf_line);
         while(conf_line.compare("y") != 0 && conf_line.compare("n") != 0) {
