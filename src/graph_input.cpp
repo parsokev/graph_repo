@@ -18,13 +18,21 @@
  */
 std::ostream& operator<<(std::ostream& out, const std::vector<std::string>& string_list) {
     out << "[ ";
+    out << '\n';
+    int key_counter = 0;
     for (std::string key : string_list) {
+        if (key_counter == 10) {
+            out << '\n';
+            key_counter = 0;
+        }
         if ( key == string_list.back()) {
             out << key;
         } else {
             out << key << ", ";
         }
+        key_counter ++;
     }
+    out << '\n';
     out << " ]";
     return out;
 }
