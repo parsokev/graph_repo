@@ -94,8 +94,9 @@ The following are required to build the project using CMake:
 > to build the program using cmake. Please install [Homebrew](https://brew.sh/) if not currently installed.
 >
 > For local machines with **Linux Distributions**, if the distribution is not **Debian** or **Ubuntu**,
-> the shell scripts will most likely be unable to properly build the CMake Project. However, the project
-> can still be built using the provided [Makefile](./makefile).
+> the shell scripts will attempt to detect and use commands accepted by other Linux distributions supported by [GraphViz](https://www.graphviz.org/download/)
+> to build the CMake Project but it is not guaranteed to succeed. Running the `os_check.sh` script may help determine whether the distribution is compatible
+> with `linux_setup.sh` script. However, the project can still be built using the provided [Makefile](./makefile).
 >
 > For local machines with **Windows**, if you are utilizing **Cygwin** or **MingW**, the shell scripts
 > will most likely be unable to properly build the CMake Project. Please install the [Windows Subsystem for Linux(WSL)](https://learn.microsoft.com/en-us/windows/wsl/install)
@@ -122,9 +123,9 @@ source ./graph_repo/scripts/macOS_setup.sh
 
 ### Shell Script for Building CMake Project on Linux/Windows
 
-For users wishing to build the project on a local machine using either a **Debian**/**Ubuntu** Linux
-Distribution or the **Windows Subsystem for Linux**, run the `linux_setup.sh` shell script to build
-the project by entering the following:
+For users wishing to build the project on a local machine using either a **Debian**/**Ubuntu** Linux distribution
+or the **Windows Subsystem for Linux** (***For other Linux distributions please run `os_check.sh` to determine compatibility***),
+run the `linux_setup.sh` shell script to build the project by entering the following:
 
 ```
 source ./graph_repo/scripts/linux_setup.sh
