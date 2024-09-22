@@ -11,14 +11,17 @@
  */
 extern int get_graph_filename(std::string& directory_name, std::string& user_file); 
 
+
 /**
- * Prompts user for appproximate number of unique verticies found within the graph to be processed, and upon receiving
- * a valid integer value, stores the number of unique verticies in `vertex_count` to pre-allocate memory for
- * containers used in processing of the user-provided graphical information
+ * Depending on whether the user wishes to provide an approximate number of unique verticies, either continues to
+ * prompt user for approximate value until a valid integer value is received and stores the number
+ * of unique verticies in `vertex_count` or estimates `vertex_count` to half the number of lines found within `read_name`
  * @param vertex_count User-provided number of total unique verticies found within graph to be processed by program
+ * @param read_name Name of text file that user has chosen for processing by the program
  * @return 0 if successful, -1 upon failure
  */
-extern int get_graph_vertex_count(long int& vertex_count);
+extern int get_graph_vertex_count(long int& vertex_count, std::string& read_name);
+
 
 /**
  * Prompts user for the identities of the source and destination verticies from which to generate the shortest path, and upon
