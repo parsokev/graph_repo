@@ -42,7 +42,7 @@ int main(void) {
     long int vertex_count;
     int vertex_output = 0;
     try {
-        vertex_output = get_graph_vertex_count(vertex_count);
+        vertex_output = get_graph_vertex_count(vertex_count, rel_path);
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
         return -1;
