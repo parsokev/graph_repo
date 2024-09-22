@@ -55,6 +55,57 @@ static void print_list(std::list<std::string>& list_s) {
 }
 
 
+/**
+ * Assigns the value of the number of unique verticies found within the graph, `vertex_count`, 
+ * represented by the graphical information stored within the text file `read_name` to be exactly
+ * half the number of lines found within the `read_name`
+ * @param vertex_count Number of unique verticies found within graph represented by information stored in `read_name`
+ * @param read_name Name of text file that user has chosen for processing by the program
+ * @return 0 if successful, -1 upon failure
+ */
+static int approximate_graph_vertex_count(long int& vertex_count, std::string& read_name) {
+    // Generate stream to read from a pipeline that writes grep command with filename to standard input
+    FILE *pipe_stream;
+    std::string command_val = "grep -c ^ ";
+    command_val.append(read_name);
+    // Establish stream with intent to read from buffer containing the command line output written to standard output 
+    pipe_stream = popen(command_val.c_str(), "r");
+    std::string line;
+    char buf[11];   // Digit count should not exceed maxmimum number for capacity allocation of data structures holding vertex information
+    
+    char *result;
+    // If stream is successfully established with pipeline and is able to read it, extract the line count printed by grep command
+    if (pipe_stream != NULL) {
+        result = fgets(buf, sizeof(buf), pipe_stream);
+        if (result) {
+            line.append(result);
+        }
+        pclose(pipe_stream);
+    } else {
+        // Exit if fork or pipe operations fail
+        perror("pipe/fork");
+        std::cerr << "ERROR: Failed to establish pipeline stream for reading the line count from '" << read_name << "'\n";
+        return -1;
+    }
+
+    if (line.size() == 0) {
+        // If fails to extract information from buffer, exit with proper notification
+        std::cerr << "ERROR: Reading of output for pipeline stream failed to extract line count from text file '" << read_name << "'\n";
+        return -1;
+    }
+    // Convert extracted grep command ouput to a long integer and assign half its value to estimate the number of unique verticies for graph
+    vertex_count = strtol(line.c_str(), nullptr, 10);
+    if (errno == ERANGE || errno == EINVAL || vertex_count <= 0) {
+        std::cerr << "ERROR: Conversion of extracted line count for '" << read_name << "' failed. Please ensure text file is not empty\n";
+        return -1;
+    }
+    vertex_count = vertex_count / 2;
+    std::cout << "Estimating Vertex count to " << vertex_count << '\n';
+
+    return 0;
+}
+
+
 int get_graph_filename(std::string& directory_name, std::string& user_file) {
     /// Retrieve contents of designated directory for storing user-provided graph information 
     auto file_list = std::list<std::string>{};
@@ -93,53 +144,84 @@ int get_graph_filename(std::string& directory_name, std::string& user_file) {
 }
 
 
-int get_graph_vertex_count(long int& vertex_count) {
-    /// Handle user provided value for total number of unique verticies in provided graph file
-    std::cout << "Please Enter the Approximate Number of Unique Verticies (or Enter \"0\" to abort): ";
-    while(!(std::cin >> vertex_count) || vertex_count > UINT32_MAX || vertex_count < 0) {
 
-        /// Handle when user provides a negative integer or a non-integer value
-        if (std::cin.fail() || vertex_count < 0) {
-            std::cerr << "Invalid Vertex Count: Number of Verticies must be a positive integer value greater than zero" << '\n';
-        }
-        /// Handle when user provides an integer value larger than maximum size used for storage in hashmap objects
-        if (vertex_count > UINT32_MAX) {
-            std::cerr << "Invalid Vertex Count: Number exceeding maximum acceptable size of 4294967294 detected" << '\n';
-        }
-        // Clear failbit error flag
-        std::cin.clear();
-        // Discard rest of string line from standard input stream
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        // Ask for user input
+int get_graph_vertex_count(long int& vertex_count, std::string& read_name) {
+    // Handle user input for querying whether user wishes to provide number of unqiue verticies or have program estimate the number
+    std::string response;
+    std::cout << "\nIf the approximate number of unique verticies is already known, they may be manually provided to maximize processing time\n";
+    std::cout << "Is the approximate number of unique verticies already known? [y/n]: ";
+    getline(std::cin >> std::ws, response);
+    while (response.compare("y") != 0 && response.compare("n") != 0 && response.compare("exit now") != 0) {
+        std::cerr << "\nERROR: '" << response << "' is not a valid response\n";
+        std::cout << "If you wish to Exit, Enter \"exit now\" instead." << '\n';
+        std::cout << "Please confirm whether you wish to manually enter the number of unique verticies [y/n]: ";
+        getline(std::cin >> std::ws, response);
+    }
+
+    if (response.compare("exit now") == 0) {
+        // Allow user to exit at any time
+        std::cerr << "Exiting Program.. Goodbye!\n";
+        return -1; 
+    }
+
+    if (response.compare("y") == 0) {
+        // Handle user provided value for total number of unique verticies in provided graph file
         std::cout << "Please Enter the Approximate Number of Unique Verticies (or Enter \"0\" to abort): ";
-    }
+        while(!(std::cin >> vertex_count) || vertex_count > UINT32_MAX || vertex_count < 0) {
 
-    // Discard values after decimal point from standard input stream if floating point value was entered
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    
-    /// Convert zero values to default size of 5
-    if (vertex_count == 0) {
-        std::cerr << "Recognized exit value of \"0\" detected. Closing Program... Goodbye!" << '\n';
-        return -1;
-    }
-
-    /// Prompt user for confirmation when number of unique verticies within graph exceed 1000 before proceeding further
-    if (vertex_count > 1000) {
-        std::string conf_line;
-        std::cout << "\nWARNING: Memory will be pre-allocated according to the provided number of total verticies to improve processing time\n";
-        std::cout << "Please confirm '" << vertex_count << "' is the expected number of UNIQUE verticies: [y/n]: ";
-        std::getline(std::cin >> std::ws, conf_line);
-        while(conf_line.compare("y") != 0 && conf_line.compare("n") != 0) {
-            std::cerr << "ERROR: The entered value of '" << conf_line << "' is not a recognized entry\n";
-            std::cout << "Please enter either 'y' or 'n' to confirm whether '" << vertex_count << "' is the expected number of UNIQUE verticies within the graph to be processed: ";
-            std::getline(std::cin >> std::ws, conf_line);
+            // Handle when user provides a negative integer or a non-integer value
+            if (std::cin.fail() || vertex_count < 0) {
+                std::cerr << "Invalid Vertex Count: Number of Verticies must be a positive integer value greater than zero" << '\n';
+            }
+            // Handle when user provides an integer value larger than maximum size used for storage in hashmap objects
+            if (vertex_count > UINT32_MAX) {
+                std::cerr << "Invalid Vertex Count: Number exceeding maximum acceptable size of 4294967294 detected" << '\n';
+            }
+            // Clear failbit error flag
+            std::cin.clear();
+            // Discard rest of string line from standard input stream
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            // Ask for user input
+            std::cout << "Please Enter the Approximate Number of Unique Verticies (or Enter \"0\" to abort): ";
         }
-        if (conf_line.compare("n") == 0) {
-            std::cout << "\nUnintended vertex count entry confirmed.\n";
-            std::cout << "You may restart the program at any time to re-enter the intended number of unique verticies within the graph to be processed. Goodbye!\n";
+
+        // Discard values after decimal point from standard input stream if floating point value was entered
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        
+        // Convert zero values to default size of 5
+        if (vertex_count == 0) {
+            std::cerr << "Recognized exit value of \"0\" detected. Closing Program... Goodbye!" << '\n';
             return -1;
-        } else {
-            std::cout << "Confirmation of '" << vertex_count << "' unique verticies within the graph to be processed received!\n";
+        }
+
+        // Prompt user for confirmation when number of unique verticies within graph exceed 1000 before proceeding further
+        if (vertex_count > 1000) {
+            std::string conf_line;
+            std::cout << "\nWARNING: Memory will be pre-allocated according to the provided number of total verticies to improve processing time\n";
+            std::cout << "Please confirm '" << vertex_count << "' is the expected number of UNIQUE verticies: [y/n]: ";
+            std::getline(std::cin >> std::ws, conf_line);
+            while(conf_line.compare("y") != 0 && conf_line.compare("n") != 0) {
+                std::cerr << "ERROR: The entered value of '" << conf_line << "' is not a recognized entry\n";
+                std::cout << "Please enter either 'y' or 'n' to confirm whether '" << vertex_count << "' is the expected number of UNIQUE verticies within the graph to be processed: ";
+                std::getline(std::cin >> std::ws, conf_line);
+            }
+            if (conf_line.compare("n") == 0) {
+                std::cout << "\nUnintended vertex count entry confirmed.\n";
+                std::cout << "You may restart the program at any time to re-enter the intended number of unique verticies within the graph to be processed. Goodbye!\n";
+                return -1;
+            } else {
+                std::cout << "Confirmation of '" << vertex_count << "' unique verticies within the graph to be processed received!\n";
+            }
+        }
+    }
+
+    if (response.compare("n") == 0) {
+        // Handle estimation of total number of unique verticies through line count output of `read_name` text file
+        std::cout << "Estimating number of unique verticies from '" << read_name << "...\n";
+        int approx_output = 0;
+        approx_output = approximate_graph_vertex_count(vertex_count, read_name);
+        if (approx_output < 0) {
+            return -1;
         }
     }
     std::cout << '\n';
