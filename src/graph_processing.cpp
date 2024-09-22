@@ -212,6 +212,12 @@ int build_adjacency_list(const std::string& filename, const std::string& write_n
                     return -1;
                 }
             }
+            if (line.size() == 0) {
+                std::cerr << "\nFILE ERROR: file '" << filename << "' is empty!\n";
+                read_file.close();
+                write_file.close();
+                return -1;
+            }
             write_file.write(close_brace.c_str(), static_cast<long int>(close_brace.size()));
             read_file.close();
             write_file.close();
