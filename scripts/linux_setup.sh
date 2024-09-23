@@ -77,7 +77,7 @@ if [[ "$Platform" == 'Linux' ]]; then
         echo "Please visit https://www.graphviz.org/download/ to ensure your Linux distribution is compatible."
         echo "Attempting to install package dependencies using yum..."
         sudo yum -y --ignore-missing install $(< ./graph_repo/requirements.txt)
-        if [ $? -ne 0]; then
+        if [ $? -ne 0 ]; then
             echo "Failed to install package dependencies"
             echo "All dependencies are required in order to properly utlize the project."
             echo "Please ensure you have not moved \"requirements.txt\" from its original position within the cloned repository"
