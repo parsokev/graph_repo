@@ -351,10 +351,6 @@ int write_shortest_path_overlay(const std::string& graph_filename, const std::st
                     write_path_edge(find_first_space, path_edges, line);
                 // If the line does not contain a double dash, it depicts an individual node/vertex instead
                 } else {
-                    // std::string node_label = " fontcolor=\"";
-                    // std::string node_color = "firebrick";
-                    // node_label.append(node_color).append("\" ");
-                    // std::string node_slice = line.substr(0, find_first_space);
                     std::string node_slice = line.substr(0, find_first_space);
                     // Replace single underscore with a space if found within the vertex extracted from the substring
                     auto find_underscore = node_slice.find("_");
@@ -365,14 +361,6 @@ int write_shortest_path_overlay(const std::string& graph_filename, const std::st
                     for (const auto& vertex : path_list) {
                         if (node_slice.compare(vertex) == 0) {
                             write_path_node(line, find_right_bracket);
-                            // auto find_fill_label = line.find("fillcolor=");
-                            // std::string node_fill_color = "darkslategrey";
-                            // std::string node_label = " fontcolor=\"";
-                            // std::string node_text_color = "firebrick";
-                            // node_label.append(node_text_color).append("\" ");
-                            
-                            // line.insert(find_left_bracket + 1, node_label);
-                            // line.insert(find_fill_label + 12, node_fill_color);
                         }
                     }
                 }
