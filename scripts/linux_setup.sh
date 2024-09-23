@@ -156,7 +156,7 @@ cd ./build/release
 echo "building cmake project in debug and release configurations..."
 
 # Generate CMakefile for Release Configuration of CMake Project
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ --parallel 4 ../../
+CMAKE_BUILD_PARALLEL_LEVEL=8 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ ../../
 if [ $? -ne 0 ]; then
     echo "Failed to create CMake \"Release\" Configuaration in \"build/release/\" subdirectory in cloned repo directory."
     echo "Please ensure you are calling script from top level directory. Aborting setup process.."
@@ -183,7 +183,7 @@ fi
 cd ..
 cd ./debug
 # Generate CMakefile for Debug Configuration of CMake Project
-cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ --parallel 4 ../../
+CMAKE_BUILD_PARALLEL_LEVEL=8 cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ ../../
 if [ $? -ne 0 ]; then
     echo "Failed to create CMake \"Debug\" Configuaration in \"build/debug/\" subdirectory in cloned repo directory."
     echo "Please ensure you are calling script from top level directory. Aborting setup process.."
