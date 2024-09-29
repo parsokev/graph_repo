@@ -39,8 +39,8 @@ if [[ "$Platform" == 'Linux' ]]; then
         sudo apt-get -y update && sudo apt-get -y upgrade
         echo "Attempting to install package dependencies..."
         sudo apt-get -y --ignore-missing install $(< ./graph_repo/requirements.txt)
-        if [ $? -ne 0]; then
-            echo "Failed to install package dependencies"
+        if [ $? -ne 0 ]; then
+            echo "Failed to install package dependencies for Ubuntu/Debian Distribution"
             echo "All dependencies are required in order to properly utlize the project."
             echo "Please ensure you have not moved \"requirements.txt\" from its original position within the cloned repository"
             echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
@@ -51,24 +51,32 @@ if [[ "$Platform" == 'Linux' ]]; then
     elif [[ "$Linux_Distro" == 'CentOS' ]]; then
         echo "CentOS detected... Attempting to install package dependencies..."
         sudo yum -y --ignore-missing install $(< ./graph_repo/requirements.txt)
-        if [ $? -ne 0]; then
-            echo "Failed to install package dependencies"
-            echo "All dependencies are required in order to properly utlize the project."
-            echo "Please ensure you have not moved \"requirements.txt\" from its original position within the cloned repository"
-            echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
-            kill -INT 0
+        if [ $? -ne 0 ]; then
+            echo "Attempting to install package dependencies using dnf..."
+            sudo dnf -y --ignore-missing install $(< ./graph_repo/requirements.txt)
+            if [ $? -ne 0 ]; then
+                echo "Failed to install package dependencies"
+                echo "All dependencies are required in order to properly utlize the project."
+                echo "Please ensure you have not moved \"requirements.txt\" from its original position within the cloned repository"
+                echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
+                kill -INT 0
+            fi
         fi
     
     # Attempt to install package dependencies if Red Hat is detected
     elif [[ "$Linux_Distro" == 'Red Hat' ]]; then
         echo "Red Hat detected... Attempting to install package dependencies..."
         sudo yum -y --ignore-missing install $(< ./graph_repo/requirements.txt)
-        if [ $? -ne 0]; then
-            echo "Failed to install package dependencies"
-            echo "All dependencies are required in order to properly utlize the project."
-            echo "Please ensure you have not moved \"requirements.txt\" from its original position within the cloned repository"
-            echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
-            kill -INT 0
+         if [ $? -ne 0 ]; then
+            echo "Attempting to install package dependencies using dnf..."
+            sudo dnf -y --ignore-missing install $(< ./graph_repo/requirements.txt)
+            if [ $? -ne 0 ]; then
+                echo "Failed to install package dependencies"
+                echo "All dependencies are required in order to properly utlize the project."
+                echo "Please ensure you have not moved \"requirements.txt\" from its original position within the cloned repository"
+                echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
+                kill -INT 0
+            fi
         fi
 
     # Notify user if Linux Distribution is not recognized as supported by GraphViz with potential solutions
@@ -78,11 +86,15 @@ if [[ "$Platform" == 'Linux' ]]; then
         echo "Attempting to install package dependencies using yum..."
         sudo yum -y --ignore-missing install $(< ./graph_repo/requirements.txt)
         if [ $? -ne 0 ]; then
-            echo "Failed to install package dependencies"
-            echo "All dependencies are required in order to properly utlize the project."
-            echo "Please ensure you have not moved \"requirements.txt\" from its original position within the cloned repository"
-            echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
-            kill -INT 0
+            echo "Attempting to install package dependencies using dnf..."
+            sudo dnf -y --ignore-missing install $(< ./graph_repo/requirements.txt)
+            if [ $? -ne 0 ]; then
+                echo "Failed to install package dependencies"
+                echo "All dependencies are required in order to properly utlize the project."
+                echo "Please ensure you have not moved \"requirements.txt\" from its original position within the cloned repository"
+                echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
+                kill -INT 0
+            fi
         fi
         echo "Package dependencies successfully installed!"
         echo "If your linux distribution is not listed as supported, you may still use the Unix Makefile to run the program without CMake or attempt to run the program"
@@ -162,6 +174,7 @@ if [ $? -ne 0 ]; then
     echo "Please ensure you are calling script from top level directory. Aborting setup process.."
     echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script according to README instructions"
     echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
+    cd ../../
     kill -INT 0
 else
     echo "Attempting to build \"Release\" configuration using generated CMakefile..."
@@ -174,6 +187,7 @@ if [ $? -ne 0 ]; then
     echo "Please ensure you are calling script from top level directory. Aborting setup process.."
     echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script according to README instructions"
     echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
+    cd ../../
     kill -INT 0
 else
     echo "\"Release\" Configuration of CMake Project successfully built!"
@@ -189,6 +203,7 @@ if [ $? -ne 0 ]; then
     echo "Please ensure you are calling script from top level directory. Aborting setup process.."
     echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script according to README instructions"
     echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
+    cd ../../
     kill -INT 0
 else
 echo "Attempting to build \"Debug\" configuration using generated CMakefile..."
@@ -201,6 +216,7 @@ if [ $? -ne 0 ]; then
     echo "Please ensure you are calling script from top level directory. Aborting setup process.."
     echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script according to README instructions"
     echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
+    cd ../../
     kill -INT 0
 else
     echo "\"Debug\" Configuration of CMake Project successfully built!"

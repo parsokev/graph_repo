@@ -23,7 +23,6 @@ if [ $? -ne 0 ]; then
 echo "Error encountered while attempting to rebuild the Release Configuration."
 echo "Please ensure you have run the \"setup.sh\" script at least once before calling the \"update.sh\" script"
 echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
-
 cd ../../
 kill -INT 0
 fi
