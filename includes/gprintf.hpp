@@ -3,7 +3,7 @@
 // Utilization/Definition of gprint functionality for debug printing derived from material provided in coursework from CS344 - 2024
 
 #pragma once
-#include <stdarg.h>
+#include <cstdarg>
 
 void vgprintf(char const *prefix, char const *fmt, va_list ap);
 void gprintf(char const *prefix, char const *fmt, ...);
