@@ -107,18 +107,18 @@ static int approximate_graph_vertex_count(long int& vertex_count, std::string& r
 
 
 int get_graph_filename(std::string& directory_name, std::string& user_file) {
-    /// Retrieve contents of designated directory for storing user-provided graph information 
+    // Retrieve contents of designated directory for storing user-provided graph information 
     auto file_list = std::list<std::string>{};
     for (const auto& sample_file : std::filesystem::directory_iterator(directory_name)){
         std::string file_name = sample_file.path().string();
         file_name.erase(file_name.begin(), file_name.begin() + 14);
         file_list.emplace_back(std::move(file_name));
     }
-    /// Display file contents to user
+    // Display file contents to user
     std::cout << "Current text files available are: " << '\n';
     print_list(file_list);
     std::cout << '\n';
-    /// Handle user input of graph filename
+    // Handle user input of graph filename
     std::cout << "Please Enter the Filename containing the Weighted Graph Edges: ";
     getline(std::cin>>std::ws, user_file);
     // while(!file_list.contains_node(user_file) && user_file.compare("exit now") != 0) {
@@ -128,13 +128,13 @@ int get_graph_filename(std::string& directory_name, std::string& user_file) {
         std::cout << "Please Enter the Filename of file within \"sample_graphs\" directory containing the Weight Graph Edges: ";
         std::getline(std::cin >> std::ws, user_file);
     }
-    /// Exit Program if user requests it
+    // Exit Program if user requests it
     if (user_file.compare("exit now") == 0) {
         std::cout << "Exiting Program... Goodbye" << std::endl;
         return -1;
     }
     
-    /// Clear error flags for next user testing phase
+    // Clear error flags for next user testing phase
     std::cin.clear();
 
     // Update relative path to user-provided graph_file for reading operation
@@ -230,7 +230,7 @@ int get_graph_vertex_count(long int& vertex_count, std::string& read_name) {
 
 
 int get_shortest_path(main_hashmap<double>&& main, const std::string& graph_filename, const std::string& path_filename) {
-    /// Provide User with All Possible Verticies Extracted From User-Provided Graph File
+    // Provide User with All Possible Verticies Extracted From User-Provided Graph File
     std::cout << '\n';
     std::cout << "Shortest Path Calculation Selected" << '\n';
     std::cout << "If you wish to exit the program, enter \"exit now\" at any time" << '\n';
@@ -238,7 +238,7 @@ int get_shortest_path(main_hashmap<double>&& main, const std::string& graph_file
     std::string source_vertex;
     std::cout << "Your Verticies Include: " << main.get_keys() << '\n';
     
-    /// Get User's Requested Source Vertex
+    // Get User's Requested Source Vertex
     std::cout << "Please Enter The Source Vertex: ";
     std::getline(std::cin >> std::ws, source_vertex);
     while (!main.contains_key(source_vertex) && source_vertex.compare("exit now") != 0) {
@@ -248,13 +248,13 @@ int get_shortest_path(main_hashmap<double>&& main, const std::string& graph_file
         std::cout << "Please Enter The Source Vertex: ";
         std::getline(std::cin >> std::ws, source_vertex);
     }
-    /// Get User Request for Exiting Program    
+    // Get User Request for Exiting Program    
     if (source_vertex.compare("exit now") == 0) {
         std::cout << "Exiting Program... Goodbye!" << std::endl;
         return 0;
     }
 
-    /// Get User's Requested Destination Vertex
+    // Get User's Requested Destination Vertex
     std::string dest_vertex;
     std::cout << '\n' << "Your Verticies Include: " << main.get_keys() << '\n';
     std::cout << "Please Enter The Destination Vertex: ";
@@ -266,12 +266,12 @@ int get_shortest_path(main_hashmap<double>&& main, const std::string& graph_file
         std::getline(std::cin >> std::ws, dest_vertex);
     }
     std::cout << '\n';
-    /// Get User Request for Exiting Program
+    // Get User Request for Exiting Program
     if (dest_vertex.compare("exit now") == 0) {
         std::cout << "Exiting Program... Goodbye!" << std::endl;
         return 0;
     }
-    /// Generate Shortest Path from user-provided graph file
+    // Generate Shortest Path from user-provided graph file
     int valid_path = 0;
     try {
         valid_path = find_shortest_path(source_vertex, dest_vertex, graph_filename, path_filename, std::move(main));
@@ -288,26 +288,26 @@ int get_shortest_path(main_hashmap<double>&& main, const std::string& graph_file
 
 
 int get_requested_algorithm (std::string& algorithm_type, main_hashmap<double>&& main, const std::string& graph_filename, const std::string& path_filename, const std::string& MST_filename) {
-    /// Generate Requested Output based on User Request
+    // Generate Requested Output based on User Request
     std::cout << "For Calculating the Minimum Spanning Tree, Enter \"M\"" << '\n';
     std::cout << "For Calculating the Shortest Path Between Two Verticies, Enter \"S\"" << '\n';
     std::cout << "To Exit the Program, Enter \"exit now\"" << '\n';
     std::cout << '\n' << "Please Enter Desired Graph Output: ";
 
-    /// Handle user input for type of requested calculation
+    // Handle user input for type of requested calculation
     getline(std::cin >> std::ws, algorithm_type);
     while (algorithm_type.compare("M") != 0 && algorithm_type.compare("S") != 0 && algorithm_type.compare("exit now") != 0) {
         std::cout << "Error: '" << algorithm_type << "' is not an accepted value. Please try again or enter 'exit now' to exit." << '\n';
         std::cout << "Please Enter Desired Graph Output ('M' for Minimum Spanning Tree OR 'S' for Shortest Distance OR 'exit now' to exit): ";
         std::getline(std::cin >> std::ws, algorithm_type);
     }
-    /// User wishes to exit program
+    // User wishes to exit program
     if (algorithm_type.compare("exit now") == 0) {
         std::cout << "Exiting Program... Goodbye!" << std::endl;
         return -1;
     }
 
-    /// User wishes to have MST calculated of provided graph
+    // User wishes to have MST calculated of provided graph
     if (algorithm_type.compare("M") == 0) {
         std::cout << '\n';
         std::cout << "Minimum Spanning Tree Calculations Selected" << '\n';
@@ -324,7 +324,7 @@ int get_requested_algorithm (std::string& algorithm_type, main_hashmap<double>&&
         }
     }
 
-    /// User wishes to have shortest path calculated using provided graph
+    // User wishes to have shortest path calculated using provided graph
     if (algorithm_type.compare("S") == 0) {
         int path_output = 0;
         try {

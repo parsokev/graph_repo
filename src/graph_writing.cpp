@@ -218,7 +218,7 @@ int write_graph_header(std::fstream& graph_file, const std::string& graph_type, 
         return -1;
     }
 
-    /// Provide Predefined Variables for Quick Manipulation of Graph Features
+    // Provide Predefined Variables for Quick Manipulation of Graph Features
     std::string header = g_type;
     std::string main_graph_name = " main_graph ";
     std::string main_graph_font_name = "DejaVu Sans,Arial,sans-serif";
@@ -234,18 +234,18 @@ int write_graph_header(std::fstream& graph_file, const std::string& graph_type, 
     std::string cluster_fontsize = "14";
     std::string cluster_label = title;
     std::string cluster_tooltip = "All Nodes";
-    /// Main Graph Features
+    // Main Graph Features
     header.append(main_graph_name).append("{\nfontname=\"").append(main_graph_font_name).append("\"\nnode [fontname=\"").append(node_font_name).append("\"]\nedge [fontname=\"");
     header.append(edge_font_name).append("\"]\nnode [style=").append(node_style).append(" fillcolor=\"").append(node_fill_color).append("\"]\n");
     header.append("ratio=").append(graph_ratio_setting).append(" landscape=").append(landscape_enabled).append(" bgcolor=\"").append(background_color).append("\"\n");
-    /// SubGraph Features
+    // SubGraph Features
     std::string sub_header = "subgraph cluster {\"";
     sub_header.append(cluster_name).append("\" [shape=").append(cluster_shape).append(" fontsize=").append(cluster_fontsize).append(" label=\"");
     sub_header.append(cluster_label).append("\" tooltip=\"").append(cluster_tooltip).append("\"] }\n");
 
     graph_file.write(header.c_str(), static_cast<long int>(header.size()));
     graph_file.write(sub_header.c_str(), static_cast<long int>(sub_header.size()));
-    /// Check Failbit for logged errors during writing operation
+    // Check Failbit for logged errors during writing operation
     if (graph_file.bad()) {
         std::cerr << "Failbit set in writing operation" << '\n';
         return -1;
@@ -255,20 +255,20 @@ int write_graph_header(std::fstream& graph_file, const std::string& graph_type, 
 
 
 int write_vertex_node (std::fstream& graph_file, const std::string& vertex_name) {
-    /// Provide Predefined Variables for Quick Manipulation of Individual Node Features
+    // Provide Predefined Variables for Quick Manipulation of Individual Node Features
     std::string node_line = vertex_name;
     std::string node_shape = "box3d";
     std::string node_border_color = "darkgreen";
     std::string node_inside_color = "darkolivegreen2";
     std::string node_font_size = "12";
-    /// Specific Node Features
+    // Specific Node Features
     node_line.append(" [").append("label=\"").append(vertex_name).append("\" id=\"");
     node_line.append(vertex_name).append("\" fontsize=").append(node_font_size).append(" shape=");
     node_line.append(node_shape).append(" tooltip=\"").append(vertex_name).append("\" color=\"");
     node_line.append(node_border_color).append("\" fillcolor=\"").append(node_inside_color).append("\"]\n");
 
     graph_file.write(node_line.c_str(), static_cast<long int>(node_line.size()));
-    /// Check Failbit for logged errors during writing operation
+    // Check Failbit for logged errors during writing operation
     if (graph_file.bad()) {
         std::cerr << "Failbit set in writing operation" << '\n';
         return -1;

@@ -146,7 +146,7 @@ int build_adjacency_list(const std::string& filename, const std::string& write_n
                     return -1;
                 }
 
-                /// Replace whitespace within multi-word verticies with underscores to adhere to dot language format
+                // Replace whitespace within multi-word verticies with underscores to adhere to dot language format
                 std::string vertex1_name = underscore_spaces(vertex);
                 std::string vertex2_name = underscore_spaces(vertex_2);
                 /*
@@ -158,7 +158,7 @@ int build_adjacency_list(const std::string& filename, const std::string& write_n
                     hash_tab1 -> add(vertex_2, weight);
                     adj_list.add(vertex, std::move(*hash_tab1));
 
-                    /// Write new vertex in dot language format to `write_name` file
+                    // Write new vertex in dot language format to `write_name` file
                     int write_vertex = write_vertex_node(write_file, vertex1_name);
                     if (write_vertex < 0) {
                         std::cerr << "\nERROR encountered while writing vertex node '" << vertex1_name <<"' to file '" << write_name << "' !" << '\n';
@@ -185,7 +185,7 @@ int build_adjacency_list(const std::string& filename, const std::string& write_n
                     auto hash_tab2 = std::make_unique<soa_hashmap<double>>(static_cast<unsigned int>(vertex_count));
                     hash_tab2 -> add(vertex, weight);
                     adj_list.add(vertex_2, std::move(*hash_tab2));
-                    /// Write new vertex in dot language format to `write_name` file
+                    // Write new vertex in dot language format to `write_name` file
                     int write_vertex2 = write_vertex_node(write_file, vertex2_name);
                     if (write_vertex2 < 0) {
                         std::cerr << "\nWRITE ERROR encountered while writing vertex node '" << vertex2_name <<"' to file '" << write_name << "' !" << '\n';
@@ -205,7 +205,7 @@ int build_adjacency_list(const std::string& filename, const std::string& write_n
                         std::cerr << e.what() << '\n';
                     }
                 }
-                /// Write new edge in dot language format to `write_name` file
+                // Write new edge in dot language format to `write_name` file
                 int write_new_edge = write_edge(write_file, vertex1_name, vertex2_name, weight, graph_type);
                 if (write_new_edge < 0) {
                     std::cerr << "\nWRITE ERROR encountered while writing the edge between '" << vertex << "' and '" << vertex_2 << "' on '" << write_name << "'!" << '\n';
@@ -221,12 +221,12 @@ int build_adjacency_list(const std::string& filename, const std::string& write_n
             write_file.write(close_brace.c_str(), static_cast<long int>(close_brace.size()));
             read_file.close();
             write_file.close();
-        /// Report error to user if file for writing graph information fails to open correctly
+        // Report error to user if file for writing graph information fails to open correctly
         } else {
             std::cerr << "\nFILE ERROR: Opening file '" << write_name << "' failed!" << '\n';
             return -1;
         }
-    /// Report error to user if file for reading graph information fails to open correctly
+    // Report error to user if file for reading graph information fails to open correctly
     } else {
         std::cerr << "\nFILE ERROR: Opening file '" << filename << "' failed!" << '\n';
         return -1; 

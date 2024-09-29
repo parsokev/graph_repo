@@ -19,14 +19,14 @@
 
 
 int main(void) {
-    /// Establish preset file paths for reading and writing operations
+    // Establish preset file paths for reading and writing operations
     std::string graph_filename = "./dot_graphs/full_graph.gv";
     std::string rel_path = "sample_graphs/";
     std::string path_filename = "./dot_graphs/shortest_path_overlay.gv";
     std::string MST_filename = "./dot_graphs/MST_overlay.gv";
     std::string read_name;
     
-    /// Determine and present acceptable files from designated directory for user-provided graph text files
+    // Determine and present acceptable files from designated directory for user-provided graph text files
     int file_output = 0;
     try {
         file_output = get_graph_filename(rel_path, read_name);
@@ -38,7 +38,7 @@ int main(void) {
         return EXIT_SUCCESS;
     }
 
-    /// Handle User Input For Total Number of Verticies in Submitted Graph
+    // Handle User Input For Total Number of Verticies in Submitted Graph
     long int vertex_count;
     int vertex_output = 0;
     try {
@@ -52,8 +52,8 @@ int main(void) {
         return EXIT_SUCCESS;
     }
     
-    /// Build main_hashmap data struct to store a relevant graphical information extracted from user-provided graph file
-    /// Write relevant extracted information in dot language format to designated .gv file for building graph visualization
+    // Build main_hashmap data struct to store a relevant graphical information extracted from user-provided graph file
+    // Write relevant extracted information in dot language format to designated .gv file for building graph visualization
     auto main = std::make_unique<main_hashmap<double>>(static_cast<unsigned int>(vertex_count)); 
     std::cout << "Building graph from '" << read_name << "' file contents..." << '\n';
     std::cout << "Writing graph information to file '" << graph_filename << "' for image processing..." << '\n';
@@ -71,7 +71,7 @@ int main(void) {
         return EXIT_FAILURE;
     }
 
-    /// Handle User Input for Preferred Calculation to Apply using Extracted Information
+    // Handle User Input for Preferred Calculation to Apply using Extracted Information
     std::cout << "Graph Successfully Built!" << '\n' << '\n';
     std::string algorithm_type;
     int request_output = 0;
@@ -96,7 +96,7 @@ int main(void) {
         request_type = "MINIMUM SPANNING TREE";
     }
 
-    /// Run Appropriate Bash Script for Generating Graph Images
+    // Run Appropriate Bash Script for Generating Graph Images
     char bash_path[] = "/bin/bash";
     // char bash_path[] = "/opt/homebrew/bin/bash"
     pid_t pid = fork();

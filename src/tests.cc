@@ -2241,6 +2241,5 @@ TEST(test_MHSMP, test_mhashmap_move_constructor) {
     EXPECT_EQ(dtransfer_hashmap.get_val("Orlando", "Chicago"), 180.3);
     EXPECT_EQ(dtransfer_hashmap.get_val("Orlando", "Oklahoma City"), 78.5);
     EXPECT_EQ(dtransfer_hashmap.get_val("Orlando", "Denver"), 96.2);
-
 }
 
