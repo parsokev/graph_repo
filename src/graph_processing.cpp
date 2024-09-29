@@ -9,7 +9,7 @@
 #include <fstream>
 #include <sstream>
 #include <list>
-#include <stdlib.h>
+#include <cstdlib>
 #include <sys/wait.h>
 #include <queue>
 #include <memory>

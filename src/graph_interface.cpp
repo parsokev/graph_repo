@@ -8,7 +8,7 @@
 #include <cstdio>
 #include <fstream>
 #include <filesystem>
-#include <stdlib.h>
+#include <cstdlib>
 #include <sys/wait.h>
 #include <memory>
 

@@ -3,8 +3,8 @@
 // Utilization/Definition of gprint functionality for debug printing derived from material provided in coursework from CS344 - 2024
 
 
-#include <stdio.h>
-#include <errno.h>
+#include <cstdio>
+#include <cerrno>
 #include "../includes/gprintf.hpp"
 
 // Write formatted error information using list of arguments passed in function call to standard error
