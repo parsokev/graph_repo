@@ -330,13 +330,10 @@ Several example PNG images generated from the text file, `my_graph4.txt` are pro
 
 
 ## Visualization of the Entire Graph
-Below is the PNG image generated to depict the entire graph represented by the information provided by `my_graph4.txt`
 ![The visualization of the entire graph generated from my_graph4.txt](./graph_images/full_graph2.png)
 
 ## Visualization of the Minimum Spanning Tree (MST)
-Below is the PNG image generated to depict the MST determined from the graph represented by the information provided by `my_graph4.txt`
 ![The visualization of the Minimum Spanning Tree(MST) from my_graph4.txt](./graph_images/MST_overlay2.png)
 
 ## Visualization of the Shortest Path
-Below is the PNG image generated from a request for the shortest path from Santa Cruz to Medford (according to `my_graph4.txt`) 
 ![The visualization of the shortest path from Santa Cruz to Medford from my_graph4.txt](./graph_images/shortest_path_overlay2.png)
