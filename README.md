@@ -42,15 +42,7 @@ Regardless of which type of request is placed by the user into the terminal, the
 
 Both of the generated images will be placed within the `graph_images` directory for viewing after completion.
 
-Example PNG Images Generated from the text file, `my_graph4.txt`:
-The visualization of the Entire Graph
-![The visualization of the entire graph generated from my_graph4.txt](./graph_images/full_graph2.png)
 
-The visualization of the Minimum Spanning Tree (MST)
-![The visualization of the Minimum Spanning Tree(MST) from my_graph4.txt](./graph_images/MST_overlay2.png)
-
-The visualization of the shortest path from Santa Cruz to Medford (according to `my_graph4.txt`) 
-![The visualization of the shortest path from Santa Cruz to Medford from my_graph4.txt](./graph_images/shortest_path_overlay2.png)
 
 # Getting Started
 
@@ -326,3 +318,25 @@ CMakeTools:
   4. Click ***Icon that appears immediately below the Play Icon*** in the right-hand corner of the `Launch` Section under the `Project Status` Section.
   5. Select the `tests` executable from Dropdown Command Palette to set it as the Launch Target.
   6. Click the Play Icon in the right-hand corner of the `Launch` Section to execute the GoogleTest Testing Suite.
+
+
+# Example Images Generated from Text Files
+Several example PNG images generated from the text file, `my_graph4.txt` are provided below
+
+>[!NOTE]
+> The visual features of the generated images may be manually changed through locating the appropriately
+> named function and local variable with the name of the desired feature within the [graph_writing.cpp file](./src/graph_writing.cpp)
+> This mainly allows the ability to alter the appearance of verticies and edges, including those used to distinguish the MST or shortest path.
+
+
+## Visualization of the Entire Graph
+Below is the PNG image generated to depict the entire graph represented by the information provided by `my_graph4.txt`
+![The visualization of the entire graph generated from my_graph4.txt](./graph_images/full_graph2.png)
+
+## Visualization of the Minimum Spanning Tree (MST)
+Below is the PNG image generated to depict the MST determined from the graph represented by the information provided by `my_graph4.txt`
+![The visualization of the Minimum Spanning Tree(MST) from my_graph4.txt](./graph_images/MST_overlay2.png)
+
+## Visualization of the Shortest Path
+Below is the PNG image generated from a request for the shortest path from Santa Cruz to Medford (according to `my_graph4.txt`) 
+![The visualization of the shortest path from Santa Cruz to Medford from my_graph4.txt](./graph_images/shortest_path_overlay2.png)
