@@ -42,6 +42,15 @@ Regardless of which type of request is placed by the user into the terminal, the
 
 Both of the generated images will be placed within the `graph_images` directory for viewing after completion.
 
+Example PNG Images Generated from the text file, `my_graph4.txt`:
+The visualization of the Entire Graph
+![The visualization of the entire graph generated from my_graph4.txt](./graph_images/full_graph2.png)
+
+The visualization of the Minimum Spanning Tree (MST)
+![The visualization of the Minimum Spanning Tree(MST) from my_graph4.txt](./graph_images/MST_overlay2.png)
+
+The visualization of the shortest path from Santa Cruz to Medford (according to `my_graph4.txt`) 
+![The visualization of the shortest path from Santa Cruz to Medford from my_graph4.txt](./graph_images/shortest_path_overlay2.png)
 
 # Getting Started
 
