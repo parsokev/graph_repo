@@ -42,7 +42,7 @@ Regardless of which type of request is placed by the user into the terminal, the
 
 Both of the generated images will be placed within the `graph_images` directory for viewing after completion.
 
-
+Several examples of images generated can be viewed in the [Example Images Generated from Text Files](#example-images-generated-from-text-files) section
 
 # Getting Started
 
