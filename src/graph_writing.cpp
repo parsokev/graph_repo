@@ -28,10 +28,9 @@
  * @param line Line matching dot language format for holding the graph title information
  */
 static void write_path_title(std::vector<std::string>& path_list, std::string& line) {
-    // std::cout << "first edge of path_map is " << path_map.get_val("Total Distance") << '\n';
     auto start_title_pos = line.find("label=") + 7;
     auto end_title_pos = line.find('"', start_title_pos);
-    std::string path_title = "Shortest Path FROM ";
+    std::string path_title = "Shortest Path FROM ";     // Graph title for overlayed image of shortest path
     path_title.append(path_list.front()).append(" TO ").append(path_list.back());
     size_t p = 0;
     // Directly Replace as many characters as possible of previous title with those of designated title for shortest path image
@@ -58,9 +57,9 @@ static void write_path_title(std::vector<std::string>& path_list, std::string& l
  */
 static void write_path_node(std::string& line, size_t& find_right_bracket) {
     // Set text color of vertex nodes found within shortest path to different color than default text 
-    std::string node_label = " fontcolor=\"";
-    std::string node_text_color = "darkorange1";
-    std::string node_fill_color = "darkslategrey";
+    std::string node_label = " fontcolor=\"";  
+    std::string node_text_color = "darkorange1";    // Text color of node(s) in shortest path
+    std::string node_fill_color = "darkslategrey";  // Background color of node(s) in shortest path
     node_label.append(node_text_color).append("\" ");
     line.insert(find_right_bracket, node_label);
 
@@ -103,8 +102,8 @@ static void write_path_node(std::string& line, size_t& find_right_bracket) {
  * @param line Line matching dot language format for holding a single edge's information and features
  */
 static void write_path_edge(size_t& first_space, std::vector<std::string>& path_edges, std::string& line) {
-    std::string arrow_label = "arrowsize=0 ";   // Edges not part of shortest path do not have arrows
-    std::string color_label = "darkcyan";       // Edges that are part of shortest path
+    std::string arrow_label = "arrowsize=0 ";   // Size of arrowheads for edge(s) not in shortest path (eliminates)
+    std::string color_label = "darkcyan";       // Color of connecting edge(s) in shortest path 
     // Get Previous Color Size and Position within Line
     auto start_color_pos = line.find(" color=") + 8;
     auto end_color_pos = line.find('"', start_color_pos);
@@ -158,7 +157,7 @@ static void write_path_edge(size_t& first_space, std::vector<std::string>& path_
     } else {
         auto find_right_bracket = line.rfind(']');
         std::string text_label = " fontcolor=\"";
-        std::string text_color = "darkmagenta";
+        std::string text_color = "darkmagenta";     // Color of text for the weight/cost of edge(s) in shortest path 
         text_label.append(text_color).append("\" ");
         line.insert(find_right_bracket, text_label);
     }
@@ -174,7 +173,7 @@ static void write_path_edge(size_t& first_space, std::vector<std::string>& path_
 static void write_MST_title( std::string& line) {
     auto start_title_pos = line.find("label=") + 7;
     auto end_title_pos = line.find('"', start_title_pos);
-    std::string path_title = "Minimum Spanning Tree";
+    std::string path_title = "Minimum Spanning Tree";       // Graph title for overlayed image of MST
     size_t p = 0;
     // Directly Replace as many characters as possible of previous title with those of designated title for shortest path image
     for (; p < end_title_pos - start_title_pos && p < path_title.size(); p++) {
@@ -220,20 +219,20 @@ int write_graph_header(std::fstream& graph_file, const std::string& graph_type, 
 
     // Provide Predefined Variables for Quick Manipulation of Graph Features
     std::string header = g_type;
-    std::string main_graph_name = " main_graph ";
-    std::string main_graph_font_name = "DejaVu Sans,Arial,sans-serif";
-    std::string graph_ratio_setting = "auto";
-    std::string node_font_name = "Impact,Arial,sans-serif";
-    std::string edge_font_name = "Comic Sans,Arial,sans-serif";
-    std::string node_style = "filled";
-    std::string landscape_enabled = "false";
-    std::string background_color = "gainsboro";
-    std::string node_fill_color = "darkolivegreen2";
-    std::string cluster_name = "Full Graph";
-    std::string cluster_shape = "box";
-    std::string cluster_fontsize = "14";
-    std::string cluster_label = title;
-    std::string cluster_tooltip = "All Nodes";
+    std::string main_graph_name = " main_graph ";                     // Identification of Graph
+    std::string main_graph_font_name = "DejaVu Sans,Arial,sans-serif";      // Text Font for Graph Title
+    std::string graph_ratio_setting = "auto";                   // Setting for Vertical/Horizontal Spacing of Nodes and Edges across Image
+    std::string node_font_name = "Impact,Arial,sans-serif";     // Text Font for Node Names
+    std::string edge_font_name = "Comic Sans,Arial,sans-serif";     // Text Font for Edge Weight/Cost Values
+    std::string node_style = "filled";                  // Toggle Setting for Enabling Background Color of Nodes
+    std::string landscape_enabled = "false";        // Toggle Setting for Portrait or Landscape Orientation of Image
+    std::string background_color = "gainsboro";     // Background Color of Entire Image
+    std::string node_fill_color = "darkolivegreen2";    // Background Color of Individual Nodes
+    std::string cluster_name = "Full Graph";        // Main Title Displayed for Image
+    std::string cluster_shape = "box";          // Shape of Border Surrounding the Main Title
+    std::string cluster_fontsize = "14";        // Font Size of Main Title
+    std::string cluster_label = title;          
+    std::string cluster_tooltip = "All Nodes";      // Alternate Pop-up Information Displayed On Cursor Hover in Other Formats that Support Feature 
     // Main Graph Features
     header.append(main_graph_name).append("{\nfontname=\"").append(main_graph_font_name).append("\"\nnode [fontname=\"").append(node_font_name).append("\"]\nedge [fontname=\"");
     header.append(edge_font_name).append("\"]\nnode [style=").append(node_style).append(" fillcolor=\"").append(node_fill_color).append("\"]\n");
@@ -256,11 +255,11 @@ int write_graph_header(std::fstream& graph_file, const std::string& graph_type, 
 
 int write_vertex_node (std::fstream& graph_file, const std::string& vertex_name) {
     // Provide Predefined Variables for Quick Manipulation of Individual Node Features
-    std::string node_line = vertex_name;
-    std::string node_shape = "box3d";
-    std::string node_border_color = "darkgreen";
-    std::string node_inside_color = "darkolivegreen2";
-    std::string node_font_size = "12";
+    std::string node_line = vertex_name;       // Displayed Name of Specified Vertex/Node
+    std::string node_shape = "box3d";           // Shape of Border Surrounding Name of Specified Vertex/Node
+    std::string node_border_color = "darkgreen";    // Edge Color of Border Surrounding Name of Specified Vertex/Node
+    std::string node_inside_color = "darkolivegreen2";      // Background/Fill Color Inside Shape Surround Node/Vertex
+    std::string node_font_size = "12";      // Font Size of Text Displaying Node/Vertex Name
     // Specific Node Features
     node_line.append(" [").append("label=\"").append(vertex_name).append("\" id=\"");
     node_line.append(vertex_name).append("\" fontsize=").append(node_font_size).append(" shape=");
@@ -294,10 +293,10 @@ int write_edge(std::fstream& graph_file, const std::string& vertex1_name, const 
             return -1;
         }
         /// Provide Predefined Variables for Quick Manipulation of Individual Edge Features
-        std::string edge_label_size = "60";
-        std::string edge_width = "3";
-        std::string edge_color = "darkgoldenrod2";
-        std::string edge_name = vertex1_name;
+        std::string edge_label_size = "60";     // Text Size of Displayed Edge/Cost Value of Specific Edge
+        std::string edge_width = "3";           // Thickness of Edge Line
+        std::string edge_color = "darkgoldenrod2";      // Color of Edge Line
+        std::string edge_name = vertex1_name;       // Name of Vertex From Which The Edge Begins (Source)
         /// Specific Edge Features
         edge_name.append(edge_char).append(vertex2_name);
         std::string edge_line = edge_name;
@@ -438,7 +437,7 @@ int write_MST_overlay(const std::string& graph_filename, const std::string& MST_
                             auto start_color_pos = line.find(" color=") + 8;    // Position of first character of previous edge color name
                             auto end_color_pos = line.find('"', start_color_pos);   // Position of last character of previous edge color name
                             auto prev_color_size = end_color_pos - start_color_pos;
-                            std::string edge_color = "darkcyan";
+                            std::string edge_color = "darkcyan";    // Edge Color for Edges Found In MST
                             size_t n = 0;
                             // Directly Replace as many characters as possible of preset color to designated color for edges composing MST
                             for (; n < edge_color.size() && n < prev_color_size; n++) {
@@ -456,7 +455,7 @@ int write_MST_overlay(const std::string& graph_filename, const std::string& MST_
                             // Insert different color for text label for edge weight value
                             auto find_right_bracket = line.rfind(']');
                             std::string text_label = " fontcolor=\"";
-                            std::string text_color = "firebrick";
+                            std::string text_color = "firebrick";       // Text Color for Weight/Cost of Edge(s) in MST
                             text_label.append(text_color).append("\" ");
                             line.insert(find_right_bracket, text_label);
                         }
