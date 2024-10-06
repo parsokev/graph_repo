@@ -124,11 +124,19 @@ static int approximate_graph_vertex_count(long int& vertex_count, std::string& r
 int get_graph_filename(std::string& directory_name, std::string& user_file) {
     // Retrieve contents of designated directory for storing user-provided graph information 
     auto file_list = std::list<std::string>{};
-    for (const auto& sample_file : std::filesystem::directory_iterator(directory_name)){
-        std::string file_name = sample_file.path().string();
-        file_name.erase(file_name.begin(), file_name.begin() + 14);
-        file_list.emplace_back(std::move(file_name));
+    if (std::filesystem::exists(directory_name)) {
+        for (const auto& sample_file : std::filesystem::directory_iterator(directory_name)){
+            std::string file_name = sample_file.path().string();
+            file_name.erase(file_name.begin(), file_name.begin() + 14);
+            file_list.emplace_back(std::move(file_name));
+        }
+    } else {
+        // Exit program and Notify user if program is launched from an invalid path in terminal
+        std::cerr << "\nERROR: Relative path to '" << directory_name << "' is invalid from current working directory\n";
+        std::cerr << "Please ensure you are executing the program from within the \"graph_repo\" directory\n";
+        return -1;
     }
+
     // Display file contents to user
     std::cout << "Current text files available are: " << '\n';
     print_list(file_list);
