@@ -77,7 +77,7 @@ if [ $? -ne 0 ]; then
     echo "Please ensure you are calling script from top level directory. Aborting setup process.."
     echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script according to README instructions"
     echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
-    cd ../../
+    cd ../../../
     kill -INT 0
 else
     echo "Attempting to build \"Release\" configuration using generated CMakefile..."
@@ -90,7 +90,7 @@ if [ $? -ne 0 ]; then
     echo "Please ensure you are calling script from top level directory. Aborting setup process.."
     echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script according to README instructions"
     echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
-    cd ../../
+    cd ../../../
     kill -INT 0
 else
     echo "\"Release\" Configuration of CMake Project successfully built!"
@@ -105,7 +105,7 @@ if [ $? -ne 0 ]; then
     echo "Please ensure you are calling script from top level directory. Aborting setup process.."
     echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script according to README instructions"
     echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
-    cd ../../
+    cd ../../../
     kill -INT 0
 else
 echo "Attempting to build \"Debug\" configuration using generated CMakefile..."
@@ -118,7 +118,7 @@ if [ $? -ne 0 ]; then
     echo "Please ensure you are calling script from top level directory. Aborting setup process.."
     echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script according to README instructions"
     echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
-    cd ../../
+    cd ../../../
     kill -INT 0
 else
     echo "\"Debug\" Configuration of CMake Project successfully built!"
