@@ -2,11 +2,11 @@
     "version": 8,
     "configurePresets": [
         {
-            "name": "debug_build",
-            "displayName": "Debug_DIR",
+            "name": "linux_debug_build",
+            "displayName": "Linux_Debug_DIR",
             "hidden": false,
             "generator": "Unix Makefiles",
-            "description": "Debug Configuration for CMake Project",
+            "description": "Debug Configuration for CMake Project using Linux",
             "binaryDir": "${workspaceFolder}/build/debug",
             "cacheVariables": {
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
@@ -17,11 +17,11 @@
             }
         },
         {
-            "name": "release_build",
-            "displayName": "Release_DIR",
+            "name": "linux_release_build",
+            "displayName": "Linux_Release_DIR",
             "hidden": false,
             "generator": "Unix Makefiles",
-            "description": "Release Configuration for Cmake Project",
+            "description": "Release Configuration for Cmake Project using Linux",
             "binaryDir": "${workspaceFolder}/build/release",
             "cacheVariables": {
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
@@ -29,6 +29,66 @@
                 "CMAKE_C_COMPILER": "/usr/bin/gcc",
                 "CMAKE_CXX_COMPILER": "/usr/bin/g++",
                 "CMAKE_BUILD_TYPE":"Release"
+            }
+        },
+        {
+            "name": "windows_release_build",
+            "displayName": "Win_Release_DIR",
+            "hidden": false,
+            "generator": "Ninja",
+            "description": "Release Configuration for Cmake Project using Windows",
+            "binaryDir": "${workspaceFolder}/build/release",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
+                "CMAKE_INSTALL_PREFIX": "${workspaceFolder}/install",
+                "CMAKE_C_COMPILER": "C:/msys64/ucrt64/bin/gcc.exe",
+                "CMAKE_CXX_COMPILER": "C:/msys64/ucrt64/bin/g++.exe",
+                "CMAKE_BUILD_TYPE":"Release"
+            }
+        },
+        {
+            "name": "windows_debug_build",
+            "displayName": "Win_Debug_DIR",
+            "hidden": false,
+            "generator": "Ninja",
+            "description": "Debug Configuration for Cmake Project using Windows",
+            "binaryDir": "${workspaceFolder}/build/debug",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
+                "CMAKE_INSTALL_PREFIX": "${workspaceFolder}/install",
+                "CMAKE_C_COMPILER": "C:/msys64/ucrt64/bin/gcc.exe",
+                "CMAKE_CXX_COMPILER": "C:/msys64/ucrt64/bin/g++.exe",
+                "CMAKE_BUILD_TYPE":"Debug"
+            }
+        },
+        {
+            "name": "macos_release_build",
+            "displayName": "Mac_Release_DIR",
+            "hidden": false,
+            "generator": "Unix Makefiles",
+            "description": "Release Configuration for Cmake Project using MacOS",
+            "binaryDir": "${workspaceFolder}/build/release",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
+                "CMAKE_INSTALL_PREFIX": "${workspaceFolder}/install",
+                "CMAKE_C_COMPILER": "/opt/homebrew/bin/gcc",
+                "CMAKE_CXX_COMPILER": "/opt/homebrew/bin/g++",
+                "CMAKE_BUILD_TYPE":"Release"
+            }
+        },
+        {
+            "name": "macos_debug_build",
+            "displayName": "Mac_Debug_DIR",
+            "hidden": false,
+            "generator": "Unix Makefiles",
+            "description": "Debug Configuration for Cmake Project using MacOS",
+            "binaryDir": "${workspaceFolder}/build/debug",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
+                "CMAKE_INSTALL_PREFIX": "${workspaceFolder}/install",
+                "CMAKE_C_COMPILER": "/opt/homebrew/bin/gcc",
+                "CMAKE_CXX_COMPILER": "/opt/homebrew/bin/g++",
+                "CMAKE_BUILD_TYPE":"Debug"
             }
         }
     ]
