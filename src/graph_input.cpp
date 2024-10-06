@@ -75,12 +75,8 @@ static int approximate_graph_vertex_count(long int& vertex_count, std::string& r
         std::string command_val = "ggrep -c ^ ";
         command_val.append(read_name);
     #elif _WIN32
-        // std::string command_val = "powershell (Get-Content -Path ./";
-        // command_val.append(read_name).append(" | Measure-Object -Line).Lines");
         std::string command_val = "powershell -Command \"(Get-Content -Path ./";
         command_val.append(read_name).append(" | Measure-Object -Line).Lines\"");
-        // command_val.append(read_name).append(" | Measure-Object -Line).Lines");
-        std::cerr << "Command passed to pipe: " << command_val << '\n';
     #else
         std::cerr << "Compatibility of OS with 'popen' command cannot be verified. Please restart program and manually enter an approximate value for total number of unique verticies\n";
         return -1;
@@ -111,8 +107,6 @@ static int approximate_graph_vertex_count(long int& vertex_count, std::string& r
         return -1;
     }
     // Convert extracted grep command ouput to a long integer and assign half its value to estimate the number of unique verticies for graph
-
-    std::cerr << "Line read from powershell output: " << line << '\n';
     vertex_count = strtol(line.c_str(), nullptr, 10);
     if (errno == ERANGE || errno == EINVAL || vertex_count <= 0) {
         std::cerr << "ERROR: Conversion of extracted line count for '" << read_name << "' failed. Please ensure text file is not empty\n";
