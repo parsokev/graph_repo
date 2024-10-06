@@ -68,7 +68,7 @@ static int approximate_graph_vertex_count(long int& vertex_count, std::string& r
 
     FILE *pipe_stream;
 
-    #if def__linux__
+    #ifdef __linux__
         std::string command_val = "grep -c ^ ";
         command_val.append(read_name);
     #elif __APPLE__
