@@ -64,19 +64,21 @@ static void print_list(std::list<std::string>& list_s) {
  * @return 0 if successful, -1 upon failure
  */
 static int approximate_graph_vertex_count(long int& vertex_count, std::string& read_name) {
-    // Generate stream to read from a pipeline that writes grep command with filename to standard input
-
+    // Generate stream to read from a pipeline that writes commands based on preprocesser conditionals to retain OS-compliance
     FILE *pipe_stream;
-
+    // Gather line count of text file containing graphical information using Linux-compliant bash command 'grep'
     #ifdef __linux__
         std::string command_val = "grep -c ^ ";
         command_val.append(read_name);
+    // Gather line count of text file containing graphical information using MacOS-compliant bash command 'ggrep' for HomeBrew
     #elif __APPLE__
         std::string command_val = "ggrep -c ^ ";
         command_val.append(read_name);
+    // Gather line count of text file containing graphical information using Windows-compliant powershell piped command captured as a single command
     #elif _WIN32
         std::string command_val = "powershell -Command \"(Get-Content -Path ./";
         command_val.append(read_name).append(" | Measure-Object -Line).Lines\"");
+    // Exit if unexpected OS-type is detected due to potentially incompatibility or undefined behavior in pipe operation
     #else
         std::cerr << "Compatibility of OS with 'popen' command cannot be verified. Please restart program and manually enter an approximate value for total number of unique verticies\n";
         return -1;
