@@ -90,7 +90,7 @@ int main(void) {
         return EXIT_FAILURE;
     }
 
-    // Execute Bash shell scripts for image generation if Linux OS is detected
+    // Execute Bash shell scripts using Linux-Compliant <sys/wait.h> library functions for image generation if Linux OS is detected
     #ifdef __linux__
     // Preset Script Path and Graph Image Locations based on User Requested Information for Linux Users
     std::string script_path;
@@ -104,7 +104,6 @@ int main(void) {
     }
     // Run Appropriate Bash Script for Generating Graph Images
     char bash_path[] = "/bin/bash";
-    // char bash_path[] = "/opt/homebrew/bin/bash"
     pid_t pid = fork();
     int child_status;
     switch(pid) {
@@ -125,6 +124,7 @@ int main(void) {
         std::string script_path;
         std::string_view request_type;
         std::string_view destination_file;
+        // Directly execute powershell commands for Windows Systems using MSYS (and potentially Cygwin variants)
         #ifdef _WIN32
         if (algorithm_type.compare("S") == 0) {
             script_path = "dot -Tpng:cairo ./dot_graphs/full_graph.gv -o ./graph_images/full_graph.png; dot -Tpng:cairo ./dot_graphs/shortest_path_overlay.gv -o ./graph_images/shortest_path_overlay.png\"";
@@ -135,6 +135,7 @@ int main(void) {
             request_type = "MINIMUM SPANNING TREE";
             destination_file = "./graph_images/MST_overlay.png";
         }
+        // Execute bash shell scripts for MacOS Systems using HomeBrew
         #elif __APPLE__
         if (algorithm_type.compare("S") == 0) {
             script_path = "./scripts/MacOS/MACvisualize_graph_SP_MAC.sh";
@@ -145,21 +146,22 @@ int main(void) {
             request_type = "MINIMUM SPANNING TREE";
             destination_file = "./graph_images/MST_overlay.png";
         }
+        // Silently exit program if preprocessor conditionals indicate unexpected/undefined OS detection
         #else
-            // Don't attempt to execute image scripts using command line if preprocessor conditionals indicate possible OS incompatibility
             return EXIT_SUCCESS;
         #endif
+        // Use popen for MacOS and Windows Systems, to execute commands/scripts within a pipeline and read/monitor its output
         FILE *pipe_stream;
-        // std::string command_val = "powershell ";
         std::string command_val = "powershell -Command \"";
         command_val.append(script_path);
         std::cout << "Generating the " << request_type << " using the processed graphical information..." << '\n';
         std::cout << "\n=============================== IMAGE GENERATION RESULTS ====================================\n";
-        // Establish stream with intent to read from buffer containing the command line output written to standard output 
+        // Establish stream with intent to both execute the powershell script and read from buffer containing the command line output for error detection 
         pipe_stream = popen(command_val.c_str(), "r");
-        // If stream is successfully established with pipeline and is able to read it, extract the line count printed by 
+        // If stream is successfully established with pipeline, attempt to execute powershell script to generate requested image 
         if (pipe_stream != NULL) {
             int script_error = pclose(pipe_stream);
+            // If one or more errors are encountered in execution of powershell script, notify user
             if (script_error == -1) {
                 std::cerr << "ERROR: '" << script_path << "' encountered error(s) while executing to generate image of '"<< request_type << "' \n"; 
             } else {
@@ -169,12 +171,11 @@ int main(void) {
             }
             pclose(pipe_stream);
         } else {
-            // Exit if fork or pipe operations fail
+            // Exit if internal fork or pipe operations fail
             perror("pipe/fork");
             std::cerr << "ERROR: Failed to establish pipeline stream for executing powershell script '" << script_path << "'\n";
             return -1;
         }
-
     #endif
     return EXIT_SUCCESS;
 }
