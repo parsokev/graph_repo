@@ -9,7 +9,12 @@
 #include <fstream>
 #include <filesystem>
 #include <cstdlib>
+// sys/wait.h is only compatible Linux OS
+#if def__linux__
 #include <sys/wait.h>
+#else
+#endif
+
 #include <memory>
 
 #include "../includes/graph_input.hpp"
@@ -85,17 +90,18 @@ int main(void) {
         return EXIT_FAILURE;
     }
 
-    // Preset Script Path and Graph Image Locations based on User Requested Information
+    // Execute Bash shell scripts for image generation if Linux OS is detected
+    #if def__linux__
+    // Preset Script Path and Graph Image Locations based on User Requested Information for Linux Users
     std::string script_path;
     std::string_view request_type;
     if (algorithm_type.compare("S") == 0) {
-        script_path = "./scripts/visualize_graph_SP.sh";
+        script_path = "./scripts/Linux/visualize_graph_SP.sh";
         request_type = "SHORTEST PATH";
     } else {
-        script_path = "./scripts/visualize_graph_MST.sh";
+        script_path = "./scripts/Linux/visualize_graph_MST.sh";
         request_type = "MINIMUM SPANNING TREE";
     }
-
     // Run Appropriate Bash Script for Generating Graph Images
     char bash_path[] = "/bin/bash";
     // char bash_path[] = "/opt/homebrew/bin/bash"
@@ -114,5 +120,61 @@ int main(void) {
         default:
             pid = waitpid(pid, &child_status, 0);
     }
+    #else
+        // Preset Script Path and Graph Image Locations based on User Requested Information and OS type
+        std::string script_path;
+        std::string_view request_type;
+        std::string_view destination_file;
+        #ifdef _WIN32
+        if (algorithm_type.compare("S") == 0) {
+            script_path = "dot -Tpng:cairo ./dot_graphs/full_graph.gv -o ./graph_images/full_graph.png; dot -Tpng:cairo ./dot_graphs/shortest_path_overlay.gv -o ./graph_images/shortest_path_overlay.png\"";
+            request_type = "SHORTEST PATH";
+            destination_file = "./graph_images/shortest_path_overlay.png";
+        } else {
+            script_path = "dot -Tpng:cairo ./dot_graphs/full_graph.gv -o ./graph_images/full_graph.png; dot -Tpng:cairo ./dot_graphs/MST_overlay.gv -o ./graph_images/MST_overlay.png\"";
+            request_type = "MINIMUM SPANNING TREE";
+            destination_file = "./graph_images/MST_overlay.png";
+        }
+        #elif __APPLE__
+        if (algorithm_type.compare("S") == 0) {
+            script_path = "./scripts/MacOS/MACvisualize_graph_SP_MAC.sh";
+            request_type = "SHORTEST PATH";
+            destination_file = "./graph_images/shortest_path_overlay.png";
+        } else {
+            script_path = "./scripts/MacOS/MACvisualize_graph_MST_MAC.sh";
+            request_type = "MINIMUM SPANNING TREE";
+            destination_file = "./graph_images/MST_overlay.png";
+        }
+        #else
+            // Don't attempt to execute image scripts using command line if preprocessor conditionals indicate possible OS incompatibility
+            return EXIT_SUCCESS;
+        #endif
+        FILE *pipe_stream;
+        // std::string command_val = "powershell ";
+        std::string command_val = "powershell -Command \"";
+        command_val.append(script_path);
+        std::cout << "Generating the " << request_type << " using the processed graphical information..." << '\n';
+        std::cout << "\n=============================== IMAGE GENERATION RESULTS ====================================\n";
+        // Establish stream with intent to read from buffer containing the command line output written to standard output 
+        pipe_stream = popen(command_val.c_str(), "r");
+        // If stream is successfully established with pipeline and is able to read it, extract the line count printed by 
+        if (pipe_stream != NULL) {
+            int script_error = pclose(pipe_stream);
+            if (script_error == -1) {
+                std::cerr << "ERROR: '" << script_path << "' encountered error(s) while executing to generate image of '"<< request_type << "' \n"; 
+            } else {
+                std::cout << "Success!\n";
+                std::cout << "The Image of the " << request_type << " was placed within:    " << destination_file << '\n';
+                std::cout << "The Image of the Entire Graph was placed within:   ./graph_images/full_graph.png\n";
+            }
+            pclose(pipe_stream);
+        } else {
+            // Exit if fork or pipe operations fail
+            perror("pipe/fork");
+            std::cerr << "ERROR: Failed to establish pipeline stream for executing powershell script '" << script_path << "'\n";
+            return -1;
+        }
+
+    #endif
     return EXIT_SUCCESS;
 }

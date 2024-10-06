@@ -65,9 +65,26 @@ static void print_list(std::list<std::string>& list_s) {
  */
 static int approximate_graph_vertex_count(long int& vertex_count, std::string& read_name) {
     // Generate stream to read from a pipeline that writes grep command with filename to standard input
+
     FILE *pipe_stream;
-    std::string command_val = "grep -c ^ ";
-    command_val.append(read_name);
+
+    #if def__linux__
+        std::string command_val = "grep -c ^ ";
+        command_val.append(read_name);
+    #elif __APPLE__
+        std::string command_val = "ggrep -c ^ ";
+        command_val.append(read_name);
+    #elif _WIN32
+        // std::string command_val = "powershell (Get-Content -Path ./";
+        // command_val.append(read_name).append(" | Measure-Object -Line).Lines");
+        std::string command_val = "powershell -Command \"(Get-Content -Path ./";
+        command_val.append(read_name).append(" | Measure-Object -Line).Lines\"");
+        // command_val.append(read_name).append(" | Measure-Object -Line).Lines");
+        std::cerr << "Command passed to pipe: " << command_val << '\n';
+    #else
+        std::cerr << "Compatibility of OS with 'popen' command cannot be verified. Please restart program and manually enter an approximate value for total number of unique verticies\n";
+        return -1;
+    #endif
     // Establish stream with intent to read from buffer containing the command line output written to standard output 
     pipe_stream = popen(command_val.c_str(), "r");
     std::string line;
@@ -94,6 +111,8 @@ static int approximate_graph_vertex_count(long int& vertex_count, std::string& r
         return -1;
     }
     // Convert extracted grep command ouput to a long integer and assign half its value to estimate the number of unique verticies for graph
+
+    std::cerr << "Line read from powershell output: " << line << '\n';
     vertex_count = strtol(line.c_str(), nullptr, 10);
     if (errno == ERANGE || errno == EINVAL || vertex_count <= 0) {
         std::cerr << "ERROR: Conversion of extracted line count for '" << read_name << "' failed. Please ensure text file is not empty\n";
@@ -167,15 +186,15 @@ int get_graph_vertex_count(long int& vertex_count, std::string& read_name) {
     if (response.compare("y") == 0) {
         // Handle user provided value for total number of unique verticies in provided graph file
         std::cout << "Please Enter the Approximate Number of Unique Verticies (or Enter \"0\" to abort): ";
-        while(!(std::cin >> vertex_count) || vertex_count > UINT32_MAX || vertex_count < 0) {
+        while(!(std::cin >> vertex_count) || vertex_count > INT32_MAX || vertex_count < 0) {
 
             // Handle when user provides a negative integer or a non-integer value
             if (std::cin.fail() || vertex_count < 0) {
                 std::cerr << "Invalid Vertex Count: Number of Verticies must be a positive integer value greater than zero" << '\n';
             }
             // Handle when user provides an integer value larger than maximum size used for storage in hashmap objects
-            if (vertex_count > UINT32_MAX) {
-                std::cerr << "Invalid Vertex Count: Number exceeding maximum acceptable size of 4294967294 detected" << '\n';
+            if (vertex_count > INT32_MAX) {
+                std::cerr << "Invalid Vertex Count: Number exceeding maximum acceptable integer size detected" << '\n';
             }
             // Clear failbit error flag
             std::cin.clear();

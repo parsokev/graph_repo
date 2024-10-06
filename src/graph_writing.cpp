@@ -10,7 +10,6 @@
 #include <sstream>
 #include <list>
 #include <cstdlib>
-#include <sys/wait.h>
 #include <memory>
 
 #include "../includes/pair_minheap.hpp"

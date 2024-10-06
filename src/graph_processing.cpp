@@ -10,7 +10,7 @@
 #include <sstream>
 #include <list>
 #include <cstdlib>
-#include <sys/wait.h>
+
 #include <queue>
 #include <memory>
 
@@ -99,9 +99,9 @@ int build_adjacency_list(const std::string& filename, const std::string& write_n
                     write_file.close();
                     return -1;
                 }
-
+                line_read.seekg(vertex_size + spacer, line_read.cur);
                 // Ensure vertex 2 is found before end of the current line
-                line_read.seekg(line_read.tellg() + spacer + vertex_size);
+                // line_read.seekg(line_read.tellg() + spacer + vertex_size);
                 if (line_read.tellg() == -1) {
                     std::cerr << "\nFILE ERROR: Expected position of vertex 2  or weight was not found (out of bounds)!" << '\n';
                     std::cerr << "Please ensure each line follows format:\n\t VERTEX1_NAME, VERTEX2_NAME, DISTANCE_BETWEEN_VERTICIES" << '\n';
@@ -122,9 +122,9 @@ int build_adjacency_list(const std::string& filename, const std::string& write_n
                     write_file.close();
                     return -1;
                 }
-
+                line_read.seekg(vertex2_size + spacer, line_read.cur);
                 // Ensure edge weight between verticies is found before end of current line
-                line_read.seekg(line_read.tellg() + vertex2_size + spacer);
+                // line_read.seekg(line_read.tellg() + vertex2_size + spacer);
                 if (line_read.tellg() == -1) {
                     std::cerr << "\nFILE ERROR: Expected position of vertex 2 was not found (out of bounds)!" << '\n';
                     std::cerr << "Please ensure each line follows format:\n\t VERTEX1_NAME, VERTEX2_NAME, DISTANCE_BETWEEN_VERTICIES" << '\n';
