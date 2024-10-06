@@ -10,7 +10,7 @@
 #include <filesystem>
 #include <cstdlib>
 // sys/wait.h is only compatible Linux OS
-#if def__linux__
+#ifdef __linux__
 #include <sys/wait.h>
 #else
 #endif
@@ -91,7 +91,7 @@ int main(void) {
     }
 
     // Execute Bash shell scripts for image generation if Linux OS is detected
-    #if def__linux__
+    #ifdef __linux__
     // Preset Script Path and Graph Image Locations based on User Requested Information for Linux Users
     std::string script_path;
     std::string_view request_type;
