@@ -51,105 +51,260 @@ This project can be built by either using:
 1. [CMake](https://www.kitware.com/cmake-3-30-1-available-for-download)
 2. [Provided Unix Makefile](./makefile)
 
-> [!WARNING]
-> Project-involved implementation and interaction is primarily conducted within a Bash shell.
-> The provided shell script and commands listed below require use of a Bash-integrated command-line
-> terminal on the local machine cloning the repository in order to operate as intended.
+## Setup Requirements for Mac OS Users
+
+Notable Requirements:
+1. **If you wish to build the project using CMake**, [Homebrew](https://brew.sh/) must be installed before
+   attempting to build the project locally. The provided scripts used to build the CMake Project require
+   the use of the Bash environment provided by Homebrew in order to install package dependencies properly.
+
+   **If you do not wish to install CMake or Homebrew**, you may use the provided Makefile to build project
+   instead, but this will still require the use of a Bash shell terminal and will prevent access to the
+   the GoogleTest testing suite.
+
+2. [Graphviz](https://www.graphviz.org/) is required to generate the graphical images from the information
+   provided by the selected text file. This will be automatically installed by the `macOS_setup.sh` script,
+   but users who choose to build the project using the stand-alone Makefile MUST manually install Graphviz before
+   executing the program.
+
+3. GCC Compiler using standard of C++20 (or newer). This will be provided by Homebrew if it is installed.
+   If Homebrew is not installed, the Makefile may be modified to use another locally provided compiler on
+   Mac systems, such as clang.
+
+
+## Setup Requirements for Linux Users (And Windows Users using WSL)
+
+Notable Requirements:
+1. **If you wish to build the project using CMake**, the provided scripts used to build the CMake Project require
+   the use of the Bash environment in order to install package dependencies properly.
+   > [!NOTE] If your Linux distribution is not **Debian** or **Ubuntu**, `linux_setup.sh` will attempt to
+   > build the CMake Project using the corresponding commands for any recognized Linux Distribution. 
+   > These will be limited to those supported by [GraphViz](https://www.graphviz.org/download/)
+
+   **If you do not wish to install CMake**, you may use the provided Makefile to build project
+   instead, but this will still require the use of a Bash shell terminal and will prevent access to the
+   the GoogleTest testing suite.
+
+2. [Graphviz](https://www.graphviz.org/) is required to generate the graphical images from the information
+   provided by the selected text file. This will be automatically installed by the `linux_setup.sh` script,
+   but users who choose to build the project using the stand-alone Makefile **MUST** manually install Graphviz before
+   executing the program.
+
+3. GCC Compiler using standard of C++20 (or newer). On most Linux distributions, this should be already
+   available and located for immediate use by the program and associated scripts.
+
+
+## Setup Requirements for Windows Users (MSYS2)
+
+Notable Requirements:
+1. **It is highly recommended to build the project using CMake and MSYS2**. 
+   Project-involved interaction is primarily conducted within a Windows Powershell terminal
+   and is intended to be built on Windows systems with [MSYS2](https://www.msys2.org/) installed.
+   The provided scripts require the use of Windows Powershell and MSYS2 libraries on the local machine
+   cloning the repository in order to install the required package dependencies and operate as intended.
+
+   > [!IMPORTANT]
+   > Due to reduced library support for older Windows Operating Systems, it is strongly recommended that
+   > the repository is cloned on a machine operating on Windows 10 or newer.
+   >
+   > Due to elevated permissions being required to execute scripts in the Powershell terminal, please ensure the terminal
+   > being utilized to clone the repository has the required level of permission. You can test this by executing the
+   > `os_check.ps1` script (Enter ```./graph_repo/scripts/os_check.ps1``` into the terminal). 
+   > If script execution is denied, visit
+   > https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4
+   > to change the permission policies. Alternatively, if using an IDE, you may be able to resolve this by configuring the IDE's terminal
+   > settings for Powershell.
+
+   **If you do not wish to install MYS2**, you may use the provided Makefile to build project
+   instead, but this will still require the installation of [MSYS2](https://www.msys2.org/) or
+   related types of software to build/compile the project using the Makefile and the Powershell terminal.
+   Alternatively, you may install the [Windows Subsystem for Linux(WSL)](https://learn.microsoft.com/en-us/windows/wsl/install),
+   and then follow the instructions provided for Linux users instead.
+
+2. While the Powershell script `windows_setup.ps1` will automatically install all package dependencies
+   for the project, commands that utilize [Graphviz](https://www.graphviz.org/) (to build the graph images)
+   and [CMake](https://www.kitware.com/cmake-3-30-1-available-for-download) (to build the project)
+   **require the addition of their installation locations to the system PATH manually**. Instructions on how to
+   quickly accomplish this will be provided below.
+
+3. To better optimize build/rebuild time of the program, the CMake project is configured to utilize [ninja](https://packages.msys2.org/base/mingw-w64-ninja)
+   This package can be quickly installed using MSYS2 using the provided instructions below.  
+
+4. GCC Compiler using standard of C++20 (or newer). This will be provided by MSYS2 if it is installed.
 
 
 # Building The Project Using CMake
 
-## Testing for Local Machine Compatibility
+## Testing for Local Machine Script Compatibility
 
-The repository provides several different shell scripts to build the project using CMake 
-on local machines with **MacOS** and **Linux** within the [Scripts Directory](./scripts/).
+The repository provides several different sets of shell scripts to build the project using CMake 
+on local machines with **MacOS**, **Linux**, and **Windows** within the [Scripts Directory](./scripts/).
 These will be addressed in further detail below.
 
 For users that are unsure of their local machine's compatibility with the shell scripts used to build 
-the project using CMake, the `os_check.sh` script can be run after cloning the repository to their
-local machine. The `os_check.sh` script will print out the OS description of their local machine and
-the corresponding instructions by entering:
+the project using CMake, users can utilize either of the scripts to test compatibility immediately 
+after cloning the repository to their local machine:
 
-```
-source ./graph_repo/scripts/os_check.sh
-```
+ 1. Run the `os_check.sh` script within a **git bash** terminal by entering:
+   ```
+   source ./graph_repo/scripts/os_check.sh
+   ```
+
+ 2. Run the `os_check.ps1` script within a **Powershell** terminal by entering:
+   ```
+   ./graph_repo/scripts/os_check.ps1
+   ```
+
+Both scripts will attempt to determine the relevant OS information and provide the appropriate set
+of instructions based on this information.
 
 > [!TIP]
-> The appropriate shell script will attempt to install and/or update the items listed below
+> The appropriate xxx_setup shell script will attempt to install and/or update the items listed below
 > when it attempts to build the project locally ***with the exception of Homebrew***.
 > 
 > If the expected path to Bash does not exist or is incorrect, the script will not run.
 > If this occurs and Bash does exist within the local machine, the top line of the script
 > can be changed to the correct path to Bash locally to allow for the script(s) to be run.
 
-### Required Dependencies
 
-The following are required to build the project using CMake:
-1. [cmake version 3.0.0 (or newer)](https://www.kitware.com/cmake-3-30-1-available-for-download/)
-2. GCC Compiler using standard of C++20 (or newer)
-3. [Homebrew](https://brew.sh/) (*MacOS users only*)
-4. [Graphviz](https://www.graphviz.org/)
+## Building CMake Project on Linux (or WSL)
 
-> [!WARNING]
-> For local machines with **MacOS**, please ensure you have **Homebrew** installed on your local machine if intending
-> to build the program using cmake. Please install [Homebrew](https://brew.sh/) if not currently installed.
->
-> For local machines with **Linux Distributions**, if the distribution is not **Debian** or **Ubuntu**,
-> the shell scripts will attempt to detect and use commands accepted by other Linux distributions supported by [GraphViz](https://www.graphviz.org/download/)
-> to build the CMake Project but it is not guaranteed to succeed. Running the `os_check.sh` script may help determine whether the distribution is compatible
-> with `linux_setup.sh` script. However, the project can still be built using the provided [Makefile](./makefile).
->
-> For local machines with **Windows**, if you are utilizing **Cygwin** or **MingW**, the shell scripts
-> will most likely be unable to properly build the CMake Project. Please install the [Windows Subsystem for Linux(WSL)](https://learn.microsoft.com/en-us/windows/wsl/install)
-> in order to build the CMake Project on a local machine using Windows.
+1. Open a new Bash terminal at the desired location to build the project within your local machine
 
+2. Clone the repository: `git clone <enter-the-repository-url-here>`
 
-## Running Provided Shell Script for CMake Build
+3. Run the `os_check.sh` script to confirm your local bash environment is accessible by the script
+   and your Linux distribution is supported. If the script does not execute the environment path listed at
+   the top of the script may need to changed to match that found locally on your terminal
 
-After cloning this repository in your preferred text editor, you may run one of several shell
-scripts provided within the [Scripts Directory](./scripts/) to build/rebuild the project.
+4. Run the `linux_setup.sh` shell script to build the project by entering the following:
+      ```
+      source ./graph_repo/scripts/Linux/linux_setup.sh
+      ```
 
+      `linux_setup.sh` will build a **Release** and **Debug** configuration of the project **Graph_TIProject**
 
-### Shell Script for Building CMake Project on MacOS
+5. Upon successful completion, the script will provide a list of commands that can be directly entered into
+   the terminal to execute the program or the GoogleTest testing suite in either project configuration. They can be found within the readme:
 
-For users wishing to build the project on a local machine using **MacOS**, run the
-`macOS_setup.sh` shell script to build the project by entering the following:
+      [How to execute the Cmake project configurations using the terminal](#executing-the-cmake-project-configurations-using-the-command-line-interface)
+      [How to execute the GoogleTest Testing Suite using the terminal](#executing-the-googletest-testing-suite-using-the-command-line-interface)
 
-```
-source ./graph_repo/scripts/macOS_setup.sh
-```
+      [How to execute the CMake project configurations using the CMakeTools extension](#executing-the-cmake-project-configurations-using-the-cmaketools-extension)
+      [How to execute the GoogleTest Testing Suite using the CMakeTools extension](#executing-the-googletest-testing-suite-using-the-cmaketools-extension)
 
-`macOS_setup.sh` will build a **Release** and **Debug** configuration of the project **Graph_TIProject**
+6. If modifications are made to program files, both program configurations can be simultaneously rebuilt
+   by executing the `update_linux.sh` script:
+      ```
+      source ./scripts/Linux/update_linux.sh
+      ```
+
+7. Upon completion of the program, the graph images may be found in the `graph_images folder`. These will be overwritten
+   at the end of each program execution so any that may wished to be preserved you should be stored in a separate folder
+   before the next program execution.
 
 
-### Shell Script for Building CMake Project on Linux/Windows
+## Building CMake Project on MacOS
 
-For users wishing to build the project on a local machine using either a **Debian**/**Ubuntu** Linux distribution
-or the **Windows Subsystem for Linux** (***For other Linux distributions please run `os_check.sh` to determine compatibility***),
-run the `linux_setup.sh` shell script to build the project by entering the following:
+1. Install Homebrew by visiting https://brew.sh/ and following the setup instructions
 
-```
-source ./graph_repo/scripts/linux_setup.sh
-```
+2. Open a new Bash terminal at the desired location to build the project within your local machine
 
-`linux_setup.sh` will build a **Release** and **Debug** configuration of the project **Graph_TIProject**
+3. Clone the repository: `git clone <enter-the-repository-url-here>`
+
+3. Run the `os_check.sh` script to confirm your local bash environment is accessible by the script
+   and Homebrew is properly installed. If the script does not execute the environment path listed at
+   the top of the script may need to changed to match that found locally on your terminal
+
+4. Run the `macOS_setup.sh` shell script to build the project by entering the following:
+      ```
+      source ./graph_repo/scripts/MacOS/macOS_setup.sh
+      ```
+
+      `macOS_setup.sh` will build a **Release** and **Debug** configuration of the project **Graph_TIProject**
+
+5. Upon successful completion, the script will provide a list of commands that can be directly entered into
+   the terminal to execute the program or the GoogleTest testing suite in either project configuration. They can be found within the readme:
+
+      [How to execute the Cmake project configurations using the terminal](#executing-the-cmake-project-configurations-using-the-command-line-interface)
+      [How to execute the GoogleTest Testing Suite using the terminal](#executing-the-googletest-testing-suite-using-the-command-line-interface)
+
+      [How to execute the CMake project configurations using the CMakeTools extension](#executing-the-cmake-project-configurations-using-the-cmaketools-extension)
+      [How to execute the GoogleTest Testing Suite using the CMakeTools extension](#executing-the-googletest-testing-suite-using-the-cmaketools-extension)
+
+6. If modifications are made to program files, both program configurations can be simultaneously rebuilt
+   by executing the `update_MacOS.sh` script:
+      ```
+      source ./scripts/MacOS/update_MacOS.sh
+      ```
+
+7. Upon completion of the program, the graph images may be found in the `graph_images folder`. These will be overwritten
+   at the end of each program execution so any that may wished to be preserved you should be stored in a separate folder
+   before the next program execution.
 
 
-### Shell Script for Building/Rebuilding Project Configurations
+## Building CMake Project on Windows (using MSYS2)
 
-***After running either setup scripts***, the `update.sh` shell script can be run at any time to
-rebuild the **Debug** and **Release** configurations of the CMake Project files by entering the following:
+1. Install MSYS2 by visiting https://www.msys2.org/ and following the installation instructions to install the suggested version
 
-```
-source ./scripts/update.sh
-```
+2. Confirm Path to MYS was added to the System Environment Variable Paths for Powershell access
+      - Click Windows Start Icon > Settings > Enter and Select 'Edit environment variables for your account' from the search bar
+      - Double Click 'Path' under the 'User Variables for ..' section within the 'Environment Variables' window
 
-This script should be compatible with both **MacOS** and **Linux** machines but **MacOS** users may simply
-replace the `update.sh` script's top line of `#!/usr/bin/env bash` with `#!/opt/homebrew/bin/bash`
-if any issues are encountered.
+      - Click 'New' > Copy and Paste the full path to the 'bin' folder of MSYS
+         - The default path after installation of the 64-bit version, for example, would be:  C:\msys64\ucrt64\bin
+
+      - Click 'Ok' in 'Edit Environment Variable' window AND in 'Environment Variables' window to confirm addition of path
+
+3. Install the ninja package using the MSYS2 terminal:
+      - Locate and double click the newly installed application of MSYS2 MINGW64 (for 64-bit systems) to open the MINGW64 terminal
+      - [Visit the MSYS2 page listing the commands for installing ninja](https://packages.msys2.org/base/mingw-w64-ninja)
+      - Select the matching ninja package with title matching the suggested version of MSYS2 that was installed (most likely ucrt) 
+      - Copy the command listed to the right of the section titled "Installation: " (for example: `pacman -S mingw-w64-ucrt-x86_64-ninja`)
+
+4. Open a new Powershell terminal at the desired location to build the project within your local machine
+
+5. Clone the repository: `git clone <enter-the-repository-url-here>`
+
+6. Run the `os_check.ps1` script to confirm your local Powershell terminal has permission to execute the script.
+      - If this fails, view the [windows requirements section listed within the readme](#setup-requirements-for-windows-users-msys2) to fix this
+        before proceeding further
+
+7. Run the `install_reqs.ps1` script to install the windows-compatible versions of Graphviz and CMake using 'winget':
+      - If the script indicates it failed to install either of these using winget, you may need to manually install them
+      - [Site for Graphviz](https://www.graphviz.org/)
+      - [Site for CMake](https://www.kitware.com/cmake-3-30-1-available-for-download)
+      - If the script succeeds it will provide the default paths for both packages (C:\Program Files\Name or C:\Program Files(x86)\Name)
+
+8. Copy the full paths to the 'bin' folders of both Graphviz and CMake and add each of them to the System Path (Repeat Step #2)
+
+9. Run the `windows_setup.ps1` Powershell script to build the project by entering the following:
+      ```
+      ./graph_repo/scripts/Windows/windows_setup.sh
+      ```
+
+      `windows_setup.ps1` will build a **Release** and **Debug** configuration of the project **Graph_TIProject**
+
+10. Upon successful completion, the script will provide a list of commands that can be directly entered into
+   the terminal to execute the program or the GoogleTest testing suite in either project configuration. They can be found within the readme:
+
+      [How to execute the Cmake project configurations using the terminal](#executing-the-cmake-project-configurations-using-the-command-line-interface)
+      [How to execute the GoogleTest Testing Suite using the terminal](#executing-the-googletest-testing-suite-using-the-command-line-interface)
+
+      [How to execute the CMake project configurations using the CMakeTools extension](#executing-the-cmake-project-configurations-using-the-cmaketools-extension)
+      [How to execute the GoogleTest Testing Suite using the CMakeTools extension](#executing-the-googletest-testing-suite-using-the-cmaketools-extension)
+
+11. If modifications are made to program files, both program configurations can be simultaneously rebuilt by executing the `update_windows.ps1` script:
+      ```
+      ./scripts/Windows/update_win.ps1
+      ```
+
+12. Upon completion of the program, the graph images may be found in the `graph_images folder`. These will be overwritten
+   at the end of each program execution so any that may wished to be preserved you should be stored in a separate folder
+   before the next program execution.
 
 
-## Executing the CMake Project Configurations using the Command Line Interface 
+# Executing the CMake Project Configurations using the Command Line Interface 
 
 After the appropriate shell script has finished running, the main program can be executed in the
 **Debug** Configuration (Provides additional information reporting not visible in **Release**) 
@@ -167,19 +322,13 @@ Execute the main program in **Release** mode by enter the following in the termi
 ./build/release/Graph_TIProject
 ```
 
-To Rebuild/Update both Configurations, run the `update.sh` shell script:
-
-```
-source ./scripts/update.sh
-```
-
 > [!NOTE]
-> All provided commands ***with the exception of those for running `linux_setup.sh`, `macOS_setup.sh`, and `check_os.sh`*** 
+> All provided commands ***with the exception of those for running `linux_setup.sh`, `macOS_setup.sh`, and `windows_setup.ps1`*** 
 > are intended to be run with `graph_repo` as the current working directory. If entering any of the other provided commands
 > ***verbatim***, please ensure the current working directory is `graph_repo` when entering these into the terminal.
 
 
-## Executing the CMake Project Configurations using the CMakeTools Extension
+# Executing the CMake Project Configurations using the CMakeTools Extension
 
 After the appropriate initial setup script has finished running, any user using the **Microsoft Visual Studio/VSCode**
 text editor may utilize the [CMakeTools](https://code.visualstudio.com/docs/cpp/CMake-linux) extension to generate a UI for managing the CMake Project:
@@ -200,20 +349,13 @@ text editor may utilize the [CMakeTools](https://code.visualstudio.com/docs/cpp/
     1. Locate the section titled `Project Status`
     2. Click the `Select Configure Preset` Icon under the Section titled `Configure`
     3. Select the Preferred Configuration for Building/Executing from the drop-down Command Palette menu:
-       - Select `Debug_DIR` to Utilize the **Debug** Configuration
-       - Select `Release_DIR` to Utilize the **Release** Configuration
+       - Select `<Your_OS_Type>_Debug_DIR` to Utilize the **Debug** Configuration
+       - Select `<Your_OS_Type>_Release_DIR` to Utilize the **Release** Configuration
 
-5. Build or Rebuild all files within the target `Graph_TIProject` CMake Project by doing **ONE** of the following:
+5. Build or Rebuild all files within the target `Graph_TIProject` CMake Project:
 
     -  Click the `Build` icon in upper right-hand corner of the title for the `Build` section under `Project Status`
        to rebuild the selected project configuration
-
-    - After ensuring the current working directory is `graph_repo`, enter the following into the terminal,
-      which will rebuild both the **Debug** and **Release** Configurations simultaneously:
-
-            ```
-            source ./scripts/update.sh
-            ```
 
 6. Select the Appropriate File to Execute/Run
 
@@ -232,12 +374,13 @@ The following are required to build the project utilizing the provided standalon
 2. [Graphviz](https://www.graphviz.org/)
 
 > [!NOTE]
-> The scripts located at `./scripts/visualize_graph_MST.sh` and `./scripts/visualize_graph_SP.sh` are automatically executed
-> at the conclusion of the program to generate the graphical image of the MST and shortest path, respectively. If these images are not
-> produced, the path to the local bash env folder (**path used by scripts is defined on first line**) may be incorrect and
-> will need to be changed to the correct local path to bash in order to execute properly. You may also simply copy and paste the commands
-> from the appropriate script to manually generate the image of the requested type after the program has finished.
-> **Please ensure you have preinstalled [Graphviz](https://www.graphviz.org/download/) before executing the program.**
+> The scripts used to convert the processed information into output formatted graphical image are automatically executed
+> at the conclusion of the program to generate the graphical image of the MST or shortest path. If these images are not
+> produced, the path to the local env folder to Graphviz on Windows Systems or the local bash env folder on Linux/MacOS
+> may be invalid and needs to be corrected. On Linux/Mac systems, you may copy and paste the commands from the appropriate script to manually
+> generate the image of the requested type after the program has finished. On Windows systems you must correctly enter the path to
+> 'bin' folder in your System's environment variables in order for Powershell to be able to access it for image generation.
+> **Please confirm [Graphviz](https://www.graphviz.org/download/) has been installed before executing the program.**
 
 After cloning this repository in your preferred text editor, enter the commands into the terminal:
 
