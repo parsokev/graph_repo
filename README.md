@@ -223,12 +223,12 @@ of instructions based on this information.
    the terminal to execute the program or the GoogleTest testing suite in either project configuration. They can be found within the readme:
 
    Using the Terminal:
-   [How to execute the Cmake project configurations using the terminal](#executing-the-cmake-project-configurations-using-the-command-line-interface)
-   [How to execute the GoogleTest Testing Suite using the terminal](#executing-the-googletest-testing-suite-using-the-command-line-interface)
+   - [How to execute the Cmake project configurations using the terminal](#executing-the-cmake-project-configurations-using-the-command-line-interface)
+   - [How to execute the GoogleTest Testing Suite using the terminal](#executing-the-googletest-testing-suite-using-the-command-line-interface)
 
    Using the CMakeTools Extension:
-   [How to execute the CMake project configurations using the CMakeTools extension](#executing-the-cmake-project-configurations-using-the-cmaketools-extension)
-   [How to execute the GoogleTest Testing Suite using the CMakeTools extension](#executing-the-googletest-testing-suite-using-the-cmaketools-extension)
+   - [How to execute the CMake project configurations using the CMakeTools extension](#executing-the-cmake-project-configurations-using-the-cmaketools-extension)
+   - [How to execute the GoogleTest Testing Suite using the CMakeTools extension](#executing-the-googletest-testing-suite-using-the-cmaketools-extension)
 
 6. If modifications are made to program files, both program configurations can be simultaneously rebuilt
    by executing the `update_MacOS.sh` script:
