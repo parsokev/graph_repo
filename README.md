@@ -36,7 +36,7 @@ Regardless of which type of request is placed by the user into the terminal, the
 
 1. PNG-format image of the entire graph extracted from the user-selected text file in the `sample_graphs` directory
    under the filename of `full_graph.png`.
-2. PNG-format depiction of the requested MST or Shortest Path placed over the intial generated image of `full_graph.png`
+2. PNG-format depiction of the requested MST or Shortest Path placed over the initial generated image of `full_graph.png`
    within the filenames of `MST_overlay.png` and `shortest_path_overlay.png`, respectively.
 3. Summary of the accumulated cost/weight and verticies/edges corresponding to the generated MST/Shortest Path that is printed to the terminal.
 
@@ -46,7 +46,7 @@ Several examples of images generated can be viewed in the [Example Images Genera
 
 # Getting Started
 
-**Virtual Environments for Linux/MacOS/WSL Users Only**:
+## Building Project within a Virtual Environment (Linux/MacOS/WSL Users Only)**:
 If wishing to build the project within a virtual environment on your local machine, you may the run the python3 `local_setup.py` file
 immediately after cloning the repository to build the .exe files of project's package dependencies within the virtual environment.
 
@@ -98,7 +98,7 @@ Notable Requirements:
    the use of the Bash environment in order to install package dependencies properly.
 
 > [!NOTE]
-> If your Linux distribution is not **Debian** or **Ubuntu**, `linux_setup.sh` will attempt to
+> If your Linux distribution is **not Debian or Ubuntu**, `linux_setup.sh` will attempt to
 > build the CMake Project using the corresponding commands for any recognized Linux Distribution. 
 > These will be limited to those supported by [GraphViz](https://www.graphviz.org/download/)
 
@@ -132,7 +132,7 @@ Notable Requirements:
 > being utilized to clone the repository has the required level of permission. You can test this by executing the
 > `os_check.ps1` script (Enter ```./graph_repo/scripts/os_check.ps1``` into the terminal).
 > 
-> **If script execution is denied**, consult the [microsoft documentation page](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4)
+> **If script execution is denied**, consult [this Microsoft documentation page](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4)
 > to change the permission policies.
 > 
 > Alternatively, if using an IDE, you may be able to resolve this by configuring the IDE's terminal
@@ -148,10 +148,10 @@ Notable Requirements:
    for the project, commands that utilize [Graphviz](https://www.graphviz.org/) (to build the graph images)
    and [CMake](https://www.kitware.com/cmake-3-30-1-available-for-download) (to build the project)
    **require the addition of their installation locations to the system PATH manually**. Instructions on how to
-   quickly accomplish this can be found [in the windows setup section](#setup-requirements-for-windows-users-msys2).
+   quickly accomplish this can be found [in the windows setup section](#building-cmake-project-on-windows-using-msys2).
 
 3. To better optimize build/rebuild time of the program, the CMake project is configured to utilize [ninja](https://packages.msys2.org/base/mingw-w64-ninja).
-   This package can be quickly installed using MSYS2 following the instructions [in the windows setup section](#setup-requirements-for-windows-users-msys2).  
+   This package can be quickly installed using MSYS2 following the instructions [in the windows setup section](#building-cmake-project-on-windows-using-msys2).  
 
 4. GCC Compiler using standard of C++20 (or newer). This will be provided by MSYS2 if it is installed.
 
@@ -168,7 +168,7 @@ For users that are unsure of their local machine's compatibility with the shell 
 the project using CMake, users can utilize either of the scripts to test compatibility immediately 
 after cloning the repository to their local machine:
 
- 1. Run the `os_check.sh` script within a **git bash** terminal by entering:
+ 1. Run the `os_check.sh` script within a **Git Bash** terminal by entering:
    ```
    source ./graph_repo/scripts/os_check.sh
    ```
@@ -210,14 +210,14 @@ of instructions based on this information.
    - [How to execute the GoogleTest Testing Suite using the CMakeTools extension](#executing-the-googletest-testing-suite-using-the-cmaketools-extension)
 
 6. If modifications are made to program files, both program configurations can be simultaneously rebuilt
-   by executing the `update_linux.sh` script:
+    from within the `graph_repo` directory by executing the `update_linux.sh` script:
       ```
       source ./scripts/Linux/update_linux.sh
       ```
 
-7. Upon completion of the program, the graph images may be found in the `graph_images folder`. These will be overwritten
-   at the end of each program execution so any that may wished to be preserved you should be stored in a separate folder
-   before the next program execution.
+7. Upon completion of the program, the generated graph image(s) will be placed within the `graph_images` folder. These will be overwritten
+   at the end of the next execution of the main program, so ensure that any images that you wish to preserve are moved to a different folder
+   after its creation.
 
 
 ## Building CMake Project on MacOS
@@ -229,8 +229,8 @@ of instructions based on this information.
 3. Clone the repository: `git clone <enter-the-repository-url-here>`
 
 3. Run the `os_check.sh` script to confirm your local bash environment is accessible by the script
-   and Homebrew is properly installed. If the script does not execute the environment path listed at
-   the top of the script may need to changed to match that found locally on your terminal
+   and Homebrew is properly installed. If the script does not execute, the path listed at the top of
+   the script may need to be updated to match the local path to Homebrew's bash env folder on your machine.
 
 4. Run the `macOS_setup.sh` shell script to build the project by entering the following:
       ```
@@ -251,26 +251,27 @@ of instructions based on this information.
    - [How to execute the GoogleTest Testing Suite using the CMakeTools extension](#executing-the-googletest-testing-suite-using-the-cmaketools-extension)
 
 6. If modifications are made to program files, both program configurations can be simultaneously rebuilt
-   by executing the `update_MacOS.sh` script:
+   from within the `graph_repo` folder by executing the `update_MacOS.sh` script:
       ```
       source ./scripts/MacOS/update_MacOS.sh
       ```
 
-7. Upon completion of the program, the graph images may be found in the `graph_images folder`. These will be overwritten
-   at the end of each program execution so any that may wished to be preserved you should be stored in a separate folder
-   before the next program execution.
+7. Upon completion of the program, the generated graph image(s) will be placed within the `graph_images` folder. These will be overwritten
+   at the end of the next execution of the main program, so ensure that any images that you wish to preserve are moved to a different folder
+   after its creation.
 
 
 ## Building CMake Project on Windows (using MSYS2)
 
 1. Install MSYS2 by visiting https://www.msys2.org/ and following the installation instructions to install the suggested version
 
-2. Confirm Path to MYS was added to the System Environment Variable Paths for Powershell access
+2. Confirm Path to MYS was added to the System Environment Variable Paths for Powershell access:
       - Click Windows Start Icon > Settings > Enter and Select 'Edit environment variables for your account' from the search bar
       - Double Click 'Path' under the 'User Variables for ..' section within the 'Environment Variables' window
 
       - Click 'New' > Copy and Paste the full path to the 'bin' folder of MSYS
-         - The default path after installation of the 64-bit version, for example, would be:  C:\msys64\ucrt64\bin
+         - The default path after installation of the 64-bit version, for example, would be:  
+            `C:\msys64\ucrt64\bin`
 
       - Click 'Ok' in 'Edit Environment Variable' window AND in 'Environment Variables' window to confirm addition of path
 
@@ -279,6 +280,7 @@ of instructions based on this information.
       - [Visit the MSYS2 page listing the commands for installing ninja](https://packages.msys2.org/base/mingw-w64-ninja)
       - Select the matching ninja package with title matching the suggested version of MSYS2 that was installed (most likely ucrt) 
       - Copy the command listed to the right of the section titled "Installation: " (for example: `pacman -S mingw-w64-ucrt-x86_64-ninja`)
+      - Enter this command to tell the package manager `pacman` to install the specified version of ninja for use by Powershell
 
 4. Open a new Powershell terminal at the desired location to build the project within your local machine
 
@@ -288,7 +290,9 @@ of instructions based on this information.
       - If this fails, view the [windows requirements section listed within the readme](#setup-requirements-for-windows-users-msys2) to fix this
         before proceeding further
 
-7. Run the `install_reqs.ps1` script to install the windows-compatible versions of Graphviz and CMake using 'winget':
+7. Run the `install_reqs.ps1` script to install the windows-compatible versions of Graphviz and CMake using [winget](https://learn.microsoft.com/en-us/windows/package-manager/winget/):
+      - Upon completing downloading of each package, windows will prompt for user verification before installing the package.
+        If you are uncomfortable with this process, you may visit the linked sites below to manually install these directly instead.
       - If the script indicates it failed to install either of these using winget, you may need to manually install them
       - [Site for Graphviz](https://www.graphviz.org/)
       - [Site for CMake](https://www.kitware.com/cmake-3-30-1-available-for-download)
@@ -319,9 +323,9 @@ of instructions based on this information.
       ./scripts/Windows/update_win.ps1
       ```
 
-12. Upon completion of the program, the graph images may be found in the `graph_images folder`. These will be overwritten
-   at the end of each program execution so any that may wished to be preserved you should be stored in a separate folder
-   before the next program execution.
+12. Upon completion of the program, the generated graph image(s) will be placed within the `graph_images` folder. These will be overwritten
+   at the end of the next execution of the main program, so ensure that any images that you wish to preserve are moved to a different folder
+   after its creation.
 
 
 ## Executing the CMake Project Configurations using the Command Line Interface 
@@ -377,6 +381,10 @@ text editor may utilize the [CMakeTools](https://code.visualstudio.com/docs/cpp/
     -  Click the `Build` icon in upper right-hand corner of the title for the `Build` section under `Project Status`
        to rebuild the selected project configuration
 
+> [!NOTE]
+> When building the project for the first time using the CMakeTools extension, the working directory within the terminal
+> may be moved to within the `build` folder, so if this happens, renavigate back to `graph_repo` before launching the program
+
 6. Select the Appropriate File to Execute/Run
 
     - Click the ***Icon that appears immediately below the Play Icon*** in the right-hand corner of the `Launch` Section.
@@ -394,13 +402,20 @@ The following are required to build the project utilizing the provided standalon
 2. [Graphviz](https://www.graphviz.org/)
 
 > [!NOTE]
-> The scripts used to convert the processed information into output formatted graphical image are automatically executed
-> at the conclusion of the program to generate the graphical image of the MST or shortest path. If these images are not
-> produced, the path to the local env folder to Graphviz on Windows Systems or the local bash env folder on Linux/MacOS
-> may be invalid and needs to be corrected. On Linux/Mac systems, you may copy and paste the commands from the appropriate script to manually
-> generate the image of the requested type after the program has finished. On Windows systems you must correctly enter the path to
-> 'bin' folder in your System's environment variables in order for Powershell to be able to access it for image generation.
-> **Please confirm [Graphviz](https://www.graphviz.org/download/) has been installed before executing the program.**
+> The scripts used to convert the processed information into a formatted graphical image are automatically executed
+> at the conclusion of the program to generate the graphical image of the MST or shortest path.
+>
+> **If these images are not produced and/or result in script failure/error**:
+> **Confirm [Graphviz](https://www.graphviz.org/download/) has been installed before executing the program.**
+>
+> If Graphviz was already properly installed, the path to the local 'bin' folder for Graphviz on Windows Systems or the local
+> bash env folder on Linux/MacOS may be invalid and needs to be corrected.
+>
+> On Linux/Mac systems, the commands from the appropriate script can be manually copied and pasted into the terminal to
+> generate the image of the requested type after the program has finished.
+>
+> On Windows systems, confirm that the path to the 'bin' folder of Graphviz in your System's environment variables is present and valid in
+> order for Powershell to be able to access Graphviz-supported commands for image generation.
 
 After cloning this repository in your preferred text editor, enter the commands into the terminal:
 
