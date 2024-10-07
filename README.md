@@ -46,7 +46,7 @@ Several examples of images generated can be viewed in the [Example Images Genera
 
 # Getting Started
 
-## Building Project within a Virtual Environment (Linux/MacOS/WSL Users Only)**:
+## Building Project within a Virtual Environment (Linux/MacOS/WSL Users Only):
 If wishing to build the project within a virtual environment on your local machine, you may the run the python3 `local_setup.py` file
 immediately after cloning the repository to build the .exe files of project's package dependencies within the virtual environment.
 
@@ -169,7 +169,7 @@ the project using CMake, users can utilize either of the scripts to test compati
 after cloning the repository to their local machine:
 
  1. Run the `os_check.sh` script within a **Git Bash** terminal by entering:
- 
+
    ```
    source ./graph_repo/scripts/os_check.sh
    ```
