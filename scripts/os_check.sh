@@ -90,9 +90,13 @@ elif [[ "$Platform" == 'MAC_OS' ]]; then
 elif [[ "$Platform" == 'Windows' ]]; then
     echo "Windows OS detected with bash environment. Please ensure you have WSL installed to run this script in a Bash shell."
     echo ""
-    echo "The \"linux_setup.sh\" script is not intended to run in Cygwin/MingW due to varying environment file paths"
-    echo "Please visit https://learn.microsoft.com/en-us/windows/wsl/install to setup WSL, which is supported by \"linux_setup.sh\""
-    echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
+    echo "If you wish to use WSL to Execute Program:"
+    echo "      Visit https://learn.microsoft.com/en-us/windows/wsl/install to setup WSL, which is supported by \"linux_setup.sh\""
+    echo ""
+    echo "If you wish to use Powershell instead of Bash:"
+    echo "      Visit https://www.msys2.org/ to see if your system is compatible with MSYS2, which is supported by \"windows_setup.ps1\""
+    echo ""
+    echo "You may also view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
 
 # If OS is not recognized, exit with notification
 else
