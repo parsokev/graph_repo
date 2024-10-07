@@ -46,6 +46,25 @@ Several examples of images generated can be viewed in the [Example Images Genera
 
 # Getting Started
 
+**Virtual Environments for Linux/MacOS/WSL Users Only**:
+If wishing to build the project within a virtual environment on your local machine, you may the run the python3 `local_setup.py` file
+immediately after cloning the repository to build the .exe files of project's package dependencies within the virtual environment.
+
+```
+# Generate virtual environment in <my_virtual_directory>
+python3 -m -venv <my_virtual_directory>
+
+# Activate virtual environment before installing package dependencies using pip installer
+source ./<my_virtual_directory>/bin/activate
+
+# Run python file for installing package dependencies within virtual environment
+python3 ./graph_repo/local_setup.py
+```
+
+Then simply follow the set-up steps for [Linux Setup](#building-cmake-project-on-linux-or-wsl) or [MacOS Setup](#building-cmake-project-on-macos) 
+
+**Due to required use of System Path in Powershell scripts, building this project within a virtual environment using Windows cannot be properly utilized at this time.**
+
 This project can be built by either using:
 
 1. [CMake](https://www.kitware.com/cmake-3-30-1-available-for-download)
