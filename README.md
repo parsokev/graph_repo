@@ -58,7 +58,7 @@ Notable Requirements:
    attempting to build the project locally. The provided scripts used to build the CMake Project require
    the use of the Bash environment provided by Homebrew in order to install package dependencies properly.
 
-   **If you do not wish to install CMake or Homebrew**, you may use the provided Makefile to build project
+   **If you do not wish to install CMake or Homebrew**, you may use the provided Makefile to build the project
    instead, but this will still require the use of a Bash shell terminal and will prevent access to the
    the GoogleTest testing suite.
 
@@ -77,9 +77,11 @@ Notable Requirements:
 Notable Requirements:
 1. **If you wish to build the project using CMake**, the provided scripts used to build the CMake Project require
    the use of the Bash environment in order to install package dependencies properly.
-   > [!NOTE] If your Linux distribution is not **Debian** or **Ubuntu**, `linux_setup.sh` will attempt to
-   > build the CMake Project using the corresponding commands for any recognized Linux Distribution. 
-   > These will be limited to those supported by [GraphViz](https://www.graphviz.org/download/)
+
+> [!NOTE]
+> If your Linux distribution is not **Debian** or **Ubuntu**, `linux_setup.sh` will attempt to
+> build the CMake Project using the corresponding commands for any recognized Linux Distribution. 
+> These will be limited to those supported by [GraphViz](https://www.graphviz.org/download/)
 
    **If you do not wish to install CMake**, you may use the provided Makefile to build project
    instead, but this will still require the use of a Bash shell terminal and will prevent access to the
@@ -103,17 +105,18 @@ Notable Requirements:
    The provided scripts require the use of Windows Powershell and MSYS2 libraries on the local machine
    cloning the repository in order to install the required package dependencies and operate as intended.
 
-   > [!IMPORTANT]
-   > Due to reduced library support for older Windows Operating Systems, it is strongly recommended that
-   > the repository is cloned on a machine operating on Windows 10 or newer.
-   >
-   > Due to elevated permissions being required to execute scripts in the Powershell terminal, please ensure the terminal
-   > being utilized to clone the repository has the required level of permission. You can test this by executing the
-   > `os_check.ps1` script (Enter ```./graph_repo/scripts/os_check.ps1``` into the terminal). 
-   > If script execution is denied, visit
-   > https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4
-   > to change the permission policies. Alternatively, if using an IDE, you may be able to resolve this by configuring the IDE's terminal
-   > settings for Powershell.
+> [!IMPORTANT]
+> Due to reduced library support for older Windows Operating Systems, it is strongly recommended that
+> the repository is cloned on a machine operating on Windows 10 or newer.
+>
+> Due to elevated permissions being required to execute scripts in the Powershell terminal, please ensure the terminal
+> being utilized to clone the repository has the required level of permission. You can test this by executing the
+> `os_check.ps1` script (Enter ```./graph_repo/scripts/os_check.ps1``` into the terminal).
+> 
+> If script execution is denied, visit
+> https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4
+> to change the permission policies. Alternatively, if using an IDE, you may be able to resolve this by configuring the IDE's terminal
+> settings for Powershell.
 
    **If you do not wish to install MYS2**, you may use the provided Makefile to build project
    instead, but this will still require the installation of [MSYS2](https://www.msys2.org/) or
@@ -125,10 +128,10 @@ Notable Requirements:
    for the project, commands that utilize [Graphviz](https://www.graphviz.org/) (to build the graph images)
    and [CMake](https://www.kitware.com/cmake-3-30-1-available-for-download) (to build the project)
    **require the addition of their installation locations to the system PATH manually**. Instructions on how to
-   quickly accomplish this will be provided below.
+   quickly accomplish this can be found [in the windows setup section](#setup-requirements-for-windows-users-msys2).
 
-3. To better optimize build/rebuild time of the program, the CMake project is configured to utilize [ninja](https://packages.msys2.org/base/mingw-w64-ninja)
-   This package can be quickly installed using MSYS2 using the provided instructions below.  
+3. To better optimize build/rebuild time of the program, the CMake project is configured to utilize [ninja](https://packages.msys2.org/base/mingw-w64-ninja).
+   This package can be quickly installed using MSYS2 following the instructions [in the windows setup section](#setup-requirements-for-windows-users-msys2).  
 
 4. GCC Compiler using standard of C++20 (or newer). This will be provided by MSYS2 if it is installed.
 
@@ -158,15 +161,6 @@ after cloning the repository to their local machine:
 Both scripts will attempt to determine the relevant OS information and provide the appropriate set
 of instructions based on this information.
 
-> [!TIP]
-> The appropriate xxx_setup shell script will attempt to install and/or update the items listed below
-> when it attempts to build the project locally ***with the exception of Homebrew***.
-> 
-> If the expected path to Bash does not exist or is incorrect, the script will not run.
-> If this occurs and Bash does exist within the local machine, the top line of the script
-> can be changed to the correct path to Bash locally to allow for the script(s) to be run.
-
-
 ## Building CMake Project on Linux (or WSL)
 
 1. Open a new Bash terminal at the desired location to build the project within your local machine
@@ -187,11 +181,13 @@ of instructions based on this information.
 5. Upon successful completion, the script will provide a list of commands that can be directly entered into
    the terminal to execute the program or the GoogleTest testing suite in either project configuration. They can be found within the readme:
 
-      [How to execute the Cmake project configurations using the terminal](#executing-the-cmake-project-configurations-using-the-command-line-interface)
-      [How to execute the GoogleTest Testing Suite using the terminal](#executing-the-googletest-testing-suite-using-the-command-line-interface)
+   Using the Terminal:
+   [How to execute the Cmake project configurations using the terminal](#executing-the-cmake-project-configurations-using-the-command-line-interface)
+   [How to execute the GoogleTest Testing Suite using the terminal](#executing-the-googletest-testing-suite-using-the-command-line-interface)
 
-      [How to execute the CMake project configurations using the CMakeTools extension](#executing-the-cmake-project-configurations-using-the-cmaketools-extension)
-      [How to execute the GoogleTest Testing Suite using the CMakeTools extension](#executing-the-googletest-testing-suite-using-the-cmaketools-extension)
+   Using the CMakeTools Extension:
+   [How to execute the CMake project configurations using the CMakeTools extension](#executing-the-cmake-project-configurations-using-the-cmaketools-extension)
+   [How to execute the GoogleTest Testing Suite using the CMakeTools extension](#executing-the-googletest-testing-suite-using-the-cmaketools-extension)
 
 6. If modifications are made to program files, both program configurations can be simultaneously rebuilt
    by executing the `update_linux.sh` script:
@@ -226,11 +222,13 @@ of instructions based on this information.
 5. Upon successful completion, the script will provide a list of commands that can be directly entered into
    the terminal to execute the program or the GoogleTest testing suite in either project configuration. They can be found within the readme:
 
-      [How to execute the Cmake project configurations using the terminal](#executing-the-cmake-project-configurations-using-the-command-line-interface)
-      [How to execute the GoogleTest Testing Suite using the terminal](#executing-the-googletest-testing-suite-using-the-command-line-interface)
+   Using the Terminal:
+   [How to execute the Cmake project configurations using the terminal](#executing-the-cmake-project-configurations-using-the-command-line-interface)
+   [How to execute the GoogleTest Testing Suite using the terminal](#executing-the-googletest-testing-suite-using-the-command-line-interface)
 
-      [How to execute the CMake project configurations using the CMakeTools extension](#executing-the-cmake-project-configurations-using-the-cmaketools-extension)
-      [How to execute the GoogleTest Testing Suite using the CMakeTools extension](#executing-the-googletest-testing-suite-using-the-cmaketools-extension)
+   Using the CMakeTools Extension:
+   [How to execute the CMake project configurations using the CMakeTools extension](#executing-the-cmake-project-configurations-using-the-cmaketools-extension)
+   [How to execute the GoogleTest Testing Suite using the CMakeTools extension](#executing-the-googletest-testing-suite-using-the-cmaketools-extension)
 
 6. If modifications are made to program files, both program configurations can be simultaneously rebuilt
    by executing the `update_MacOS.sh` script:
@@ -288,11 +286,13 @@ of instructions based on this information.
 10. Upon successful completion, the script will provide a list of commands that can be directly entered into
    the terminal to execute the program or the GoogleTest testing suite in either project configuration. They can be found within the readme:
 
-      [How to execute the Cmake project configurations using the terminal](#executing-the-cmake-project-configurations-using-the-command-line-interface)
-      [How to execute the GoogleTest Testing Suite using the terminal](#executing-the-googletest-testing-suite-using-the-command-line-interface)
+   Using the Terminal:
+   [How to execute the Cmake project configurations using the terminal](#executing-the-cmake-project-configurations-using-the-command-line-interface)
+   [How to execute the GoogleTest Testing Suite using the terminal](#executing-the-googletest-testing-suite-using-the-command-line-interface)
 
-      [How to execute the CMake project configurations using the CMakeTools extension](#executing-the-cmake-project-configurations-using-the-cmaketools-extension)
-      [How to execute the GoogleTest Testing Suite using the CMakeTools extension](#executing-the-googletest-testing-suite-using-the-cmaketools-extension)
+   Using the CMakeTools Extension:
+   [How to execute the CMake project configurations using the CMakeTools extension](#executing-the-cmake-project-configurations-using-the-cmaketools-extension)
+   [How to execute the GoogleTest Testing Suite using the CMakeTools extension](#executing-the-googletest-testing-suite-using-the-cmaketools-extension)
 
 11. If modifications are made to program files, both program configurations can be simultaneously rebuilt by executing the `update_windows.ps1` script:
       ```
@@ -304,7 +304,7 @@ of instructions based on this information.
    before the next program execution.
 
 
-# Executing the CMake Project Configurations using the Command Line Interface 
+## Executing the CMake Project Configurations using the Command Line Interface 
 
 After the appropriate shell script has finished running, the main program can be executed in the
 **Debug** Configuration (Provides additional information reporting not visible in **Release**) 
@@ -328,7 +328,7 @@ Execute the main program in **Release** mode by enter the following in the termi
 > ***verbatim***, please ensure the current working directory is `graph_repo` when entering these into the terminal.
 
 
-# Executing the CMake Project Configurations using the CMakeTools Extension
+## Executing the CMake Project Configurations using the CMakeTools Extension
 
 After the appropriate initial setup script has finished running, any user using the **Microsoft Visual Studio/VSCode**
 text editor may utilize the [CMakeTools](https://code.visualstudio.com/docs/cpp/CMake-linux) extension to generate a UI for managing the CMake Project:
