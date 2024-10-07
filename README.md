@@ -169,11 +169,13 @@ the project using CMake, users can utilize either of the scripts to test compati
 after cloning the repository to their local machine:
 
  1. Run the `os_check.sh` script within a **Git Bash** terminal by entering:
+ 
    ```
    source ./graph_repo/scripts/os_check.sh
    ```
 
  2. Run the `os_check.ps1` script within a **Powershell** terminal by entering:
+
    ```
    ./graph_repo/scripts/os_check.ps1
    ```
@@ -192,6 +194,7 @@ of instructions based on this information.
    the top of the script may need to changed to match that found locally on your terminal
 
 4. Run the `linux_setup.sh` shell script to build the project by entering the following:
+
       ```
       source ./graph_repo/scripts/Linux/linux_setup.sh
       ```
@@ -211,6 +214,7 @@ of instructions based on this information.
 
 6. If modifications are made to program files, both program configurations can be simultaneously rebuilt
     from within the `graph_repo` directory by executing the `update_linux.sh` script:
+
       ```
       source ./scripts/Linux/update_linux.sh
       ```
@@ -233,6 +237,7 @@ of instructions based on this information.
    the script may need to be updated to match the local path to Homebrew's bash env folder on your machine.
 
 4. Run the `macOS_setup.sh` shell script to build the project by entering the following:
+
       ```
       source ./graph_repo/scripts/MacOS/macOS_setup.sh
       ```
@@ -252,6 +257,7 @@ of instructions based on this information.
 
 6. If modifications are made to program files, both program configurations can be simultaneously rebuilt
    from within the `graph_repo` folder by executing the `update_MacOS.sh` script:
+
       ```
       source ./scripts/MacOS/update_MacOS.sh
       ```
@@ -301,6 +307,7 @@ of instructions based on this information.
 8. Copy the full paths to the 'bin' folders of both Graphviz and CMake and add each of them to the System Path (Repeat Step #2)
 
 9. Run the `windows_setup.ps1` Powershell script to build the project by entering the following:
+
       ```
       ./graph_repo/scripts/Windows/windows_setup.sh
       ```
@@ -318,7 +325,9 @@ of instructions based on this information.
    - [How to execute the CMake project configurations using the CMakeTools extension](#executing-the-cmake-project-configurations-using-the-cmaketools-extension)
    - [How to execute the GoogleTest Testing Suite using the CMakeTools extension](#executing-the-googletest-testing-suite-using-the-cmaketools-extension)
 
-11. If modifications are made to program files, both program configurations can be simultaneously rebuilt by executing the `update_windows.ps1` script:
+11. If modifications are made to program files, both program configurations can be simultaneously rebuilt from within the `graph_repo` directory
+    by executing the `update_windows.ps1` script:
+
       ```
       ./scripts/Windows/update_win.ps1
       ```
