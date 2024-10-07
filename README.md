@@ -113,9 +113,10 @@ Notable Requirements:
 > being utilized to clone the repository has the required level of permission. You can test this by executing the
 > `os_check.ps1` script (Enter ```./graph_repo/scripts/os_check.ps1``` into the terminal).
 > 
-> If script execution is denied, visit
-> https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4
-> to change the permission policies. Alternatively, if using an IDE, you may be able to resolve this by configuring the IDE's terminal
+> **If script execution is denied**, consult the [microsoft documentation page](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4)
+> to change the permission policies.
+> 
+> Alternatively, if using an IDE, you may be able to resolve this by configuring the IDE's terminal
 > settings for Powershell.
 
    **If you do not wish to install MYS2**, you may use the provided Makefile to build project
@@ -182,12 +183,12 @@ of instructions based on this information.
    the terminal to execute the program or the GoogleTest testing suite in either project configuration. They can be found within the readme:
 
    Using the Terminal:
-   [How to execute the Cmake project configurations using the terminal](#executing-the-cmake-project-configurations-using-the-command-line-interface)
-   [How to execute the GoogleTest Testing Suite using the terminal](#executing-the-googletest-testing-suite-using-the-command-line-interface)
+   - [How to execute the Cmake project configurations using the terminal](#executing-the-cmake-project-configurations-using-the-command-line-interface)
+   - [How to execute the GoogleTest Testing Suite using the terminal](#executing-the-googletest-testing-suite-using-the-command-line-interface)
 
    Using the CMakeTools Extension:
-   [How to execute the CMake project configurations using the CMakeTools extension](#executing-the-cmake-project-configurations-using-the-cmaketools-extension)
-   [How to execute the GoogleTest Testing Suite using the CMakeTools extension](#executing-the-googletest-testing-suite-using-the-cmaketools-extension)
+   - [How to execute the CMake project configurations using the CMakeTools extension](#executing-the-cmake-project-configurations-using-the-cmaketools-extension)
+   - [How to execute the GoogleTest Testing Suite using the CMakeTools extension](#executing-the-googletest-testing-suite-using-the-cmaketools-extension)
 
 6. If modifications are made to program files, both program configurations can be simultaneously rebuilt
    by executing the `update_linux.sh` script:
@@ -287,12 +288,12 @@ of instructions based on this information.
    the terminal to execute the program or the GoogleTest testing suite in either project configuration. They can be found within the readme:
 
    Using the Terminal:
-   [How to execute the Cmake project configurations using the terminal](#executing-the-cmake-project-configurations-using-the-command-line-interface)
-   [How to execute the GoogleTest Testing Suite using the terminal](#executing-the-googletest-testing-suite-using-the-command-line-interface)
+   - [How to execute the Cmake project configurations using the terminal](#executing-the-cmake-project-configurations-using-the-command-line-interface)
+   - [How to execute the GoogleTest Testing Suite using the terminal](#executing-the-googletest-testing-suite-using-the-command-line-interface)
 
    Using the CMakeTools Extension:
-   [How to execute the CMake project configurations using the CMakeTools extension](#executing-the-cmake-project-configurations-using-the-cmaketools-extension)
-   [How to execute the GoogleTest Testing Suite using the CMakeTools extension](#executing-the-googletest-testing-suite-using-the-cmaketools-extension)
+   - [How to execute the CMake project configurations using the CMakeTools extension](#executing-the-cmake-project-configurations-using-the-cmaketools-extension)
+   - [How to execute the GoogleTest Testing Suite using the CMakeTools extension](#executing-the-googletest-testing-suite-using-the-cmaketools-extension)
 
 11. If modifications are made to program files, both program configurations can be simultaneously rebuilt by executing the `update_windows.ps1` script:
       ```
