@@ -1,13 +1,26 @@
 $no_errors = $True
-# Install Package Dependencies
+
+# Verify Script was Called within Expected Working Directory
 $package_list = Get-Content -Path ./graph_repo/windows_requirements.txt
 if ( $null -eq $package_list ) {
     Write-Warning "'install_reqs.ps1' was executed from an unexpected location`nPlease ensure you are calling this script from:`n' ./graph_repo/windows_requirements.txt'`n"
     $no_errors = $False
 }
 
+# Check Powershell Version and Update Powershell to Newer Versions if Found
+$ps_mjv = $PSVersionTable.PSVersion.Major
+if ($ps_mjv -lt "7" ) {
+    $response = Read-Host "Detected Powershell that is older than version 7.0.0. Would you like to update Powershell?`n         Yes[Y] No[N]"
+    if ($response -eq "Y" ) {
+        Write-Output "Updating Windows Powershell to newest available version..."
+        winget install -e --Id Microsoft.PowerShell
+    }
+} 
+
+# Install Package Dependencies
 $is_installed = $null
 if ($no_errors) {
+    Write-Output "Attempting to Install and/or Update all Project Dependencies..."
     foreach( $package in $package_list ) {
         winget install -e --id $package
         # Ensure winget properly installed package on local machine
