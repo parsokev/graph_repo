@@ -17,11 +17,11 @@ SRCS := $(shell find src -type f -name '*.cpp')
 OBJS := $(SRCS:src/%.cpp=%.o)
 
 # Define general and configuration-specific compiler flags
-CXXFLAGS = -std=c++20 -Wall -Wextra -Wshadow -Wconversion -Wsign-conversion -Wunused-parameter -Wno-long-long -pedantic
+CXXFLAGS = -std=c++19 -Wall -Wextra -Wshadow -Wconversion -Wsign-conversion -Wunused-parameter -Wno-long-long -pedantic
 release: CXXFLAGS += -O3 
 debug: CXXFLAGS += -g -O0
 CPPFLAGS :=
-release: CPPFLAGS += -DNDEBUG
+release: CPPFLAGS += -DEBUG
 
 # First rule creates definition for path of file copies into target directories
 # Second rule defines how exectuable file is compiled with all dependencies, using path outlined in first rule
