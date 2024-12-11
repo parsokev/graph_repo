@@ -23,19 +23,19 @@ def setup_project():
         case "Windows":
             check_for_pip = f"py -m pip --version"
             install_pip = f"py -m ensurepip --default-pip"
-            install_list = f"py pip install -r ./requirements/windows_requirements.txt"
-            setup_script = f"powershell ./scripts/Windows/windows_setup.ps1"
+            install_list = f"pip install -r ./graph_repo/requirements/windows_requirements.txt"
+            setup_script = f"powershell ./graph_repo/scripts/Windows/windows_setup.ps1"
             is_windows = True
         case "Linux":
             check_for_pip = f"python3 -m pip --version"
             install_pip = f"python3 -m ensurepip --default-pip"
-            install_list = f"pip install -r ./requirements/linux_requirements.txt"
-            setup_script = f"source ./scripts/Linux/venv_linux_setup.sh"
+            install_list = f"pip install -r ./graph_repo/requirements/linux_requirements.txt"
+            setup_script = f"source ./graph_repo/scripts/Linux/venv_linux_setup.sh"
         case "Darwin":
             check_for_pip = f"python3 -m pip --version"
             install_pip = f"python3 -m ensurepip --default-pip"
-            install_list = f"python3 pip install -r ./requirements/mac_requirements.txt"
-            setup_script = f"source ./scripts/MacOS/venv_macOS_setup.sh"
+            install_list = f"pip install -r ./graph_repo/requirements/mac_requirements.txt"
+            setup_script = f"source ./graph_repo/scripts/MacOS/venv_macOS_setup.sh"
         case _:
             is_compatible = False
             print("System {} detected. This program may not be compatible with your local machine OS".format(system_type))
@@ -65,12 +65,12 @@ def setup_project():
             print("Not all requirements were able to succesfully updated or installed. Please view the printed errors above.")
         print("Success! All requirements have been installed or updated!")
 
-        # # Attempt to run system-specific setup script to build CMake project
-        # try:
-        #     call_commands(setup_script)
-        # except Exception as err:
-        #     print(err.args)
-        #     print("One or more error(s) were encountered while running the setup script. Please view the printed errors above.")
+        # Attempt to run system-specific setup script to build CMake project
+        try:
+            call_commands(setup_script)
+        except Exception as err:
+            print(err.args)
+            print("One or more error(s) were encountered while running the setup script. Please view the printed errors above.")
         
 
         # If windows user, notify user of need to download graphviz zip archive and place it in 'Graphviz' directory
