@@ -32,71 +32,20 @@ if [[ "$Platform" == 'Linux' ]]; then
         ;;
     esac
 
-    # Attempt to install package dependencies if Debian/Ubuntu is detected
+    # Verify Linux-based system is supported
     if [[ "$Linux_Distro" == 'Ubuntu' ]]; then
         echo "Ubuntu/Debian distribution detected."
-        echo "Checking for updates to Ubuntu Distribution..."
-        sudo apt-get -y update && sudo apt-get -y upgrade
-        echo "Attempting to install package dependencies..."
-        sudo apt-get -y --ignore-missing install $(< ./graph_repo/requirements/linux_requirements.txt)
-        if [ $? -ne 0 ]; then
-            echo "Failed to install package dependencies for Ubuntu/Debian Distribution"
-            echo "All dependencies are required in order to properly utlize the project."
-            echo "Please ensure you have not moved \"requirements.txt\" from its original position within the cloned repository"
-            echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
-            kill -INT 0
-        fi
     
-    # Attempt to install package dependencies if CentOS is detected
     elif [[ "$Linux_Distro" == 'CentOS' ]]; then
-        echo "CentOS detected... Attempting to install package dependencies..."
-        sudo yum -y --ignore-missing install $(< ./graph_repo/linux_requirements.txt)
-        if [ $? -ne 0 ]; then
-            echo "Attempting to install package dependencies using dnf..."
-            sudo dnf -y --ignore-missing install $(< ./graph_repo/linux_requirements.txt)
-            if [ $? -ne 0 ]; then
-                echo "Failed to install package dependencies"
-                echo "All dependencies are required in order to properly utlize the project."
-                echo "Please ensure you have not moved \"requirements.txt\" from its original position within the cloned repository"
-                echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
-                kill -INT 0
-            fi
-        fi
+        echo "CentOS detected."
     
-    # Attempt to install package dependencies if Red Hat is detected
     elif [[ "$Linux_Distro" == 'Red Hat' ]]; then
-        echo "Red Hat detected... Attempting to install package dependencies..."
-        sudo yum -y --ignore-missing install $(< ./graph_repo/linux_requirements.txt)
-         if [ $? -ne 0 ]; then
-            echo "Attempting to install package dependencies using dnf..."
-            sudo dnf -y --ignore-missing install $(< ./graph_repo/linux_requirements.txt)
-            if [ $? -ne 0 ]; then
-                echo "Failed to install package dependencies"
-                echo "All dependencies are required in order to properly utlize the project."
-                echo "Please ensure you have not moved \"requirements.txt\" from its original position within the cloned repository"
-                echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
-                kill -INT 0
-            fi
-        fi
+        echo "Red Hat detected."
 
     # Notify user if Linux Distribution is not recognized as supported by GraphViz with potential solutions
     else
         echo "Linux distribution was unrecognized from list of distributions known to be compatible with graph visualization tools"
         echo "Please visit https://www.graphviz.org/download/ to ensure your Linux distribution is compatible."
-        echo "Attempting to install package dependencies using yum..."
-        sudo yum -y --ignore-missing install $(< ./graph_repo/linux_requirements.txt)
-        if [ $? -ne 0 ]; then
-            echo "Attempting to install package dependencies using dnf..."
-            sudo dnf -y --ignore-missing install $(< ./graph_repo/linux_requirements.txt)
-            if [ $? -ne 0 ]; then
-                echo "Failed to install package dependencies"
-                echo "All dependencies are required in order to properly utlize the project."
-                echo "Please ensure you have not moved \"requirements.txt\" from its original position within the cloned repository"
-                echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
-                kill -INT 0
-            fi
-        fi
-        echo "Package dependencies successfully installed!"
         echo "If your linux distribution is not listed as supported, you may still use the Unix Makefile to run the program without CMake or attempt to run the program"
         echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
     fi
@@ -221,20 +170,17 @@ else
     echo "\"Debug\" Configuration of CMake Project successfully built!"
 fi
 
-cd ..
+cd ../../
 
 # Provide Usage Instructions
 echo ""
 echo "Both CMake projects have been successfully built and compiled!"
 echo ""
-echo "EXECUTING PROGRAM:\n"
-echo "When executing strictly through the command line, you must execute from WITHIN the directory containing the Graph_TIProject.exe file"
-echo "To Immediately Run the Program in Release Mode: "
-echo "      Enter into the Terminal: 'cd ./release; ./GraphTI_Project' "
-echo "To Immediately Run the Program in Debug Mode: " 
-echo "      Enter into the Terminal: 'cd ./debug; ./GraphTI_Project' "
+echo "EXECUTING PROGRAM:"
+echo "To Run the Program in Release Mode, Enter into the Terminal: \"./build/release/Graph_TIProject\""
+echo "To Run the Program in Debug Mode, Enter into the Terminal: \"./build/debug/Graph_TIProject\""
 echo ""
 echo "EXECUTING TESTING SUITE:"
-echo "To Run all tests within GoogleTest testing suite, Enter: \"./release/tests\" or \"./debug/tests\" for additional reporting"
+echo "To Run all tests within GoogleTest testing suite, Enter: \"./build/release/tests\" or \"./build/debug/tests\" for additional reporting"
 echo ""
 echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"

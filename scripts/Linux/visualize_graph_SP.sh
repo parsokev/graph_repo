@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 
-# MacOS Homebrew Users:
-# replace top line with line contained within <> if script does not run as is: <#!/opt/homebrew/bin/bash>
-
 # Attempt to generate image of entire processed graph using graphwiz
-dot -Tpng:cairo ./dot_graphs/full_graph.gv -o ./graph_images/full_graph.png
+dot -Tpng:cairo ../../dot_graphs/full_graph.gv -o ../../graph_images/full_graph.png
 if [ $? -ne 0 ]; then
     echo ""
     echo "VISUALIZATION ERROR DETECTED: An error was encountered while attempting to generate the image for the Complete Graph within \"full_graph.png\""
@@ -16,7 +13,7 @@ else
 fi
 
 # Attempt to generate image of shortest path overlaying the entire processed graph using graphwiz
-dot -Tpng:cairo ./dot_graphs/shortest_path_overlay.gv -o ./graph_images/shortest_path_overlay.png
+dot -Tpng:cairo ../../dot_graphs/shortest_path_overlay.gv -o ../../graph_images/shortest_path_overlay.png
 if [ $? -ne 0 ]; then
     echo ""
     echo "VISUALIZATION ERROR DETECTED: An error was encountered while attempting to generate the image for the Shortest Path within \"shortest_path_overlay.png\""
