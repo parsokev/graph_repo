@@ -6,7 +6,6 @@
 #include <cstdio>
 #include <cerrno>
 #include "../includes/gprintf.hpp"
-
 // Write formatted error information using list of arguments passed in function call to standard error
 void(vgprintf)(char const *prefix, char const *fmt, va_list ap)
 {

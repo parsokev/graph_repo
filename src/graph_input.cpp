@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <iosfwd>
-#include <tuple>
 #include <string>
 #include <cstdio>
 #include <fstream>
@@ -9,14 +8,16 @@
 #include <list>
 #include <algorithm>
 
-#include "../includes/derived_hashmap.hpp"
+
 #include "../includes/graph_input.hpp"
+#include "../includes/derived_hashmap.hpp"
 #include "../includes/graph_processing.hpp"
+#include "../includes/gprintf.hpp"
 
 /**
  * Overloading function for printing string Vector-type container arrays to standard output stream
  */
-std::ostream& operator<<(std::ostream& out, const std::vector<std::string>& string_list) {
+std::ostream& operator<<(std::ostream& out, const std::list<std::string>& string_list) {
     out << "[ ";
     out << '\n';
     int key_counter = 0;
@@ -66,6 +67,7 @@ static void print_list(std::list<std::string>& list_s) {
 static int approximate_graph_vertex_count(long int& vertex_count, std::string& read_name) {
     // Generate stream to read from a pipeline that writes commands based on preprocesser conditionals to retain OS-compliance
     FILE *pipe_stream;
+    
     // Gather line count of text file containing graphical information using Linux-compliant bash command 'grep'
     #ifdef __linux__
         std::string command_val = "grep -c ^ ";
@@ -83,8 +85,13 @@ static int approximate_graph_vertex_count(long int& vertex_count, std::string& r
         std::cerr << "Compatibility of OS with 'popen' command cannot be verified. Please restart program and manually enter an approximate value for total number of unique verticies\n";
         return -1;
     #endif
-    // Establish stream with intent to read from buffer containing the command line output written to standard output 
+    // Establish stream with intent to read from buffer containing the command line output written to standard output
+    // Establish stream with intent to read from buffer containing the command line output written to standard output
+#ifdef _WIN32
+    pipe_stream = _popen(command_val.c_str(), "r");
+#else
     pipe_stream = popen(command_val.c_str(), "r");
+#endif
     std::string line;
     char buf[11];   // Digit count should not exceed maxmimum number for capacity allocation of data structures holding vertex information
     
@@ -109,14 +116,34 @@ static int approximate_graph_vertex_count(long int& vertex_count, std::string& r
         return -1;
     }
     // Convert extracted grep command ouput to a long integer and assign half its value to estimate the number of unique verticies for graph
-    vertex_count = strtol(line.c_str(), nullptr, 10);
-    if (errno == ERANGE || errno == EINVAL || vertex_count <= 0) {
-        std::cerr << "ERROR: Conversion of extracted line count for '" << read_name << "' failed. Please ensure text file is not empty\n";
+    unsigned long vertex_conversion = strtoul(line.c_str(), nullptr, 10);
+    
+    // Set appropriate system defined value for unsigned integer maximum value to prevent potential overflow
+    #ifndef __linux__
+    auto max_int = UINT_MAX;
+    #else
+    auto max_int = UINT32_MAX;
+    #endif
+    if (errno == ERANGE || errno == EINVAL || vertex_conversion <= 0 || vertex_conversion > max_int) {
+        std::cerr << "ERROR: Conversion of extracted line count for '" << read_name << "' failed. Please ensure text file is not empty and file is not exceedingly large\n";
         return -1;
     }
-    vertex_count = vertex_count / 2;
-    std::cout << "Estimating Vertex count to " << vertex_count << '\n';
 
+    double edge_density = 0.5;
+    unsigned int edge_count = static_cast<unsigned int>(vertex_conversion);
+    /*
+     *  Assuming no overlapping edges are listed, can use formula for edge density of directed graphs
+     *  to estimate the number of unique verticies from the number of lines in the text file(each line = 1 edge):
+     *      Edge Density = # of Edges / (# of Verticies * (# of Verticies - 1))
+     */
+    vertex_count = static_cast<unsigned int>((((edge_density) + std::sqrt((pow(edge_density, 2)) + (4 * (edge_count) * (edge_density)))) / (2 * edge_density)));
+
+
+    // Handle Exceedingly Small Line Counts in Parsing User-Selected Text File
+    if (vertex_count < 5) {
+        vertex_count = 5;
+    }
+    gprintf("Estimating Vertex Count to %i", vertex_count);
     return 0;
 }
 
@@ -124,16 +151,17 @@ static int approximate_graph_vertex_count(long int& vertex_count, std::string& r
 int get_graph_filename(std::string& directory_name, std::string& user_file) {
     // Retrieve contents of designated directory for storing user-provided graph information 
     auto file_list = std::list<std::string>{};
+    std::cout << "directory before checking filesystem: " << directory_name << '\n';
     if (std::filesystem::exists(directory_name)) {
         for (const auto& sample_file : std::filesystem::directory_iterator(directory_name)){
             std::string file_name = sample_file.path().string();
-            file_name.erase(file_name.begin(), file_name.begin() + 14);
+            file_name.erase(file_name.begin(), file_name.begin() + static_cast<long int>(directory_name.size()));
             file_list.emplace_back(std::move(file_name));
         }
     } else {
         // Exit program and Notify user if program is launched from an invalid path in terminal
         std::cerr << "\nERROR: Relative path to '" << directory_name << "' is invalid from current working directory\n";
-        std::cerr << "Please ensure you are executing the program from within the \"graph_repo\" directory\n";
+        std::cerr << "Please ensure you are executing the program from within the 'build' directory if choosing to execute the program using the command line\n";
         return -1;
     }
 
@@ -162,6 +190,7 @@ int get_graph_filename(std::string& directory_name, std::string& user_file) {
 
     // Update relative path to user-provided graph_file for reading operation
     directory_name.append(user_file);
+    std::cout << "directory name after selecting file is " << directory_name << '\n';
     std::cout << '\n';
     return 0;
 }
@@ -259,7 +288,10 @@ int get_shortest_path(main_hashmap<double>&& main, const std::string& graph_file
     std::cout << "If you wish to exit the program, enter \"exit now\" at any time" << '\n';
     std::cout << '\n';
     std::string source_vertex;
-    std::cout << "Your Verticies Include: " << main.get_keys() << '\n';
+    // Generated sorted list of verticies
+    std::list<std::string> sorted_verts = main.get_keys();
+    sorted_verts.sort();
+    std::cout << "Your Verticies Include: " << sorted_verts << '\n';
     
     // Get User's Requested Source Vertex
     std::cout << "Please Enter The Source Vertex: ";
@@ -267,7 +299,7 @@ int get_shortest_path(main_hashmap<double>&& main, const std::string& graph_file
     while (!main.contains_key(source_vertex) && source_vertex.compare("exit now") != 0) {
         std::cout << '\n' << "Error: Entered Source Vertex of '" << source_vertex << "' not found Within Generated Graph." << '\n';
         std::cout << "Please try again or enter 'exit now' to exit." << '\n';
-        std::cout << "Your Verticies Include: " << main.get_keys() << '\n';
+        std::cout << "Your Verticies Include: " << sorted_verts << '\n';
         std::cout << "Please Enter The Source Vertex: ";
         std::getline(std::cin >> std::ws, source_vertex);
     }
@@ -279,12 +311,12 @@ int get_shortest_path(main_hashmap<double>&& main, const std::string& graph_file
 
     // Get User's Requested Destination Vertex
     std::string dest_vertex;
-    std::cout << '\n' << "Your Verticies Include: " << main.get_keys() << '\n';
+    std::cout << '\n' << "Your Verticies Include: " << sorted_verts << '\n';
     std::cout << "Please Enter The Destination Vertex: ";
     std::getline(std::cin >> std::ws, dest_vertex);
     while (!main.contains_key(dest_vertex) && dest_vertex.compare("exit now") != 0) {
         std::cout << '\n' << "Error: Entered Destination Vertex of '" << dest_vertex << "' not found Within Generated Graph. Please try again or enter 'exit now' to exit." << '\n';
-        std::cout << "Your Verticies Include: " << main.get_keys() << '\n';
+        std::cout << "Your Verticies Include: " << sorted_verts << '\n';
         std::cout << "Please Enter The Destination Vertex: ";
         std::getline(std::cin >> std::ws, dest_vertex);
     }
@@ -334,7 +366,7 @@ int get_requested_algorithm (std::string& algorithm_type, main_hashmap<double>&&
     if (algorithm_type.compare("M") == 0) {
         std::cout << '\n';
         std::cout << "Minimum Spanning Tree Calculations Selected" << '\n';
-        std::string start_vertex = main.get_keys()[0];
+        std::string start_vertex = main.get_keys().front();
         int valid_tree = 0;
         try {
             valid_tree = find_MST(start_vertex, graph_filename, MST_filename, std::move(main));

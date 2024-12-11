@@ -322,7 +322,7 @@ TEST(test_PRMNHP, test_heap_vector_constructor) {
     auto orlando = std::make_pair("Orlando", 100.5);
     auto colorado_springs = std::make_pair("Colorado Springs", 56.8);
     std::vector<std::pair<std::string, double>> hash_pairs = {miami, harvard, los_angeles, new_york, fresno, redding, san_francisco, las_vegas, detroit, medford, dallas, phoenix, seattle, portland, orlando, colorado_springs};
-    auto min_heap = make_unique<paired_min_heap<double>>(hash_pairs);
+    auto min_heap = std::make_unique<paired_min_heap<double>>(hash_pairs);
     // If vector is not properly moved into paired_min_heap, subsequent tests are fruitless
     ASSERT_EQ(min_heap -> get_heap_size(), 16);
     std::string key;
@@ -1006,8 +1006,8 @@ TEST(test_SOAHSMP, test_shashmap_get_keys) {
     stest_hash.remove("Concord");
     EXPECT_EQ(dtest_hash.get_keys().size(), static_cast<unsigned int>(1));
     EXPECT_EQ(stest_hash.get_keys().size(), static_cast<unsigned int>(1));
-    EXPECT_EQ(dtest_hash.get_keys()[0], "Houston");
-    EXPECT_EQ(stest_hash.get_keys()[0], "Dallas");
+    EXPECT_EQ(dtest_hash.get_keys().front(), "Houston");
+    EXPECT_EQ(stest_hash.get_keys().front(), "Dallas");
     dtest_hash.remove("Houston");
     stest_hash.remove("Dallas");
     EXPECT_EQ(dtest_hash.get_keys().size(), static_cast<unsigned int>(0));
@@ -1016,8 +1016,8 @@ TEST(test_SOAHSMP, test_shashmap_get_keys) {
     stest_hash.add("Dallas", "Kansas City");
     EXPECT_EQ(dtest_hash.get_keys().size(), static_cast<unsigned int>(1));
     EXPECT_EQ(stest_hash.get_keys().size(), static_cast<unsigned int>(1));
-    EXPECT_EQ(dtest_hash.get_keys()[0], "Houston");
-    EXPECT_EQ(stest_hash.get_keys()[0], "Dallas");
+    EXPECT_EQ(dtest_hash.get_keys().front(), "Houston");
+    EXPECT_EQ(stest_hash.get_keys().front(), "Dallas");
     EXPECT_EQ(dtest_hash.get_val("Houston"), 36.0);
     EXPECT_EQ(stest_hash.get_val("Dallas"), "Kansas City");
     dtest_hash.add("Houston", 45.0);
@@ -1743,8 +1743,8 @@ TEST(test_MHSMP, test_mhashmap_get_keys) {
     stest_hashmap.remove("Concord");
     EXPECT_EQ(dtest_hashmap.get_keys().size(), static_cast<unsigned int>(1));
     EXPECT_EQ(stest_hashmap.get_keys().size(), static_cast<unsigned int>(1));
-    EXPECT_EQ(dtest_hashmap.get_keys()[0], "Houston");
-    EXPECT_EQ(stest_hashmap.get_keys()[0], "Dallas");
+    EXPECT_EQ(dtest_hashmap.get_keys().front(), "Houston");
+    EXPECT_EQ(stest_hashmap.get_keys().front(), "Dallas");
     dtest_hashmap.remove("Houston");
     stest_hashmap.remove("Dallas");
     EXPECT_EQ(dtest_hashmap.get_keys().size(), static_cast<unsigned int>(0));
@@ -1755,8 +1755,8 @@ TEST(test_MHSMP, test_mhashmap_get_keys) {
     stest_hashmap.add("Dallas", std::move(stest_hash5));
     EXPECT_EQ(dtest_hashmap.get_keys().size(), static_cast<unsigned int>(1));
     EXPECT_EQ(stest_hashmap.get_keys().size(), static_cast<unsigned int>(1));
-    EXPECT_EQ(dtest_hashmap.get_keys()[0], "Houston");
-    EXPECT_EQ(stest_hashmap.get_keys()[0], "Dallas");
+    EXPECT_EQ(dtest_hashmap.get_keys().front(), "Houston");
+    EXPECT_EQ(stest_hashmap.get_keys().front(), "Dallas");
     EXPECT_EQ(dtest_hashmap.get_val("Houston", "Miami"), 36.0);
     EXPECT_EQ(stest_hashmap.get_val("Dallas", "Orlando"), "Kansas City");
     dtest_hash6.add("Miami", 45.0);

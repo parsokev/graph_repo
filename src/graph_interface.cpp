@@ -12,7 +12,6 @@
 // sys/wait.h is only compatible Linux OS
 #ifdef __linux__
 #include <sys/wait.h>
-#else
 #endif
 
 #include <memory>
@@ -21,14 +20,19 @@
 #include "../includes/pair_minheap.hpp"
 #include "../includes/derived_hashmap.hpp"
 #include "../includes/graph_processing.hpp"
+#include "../includes/graph_writing.hpp"
 
 
 int main(void) {
     // Establish preset file paths for reading and writing operations
-    std::string graph_filename = "./dot_graphs/full_graph.gv";
-    std::string rel_path = "sample_graphs/";
-    std::string path_filename = "./dot_graphs/shortest_path_overlay.gv";
-    std::string MST_filename = "./dot_graphs/MST_overlay.gv";
+    std::string graph_filename = "../../dot_graphs/full_graph.gv";
+    std::string rel_path = "../../sample_graphs/";
+    std::string path_filename = "../../dot_graphs/shortest_path_overlay.gv";
+    std::string MST_filename = "../../dot_graphs/MST_overlay.gv";
+    std::string graph_path = "../../sample_graphs/full_graph.png";
+    #ifdef _WIN32
+    std::string graphviz_path = "../../Graphviz/bin/"
+    #endif
     std::string read_name;
     
     // Determine and present acceptable files from designated directory for user-provided graph text files
@@ -89,93 +93,213 @@ int main(void) {
     if (request_output < 0) {
         return EXIT_FAILURE;
     }
-
-    // Execute Bash shell scripts using Linux-Compliant <sys/wait.h> library functions for image generation if Linux OS is detected
-    #ifdef __linux__
-    // Preset Script Path and Graph Image Locations based on User Requested Information for Linux Users
-    std::string script_path;
-    std::string_view request_type;
+// Initialize Path Variables that will be Employed Based on Detected Platform's OS
+    std::string script_path = "";
+    std::string request_type = "";
+    std::string destination_file = "";
+    std::string command_val = "";
+    // Set Universal Printed Output and Graph Image Locations based on type of Information Requested By User
     if (algorithm_type.compare("S") == 0) {
-        script_path = "./scripts/Linux/visualize_graph_SP.sh";
         request_type = "SHORTEST PATH";
+        destination_file = "../../graph_images/shortest_path_overlay.png";
     } else {
-        script_path = "./scripts/Linux/visualize_graph_MST.sh";
         request_type = "MINIMUM SPANNING TREE";
+        destination_file = "../../graph_images/MST_overlay.png";
     }
+
+// Select Linux-Compatible Bash Script and set CLI command to environment path to linux bash if Linux is detected
+#ifdef __linux__
+    // Preset Script Path and Graph Image Locations based on User Requested Information for Linux Users
+    command_val = "/bin/bash";
+    if (algorithm_type.compare("S") == 0) {
+        script_path = "../../scripts/Linux/visualize_graph_SP.sh";
+    } else {
+        script_path = "../../scripts/Linux/visualize_graph_MST.sh";
+    }
+    // Ensure script written in Windows have carriage return characters replaced for read compatibility with Linux/Unix systems
+    int windows_check;
+    windows_check = check_for_CLRF(script_path);
+    if (windows_check < 0) {
+        std::cerr << "ERROR: Read error(s) were encountered while checking file '" << script_path << "'\n";
+        return -1;
+    }
+#endif
+    // If Preprocessor Conditional Detects MacOS, Directly Execute Multiple Bash Commands to Graphviz's Dot Executable through A Pipeline
+    // Program Requires use of HomeBrew Executable to set Bash environment path and Graphviz bin path
+#ifdef __APPLE__
+    command_val = "";
+    std::string dot_path = "dot"
+    // IF MANUALLY ADDING GRAPHVIZ TO GRAPHVIZ DIRECTORY INSTEAD OF BASH ENV PATH UNCOMMENT THIS AND DELETE ABOVE LINE
+    // std::string dot_path = "./Graphviz/bin/dot.exe";
+
+    // Preset Script Path and Graph Image Locations based on User Requested Information for MacOS Users
+    if (algorithm_type.compare("S") == 0) {
+        // Set Output Image File Path Designated for Shortest Path and Specify Output Format to Graphviz's Dot using Appropriate .gv files for Input
+        script_path = "chmod +x ";
+        script_path..append(dot_path).append(" -Tpng:cairo ").append(graph_filename).append(" -o ").append(graph_path);
+// Toggle verbosity of both graphviz commands based on based on build configuration
+#ifndef RELEASE
+        script_path.append(" -v; ");
+#else
+        script_path.append("; ");
+#endif
+        script_path.append(dot_path).append(" -Tpng:cairo ").append(path_filename).append(" -o ").append(destination_file);
+// Toggle verbosity of both graphviz commands based on based on build configuration
+#ifndef RELEASE
+        script_path.append(" -v");
+#endif
+        gprintf("Path for Full Graph Image is '%s'", graph_path.c_str());
+        gprintf("Path for Shortest Path Solution Image is '%s'", path_filename.c_str());
+    } else {
+        // Set Output Image File Path Designated for MST and Specify Output Format to Graphviz's Dot using Appropriate .gv files for Input
+        script_path = "chmod +x ";
+        script_path.append(dot_path).append(" -Tpng:cairo ").append(graph_filename).append(" -o ").append(graph_path);
+#ifndef RELEASE
+        script_path.append(" -v; ");
+#else
+        script_path.append("; ");
+#endif
+        script_path.append(dot_path).append(" -Tpng:cairo ").append(MST_filename).append(" -o ").append(destination_file);
+#ifndef RELEASE
+        script_path.append(" -v");
+#endif
+        gprintf("Path for Full Graph Image is '%s'", graph_path.c_str());
+        gprintf("Path for MST Solution Image is '%s'", MST_filename.c_str());
+    }
+#endif
+
+#ifdef _WIN32
+    // If Preprocessor Conditional Detects Windows OS, Directly Execute Multiple Powershell Commands to Graphviz's Dot Executable through A Pipeline
+    command_val = "powershell -Command \"";
+    if (requestedSolution == "S") {
+        // Set Output Image File Path Designated for Shortest Path and Specify Output Format to Graphviz's Dot using Appropriate .gv files for Input
+        script_path = graphviz_path;
+        script_path.append("dot -Tpng:cairo ").append(graph_filename).append(" -o ").append(graph_path);
+// Toggle verbosity of both graphviz commands based on based on build configuration
+#ifndef RELEASE
+        script_path.append(" -v; ");
+#else
+        script_path.append("; ");
+#endif
+        script_path.append(graphviz_path).append("dot -Tpng:cairo ").append(path_filename).append(" -o ").append(destination_file);
+#ifndef RELEASE
+        script_path.append(" -v\"");
+#else
+        script_path.append("\"");
+#endif
+        gprintf("Path for Full Graph Image is '%s'", graph_path.c_str());
+        gprintf("Path for Shortest Path Solution Image is '%s'", path_filename.c_str());
+    } else {
+        // Set Output Image File Path Designated for MST and Specify Output Format to Graphviz's Dot using Appropriate .gv files for Input
+        script_path = graphviz_path;
+        script_path.append("dot -Tpng:cairo ").append(graph_filename).append(" -o ").append(graph_path);
+// Toggle verbosity of both graphviz commands based on based on build configuration
+#ifndef RELEASE
+        script_path.append(" -v; ");
+#else
+        script_path.append("; ");
+#endif
+        script_path.append(graphviz_path).append("dot -Tpng:cairo ").append(MST_filename).append(" -o ").append(destination_file);
+#ifndef RELEASE
+        script_path.append(" -v\"");
+#else
+        script_path.append("\"");
+#endif
+        gprintf("Path for Full Graph Image is '%s'", graph_path.c_str());
+        gprintf("Path for MST Solution Image is '%s'", MST_filename.c_str());
+    }
+#endif
+    // Return Without Executing Script Program if Preprocessor Conditionals indicate Unexpected/Undefined OS Detection
+    if (script_path.size() == 0) {
+        std::cerr << "Unexpected/Undefined OS detected.\nPlease view the README to ensure the OS is compatible";
+        return EXIT_FAILURE;
+    }
+    gprintf("Attempting to Execute Script or Command of '%s'...", script_path.c_str());
+
+// Execute Bash Shell Scripts using Linux-Compliant <sys/wait.h> Library Functions for Image Generation if Linux OS is Detected
+#ifdef __linux__
     // Run Appropriate Bash Script for Generating Graph Images
-    char bash_path[] = "/bin/bash";
     pid_t pid = fork();
     int child_status;
     switch(pid) {
-        case -1:
-            perror("fork");
-            break;
-        case 0:
-            std::cout << "Executing \"" << script_path << "\" to overlay the " << request_type << " using the processed graphical information..." << '\n';
-            std::cout << "\n=============================== IMAGE GENERATION RESULTS ====================================\n";
-            execl(bash_path, bash_path, script_path.c_str(), nullptr);
-            perror("execl");
-            break;
-        default:
-            pid = waitpid(pid, &child_status, 0);
+    case -1:
+        perror("fork");
+        break;
+    case 0:
+        gprintf("Executing '%s' to overlay the '%s' using the processed graphical information...\n", script_path, request_type);
+        gprintf("\n=============================== IMAGE GENERATION RESULTS ====================================\n");
+        execl(command_val.c_str(), command_val.c_str(), script_path.c_str(), nullptr);
+        perror("execl");
+        break;
+    default:
+        pid = waitpid(pid, &child_status, 0);
     }
-    #else
-        // Preset Script Path and Graph Image Locations based on User Requested Information and OS type
-        std::string script_path;
-        std::string_view request_type;
-        std::string_view destination_file;
-        // Directly execute powershell commands for Windows Systems using MSYS (and potentially Cygwin variants)
-        #ifdef _WIN32
-        if (algorithm_type.compare("S") == 0) {
-            script_path = "dot -Tpng:cairo ./dot_graphs/full_graph.gv -o ./graph_images/full_graph.png; dot -Tpng:cairo ./dot_graphs/shortest_path_overlay.gv -o ./graph_images/shortest_path_overlay.png\"";
-            request_type = "SHORTEST PATH";
-            destination_file = "./graph_images/shortest_path_overlay.png";
+    gprintf("Success!\nThe Image of the '%s' was placed within '%s'\n", request_type, destination_file);
+    gprintf("The Image of the Entire Graph was placed within:   '%s'", graph_path);
+#else
+    // Use popen(MacOS) or _popen (Windows), to Execute Commands/Scripts within a Pipeline and Read/Monitor its Output for Errors
+    FILE *pipe_stream;
+    command_val.append(script_path);
+    gprintf("Generating the '%s' using the processed graphical information...\n", request_type.c_str());
+    gprintf("\n=============================== IMAGE GENERATION RESULTS ====================================\n");
+#ifdef _WIN32
+
+    // Establish Stream with Intent to both Execute the Powershell Script and Read from Buffer containing the Command Line Output for Error Detection
+    // Use _popen for compatibility over broader range of windows systems
+    pipe_stream = _popen(command_val.c_str(), "r");
+#else
+    // If MacOS use standard popen instead
+    pipe_stream = popen(command_val.c_str(), "r");
+#endif
+    // If Stream is Successfully Established with Pipeline, Attempt to Execute Powershell Commands to Generate Requested Solution and Full Graph Images
+    if (pipe_stream != NULL) {
+#ifdef _WIN32
+        // Use _pclose for windows
+        int script_error = _pclose(pipe_stream);
+#else \
+    // Use standard pclose for MacOS
+        int script_error = pclose(pipe_stream);
+#endif \
+    // If One or More Errors are Encountered in Execution of Powershell/Bash Commands, Notify User
+        if (script_error == -1) {
+            std::cerr << "ERROR: '" << script_path << "' encountered error(s) while executing to generate image of '"<< request_type << "' \n";
+            return EXIT_FAILURE;
         } else {
-            script_path = "dot -Tpng:cairo ./dot_graphs/full_graph.gv -o ./graph_images/full_graph.png; dot -Tpng:cairo ./dot_graphs/MST_overlay.gv -o ./graph_images/MST_overlay.png\"";
-            request_type = "MINIMUM SPANNING TREE";
-            destination_file = "./graph_images/MST_overlay.png";
+            // Else, Proceed with Indicating Images are Ready for Viewing, report to debugging for status checking
+            gprintf("Success!\nThe Image of the '%s' was placed within '%s'\n", request_type.c_str(), destination_file.c_str());
+            gprintf("The Image of the Entire Graph was placed within:   '%s'", graph_path.c_str());
         }
-        // Execute bash shell scripts for MacOS Systems using HomeBrew
-        #elif __APPLE__
-        if (algorithm_type.compare("S") == 0) {
-            script_path = "./scripts/MacOS/MACvisualize_graph_SP_MAC.sh";
-            request_type = "SHORTEST PATH";
-            destination_file = "./graph_images/shortest_path_overlay.png";
-        } else {
-            script_path = "./scripts/MacOS/MACvisualize_graph_MST_MAC.sh";
-            request_type = "MINIMUM SPANNING TREE";
-            destination_file = "./graph_images/MST_overlay.png";
+
+    } else {
+        // Exit if Internal Fork or Pipe Operations Fail
+        perror("pipe/fork");
+        std::cerr << "ERROR: Failed to establish pipeline stream for executing shell commands using popen with '" << script_path << "'\n";
+        return EXIT_FAILURE;
+    }
+    // Establish Stream with Intent to both Execute the Powershell Script and Read from Buffer containing the Command Line Output for Error Detection
+    pipe_stream = _popen(command_val.c_str(), "r");
+    // If Stream is Successfully Established with Pipeline, Attempt to Execute Powershell Commands to Generate Requested Solution and Full Graph Images
+    if (pipe_stream != NULL) {
+        int script_error = _pclose(pipe_stream);
+        // If One or More Errors are Encountered in Execution of Powershell/Bash Commands, Notify User
+        if (script_error == -1) {
+            std::cerr << "ERROR: '" << script_path << "' encountered error(s) while executing to generate image of '" << request_type << "' \n";
+
+            return EXIT_FAILURE;
         }
-        // Silently exit program if preprocessor conditionals indicate unexpected/undefined OS detection
-        #else
-            return EXIT_SUCCESS;
-        #endif
-        // Use popen for MacOS and Windows Systems, to execute commands/scripts within a pipeline and read/monitor its output
-        FILE *pipe_stream;
-        std::string command_val = "powershell -Command \"";
-        command_val.append(script_path);
-        std::cout << "Generating the " << request_type << " using the processed graphical information..." << '\n';
-        std::cout << "\n=============================== IMAGE GENERATION RESULTS ====================================\n";
-        // Establish stream with intent to both execute the powershell script and read from buffer containing the command line output for error detection 
-        pipe_stream = popen(command_val.c_str(), "r");
-        // If stream is successfully established with pipeline, attempt to execute powershell script to generate requested image 
-        if (pipe_stream != NULL) {
-            int script_error = pclose(pipe_stream);
-            // If one or more errors are encountered in execution of powershell script, notify user
-            if (script_error == -1) {
-                std::cerr << "ERROR: '" << script_path << "' encountered error(s) while executing to generate image of '"<< request_type << "' \n"; 
-            } else {
-                std::cout << "Success!\n";
-                std::cout << "The Image of the " << request_type << " was placed within:    " << destination_file << '\n';
-                std::cout << "The Image of the Entire Graph was placed within:   ./graph_images/full_graph.png\n";
-            }
-            pclose(pipe_stream);
-        } else {
-            // Exit if internal fork or pipe operations fail
-            perror("pipe/fork");
-            std::cerr << "ERROR: Failed to establish pipeline stream for executing powershell script '" << script_path << "'\n";
-            return -1;
+        else {
+            // Else, Proceed with Indicating Images are Ready for Viewing
+            gprintf("Success!\nThe Image of the '%s' was placed within '%s'\n", request_type.c_str(), destination_file.c_str());
+            gprintf("The Image of the Entire Graph was placed within:   '%s'", graph_path.c_str());
         }
-    #endif
+        _pclose(pipe_stream);
+    }
+    else {
+        // Exit if Internal Fork or Pipe Operations Fail
+        perror("pipe/fork");
+        std::cerr << "ERROR: Failed to establish pipeline stream for executing shell commands using popen with '" << script_path << "'\n";
+        return EXIT_FAILURE;
+    }
+#endif
     return EXIT_SUCCESS;
 }
