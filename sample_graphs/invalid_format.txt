@@ -1,0 +1,3 @@
+Vertex1 Vertex2, 20
+Vertex3, Vertex4
+Vertex4, Vertex1, 

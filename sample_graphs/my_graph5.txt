@@ -1,100 +1,99 @@
-San Diego, Las Vegas, 0.7
-San Diego, Cupertino, 0.9
-Cupertino, Sacramento, 0.6
-Las Vegas, Sacramento, 0.8
-San Francisco, Cupertino, 0.7
-San Francisco, Santa Barbara, 0.7
-Las Vegas, Fresno, 0.6
-Las Vegas, Redding, 0.3
-Fresno, Redding, 0.5
-Sacramento, Redding, 0.8
-Medford, Redding, 0.2
-Medford, Sacramento, 0.1
-Redding, Los Angeles, 0.3
-Los Angeles, Sacramento, 0.5
-Medford, San Jose, 0.5
-Los Angeles, San Jose, 0.5
-Los Angeles, Santa Barbara, 0.4
-Los Angeles, Santa Cruz, 0.3
-Santa Barbara, Santa Cruz, 0.7
-Santa Cruz, San Jose, 0.9
-Santa Barbara, San Jose, 0.8
-Santa Monica, Medford, 0.53
-Dallas, Cupertino, 0.4
-Concord, Sacramento, 0.9
-Portland, Los Angeles, 0.6
-Concord, Portland, 0.7
-Houston, Dallas, 0.2
-San Francisco, Colorado Springs, 0.75
-Colorado Springs, Las Vegas, 0.1
-Providence, Santa Cruz, 0.35
-Providence, Las Vegas, 0.48
-Portland, Medford, 0.4
-Atlanta, Santa Barbara, 0.74
-Atlanta, New York, 0.33
-New York, Fresno, 0.45
-Atlanta, Cupertino, 0.54
-Nashville, Redding, 0.38
-Nashville, Dallas, 0.74
-Helena, Los Angeles, 0.85
-Helena, Concord, 0.23
-Piermont, Atlanta, 0.47
-Piermont, San Francisco, 0.85
-Abilene, Providence, 0.41
-Abilene, San Diego, 0.23
-Abilene, Portland, 0.15
-Colombus, Nashville, 0.36
-Colombus, San Diego, 0.47
-New York, Colombus, 0.65
-Philadelphia, Houston, 0.87
-Philadelphia, Santa Cruz, 0.61
-Philadelphia, Abilene, 0.41
-Seattle, Las Vegas, 0.25
-Seattle, Portland, 0.12
-Portland, Colombus, 0.45
-Newark, Santa Barbara, 1.0
-Newark, Colorado Springs, 0.76
-Boise, Dallas, 0.47
-Boise, San Diego, 0.98
-Detroit, Piermont, 0.54
-Detroit, San Jose, 0.49
-Concord, Lubbock, 0.29
-Lubbock, Houston, 0.45
-Lubbock, Portland, 0.78
-Minneapolis, Detroit, 0.15
-Minneapolis, Las Vegas, 0.37
-Philadelphia, Minneapolis, 0.42
-Orlando, Atlanta, 0.12
-Orlando, Redding, 0.74
-Orlando, Medford, 0.87
-Baton Rouge, Houston, 0.28
-Baton Rouge, Tampa, 0.34
-Tampa, San Francisco, 0.89
-Oklahoma City, Colorado Springs, 0.47
-Oklahoma City, Orlando, 0.75
-Detroit, Omaha, 0.61
-Omaha, Newark, 0.63
-Omaha, San Diego, 0.97
-Las Vegas, Colombus, 0.99
-Fargo, New York, 0.59
-Fargo, Minneapolis, 0.58
-Santa Monica, Providence, 0.79
-Santa Monica, Baton Rouge, 1.0
-Flagstaff, Austin, 0.49
-Flagstaff, San Diego, 0.39
-Flagstaff, Colorado Springs, 0.67
-Austin, Omaha, 0.74
-Austin, Portland, 0.84
-Minneapolis, New York, 0.29
-Boise, Cupertino, 0.38
-South Padre, Dallas, 0.45
-South Padre, Los Angeles, 0.94
-Oklahoma City, South Padre, 0.64
-Little Rock, Colombus, 0.73
-Little Rock, Piermont, 0.74
-Little Rock, Orlando, 0.46
-Baltimore, Detroit, 0.26
-Baltimore, Colorado Springs, 0.72
-Baltimore, Houston, 0.73
-Houston, Baton Rouge, 0.43
-Seattle, Colorado Springs, 0.41
+San Diego, Las Vegas, 336
+San Diego, Cupertino, 487
+Cupertino, Sacramento, 128
+Las Vegas, Sacramento, 570
+San Francisco, Cupertino, 46
+San Francisco, Santa Barbara, 330
+Las Vegas, Fresno, 395
+Las Vegas, Redding, 644
+Fresno, Redding, 331
+Sacramento, Redding, 162
+Medford, Redding, 149
+Medford, Sacramento, 308
+Redding, Los Angeles, 546
+Los Angeles, Sacramento, 385
+Medford, San Jose, 395
+Los Angeles, San Jose, 340
+Los Angeles, Santa Barbara, 95
+Los Angeles, Santa Cruz, 341
+Santa Barbara, Santa Cruz, 258
+Santa Cruz, San Jose, 32
+Santa Barbara, San Jose, 278
+Santa Monica, Medford, 691
+Dallas, Cupertino, 1696
+Concord, Sacramento, 2989
+Portland, Los Angeles, 964
+Concord, Portland, 3064
+Houston, Dallas, 239
+San Francisco, Colorado Springs, 1320
+Colorado Springs, Las Vegas, 815
+Providence, Santa Cruz, 3144
+Providence, Las Vegas, 2699
+Portland, Medford, 273
+Atlanta, Santa Barbara, 2263
+Atlanta, New York, 881
+New York, Fresno, 2914
+Atlanta, Cupertino, 2436
+Nashville, Redding, 2342
+Nashville, Dallas, 664
+Helena, Los Angeles, 1175
+Helena, Concord, 2410
+Montpelier, Atlanta, 1184
+Montpelier, San Francisco, 3013
+Abilene, Providence, 1915
+Abilene, San Diego, 1176
+Abilene, Portland, 1844
+Columbus, Nashville, 383
+Columbus, San Diego, 2243
+New York, Columbus, 535
+Philadelphia, Houston, 1547
+Philadelphia, Santa Cruz, 2934
+Philadelphia, Abilene, 1647
+Seattle, Las Vegas, 1125
+Seattle, Portland, 174
+Portland, Columbus, 2439
+Newark, Santa Barbara, 2868
+Newark, Colorado Springs, 1765
+Boise, Dallas, 1683
+Boise, San Diego, 953
+Detroit, Montpelier, 680
+Detroit, San Jose, 2430
+Concord, Lubbock, 2013
+Lubbock, Houston, 516
+Lubbock, Portland, 1679
+Minneapolis, Detroit, 700
+Minneapolis, Las Vegas, 1656
+Philadelphia, Minneapolis, 1167
+Orlando, Atlanta, 438
+Orlando, Redding, 2969
+Orlando, Medford, 3050
+Baton Rouge, Houston, 268
+Baton Rouge, Tampa, 714
+Tampa, San Francisco, 2831
+Oklahoma City, Colorado Springs, 582
+Oklahoma City, Orlando, 1285
+Detroit, Omaha, 733
+Omaha, Newark, 1231
+Omaha, San Diego, 1618
+Las Vegas, Columbus, 2055
+Fargo, New York, 1431
+Fargo, Minneapolis, 234
+Santa Monica, Providence, 2983
+Santa Monica, Baton Rouge, 1828
+Flagstaff, Austin, 1033
+Flagstaff, San Diego, 485
+Flagstaff, Colorado Springs, 616
+Austin, Omaha, 839
+Austin, Portland, 270
+Minneapolis, New York, 1197
+Boise, Cupertino, 690
+South Padre Island, Dallas, 565
+South Padre Island, Los Angeles, 1651
+Oklahoma City, South Padre Island, 758
+Little Rock, Columbus, 725
+Little Rock, Montpelier, 1470
+Little Rock, Orlando, 956
+Baltimore, Detroit, 528
+Baltimore, Colorado Springs, 1646
+Baltimore, Houston, 1445
+Seattle, Colorado Springs, 1384
