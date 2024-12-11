@@ -91,10 +91,10 @@ Notable Requirements:
 1. **If you wish to build the project using CMake**, the provided scripts used to build the CMake Project require
    the use of the Bash environment in order to install package dependencies properly.
 
-   > [!NOTE]
-   > If your Linux distribution is **not Debian or Ubuntu**, the appropriate Linux script will attempt to
-   > build the CMake Project using the corresponding commands for any recognized Linux Distribution. 
-   > These will be limited to those supported by [GraphViz](https://www.graphviz.org/download/)
+> [!NOTE]
+> If your Linux distribution is **not Debian or Ubuntu**, the appropriate Linux script will attempt to
+> build the CMake Project using the corresponding commands for any recognized Linux Distribution. 
+> These will be limited to those supported by [GraphViz](https://www.graphviz.org/download/)
 
    **If you do not wish to install CMake**, you may use the provided Makefile to build project
    instead, but this will still require the use of a Bash shell terminal and will prevent access to the
@@ -118,19 +118,19 @@ Notable Requirements:
    The provided scripts require the use of Windows Powershell and MSYS2 libraries on the local machine
    cloning the repository in order to install the required package dependencies and operate as intended.
 
-   > [!IMPORTANT]
-   > Due to reduced library support for older Windows Operating Systems, it is strongly recommended that
-   > the repository is cloned on a machine operating on Windows 10 or newer.
-   >
-   > Due to elevated permissions being required to execute scripts in the Powershell terminal, please ensure the terminal
-   > being utilized to clone the repository has the required level of permission. You can test this by executing the
-   > `os_check.ps1` script (Enter ```./graph_repo/scripts/os_check.ps1``` into the terminal).
-   > 
-   > **If script execution is denied**, consult [this Microsoft documentation page](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4)
-   > to change the permission policies.
-   > 
-   > Alternatively, if using an IDE or text editor, you may be able to resolve this by configuring the IDE/text editor's terminal
-   > settings for Powershell.
+> [!IMPORTANT]
+> Due to reduced library support for older Windows Operating Systems, it is strongly recommended that
+> the repository is cloned on a machine operating on Windows 10 or newer.
+>
+> Due to elevated permissions being required to execute scripts in the Powershell terminal, please ensure the terminal
+> being utilized to clone the repository has the required level of permission. You can test this by executing the
+> `os_check.ps1` script (Enter ```./graph_repo/scripts/os_check.ps1``` into the terminal).
+> 
+> **If script execution is denied**, consult [this Microsoft documentation page](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4)
+> to change the permission policies.
+> 
+> Alternatively, if using an IDE or text editor, you may be able to resolve this by configuring the IDE/text editor's terminal
+> settings for Powershell.
 
    **If you do not wish to install MYS2**, you may use the provided Makefile to build project
    instead, but this will still require the installation of [MSYS2](https://www.msys2.org/) or
