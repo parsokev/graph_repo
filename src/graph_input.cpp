@@ -151,7 +151,6 @@ static int approximate_graph_vertex_count(long int& vertex_count, std::string& r
 int get_graph_filename(std::string& directory_name, std::string& user_file) {
     // Retrieve contents of designated directory for storing user-provided graph information 
     auto file_list = std::list<std::string>{};
-    std::cout << "directory before checking filesystem: " << directory_name << '\n';
     if (std::filesystem::exists(directory_name)) {
         for (const auto& sample_file : std::filesystem::directory_iterator(directory_name)){
             std::string file_name = sample_file.path().string();
@@ -190,7 +189,6 @@ int get_graph_filename(std::string& directory_name, std::string& user_file) {
 
     // Update relative path to user-provided graph_file for reading operation
     directory_name.append(user_file);
-    std::cout << "directory name after selecting file is " << directory_name << '\n';
     std::cout << '\n';
     return 0;
 }
