@@ -9,16 +9,6 @@ echo "Please view the README for further information on feature access and troub
 kill -INT 0
 fi
 
-echo "Attempting to install dependencies and update to most current stable version..."
-brew -y --ignore-missing install $(< ./graph_repo/requirements/mac_requirements.txt)
-
-if [ $? -ne 0 ]; then
-    echo "Error: Failed to install all package dependencies listed in \"requirements.txt\""
-    echo "Please ensure you have not moved \"requirements.txt\" from its original position within the cloned repository"
-    echo "If you wish to retry at any time, simply delete the \"build\" directory and re-run setup script"
-    echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
-    kill -INT 0
-fi
 
 # Attempt to enter directory of git repository
 cd ./graph_repo
@@ -124,21 +114,18 @@ else
     echo "\"Debug\" Configuration of CMake Project successfully built!"
 fi
 
-cd ..
+cd ../../
 
 # Provide Usage Instructions
 
 echo ""
 echo "Both CMake projects have been successfully built and compiled!"
 echo ""
-echo "EXECUTING PROGRAM:\n"
-echo "When executing strictly through the command line, you must execute from WITHIN the directory containing the Graph_TIProject.exe file"
-echo "To Immediately Run the Program in Release Mode: "
-echo "      Enter into the Terminal: 'cd ./release; ./GraphTI_Project' "
-echo "To Immediately Run the Program in Debug Mode: " 
-echo "      Enter into the Terminal: 'cd ./debug; ./GraphTI_Project' "
+echo "EXECUTING PROGRAM:"
+echo "To Run the Program in Release Mode, Enter into the Terminal: \"./build/release/Graph_TIProject\""
+echo "To Run the Program in Debug Mode, Enter into the Terminal: \"./build/debug/Graph_TIProject\""
 echo ""
 echo "EXECUTING TESTING SUITE:"
-echo "To Run all tests within GoogleTest testing suite, Enter: \"./release/tests\" or \"./debug/tests\" for additional reporting"
+echo "To Run all tests within GoogleTest testing suite, Enter: \"./build/release/tests\" or \"./build/debug/tests\" for additional reporting"
 echo ""
 echo "Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo"
