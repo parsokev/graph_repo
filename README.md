@@ -28,8 +28,8 @@ will be detected by the program and presented to the user in the terminal for se
 After recieving the name of the text file to be processed, the program will utilize customized data structures and 
 [Graphviz](https://www.graphviz.org/) to generate a graphical representation of the entire graph overlayed with either:
 
-1.  The shortest path between a user-provided source vertex and destination vertex
-2.  The Minimum Spanning Tree (MST)
+1.  The path with the shortest distance/lowest cost from a selected source vertex to a selected destination vertex
+2.  The [Minimum Spanning Tree (MST)](https://en.wikipedia.org/wiki/Minimum_spanning_tree)
 
 
 Regardless of which type of request is placed by the user into the terminal, the program will produce:
@@ -46,22 +46,15 @@ Several examples of images generated can be viewed in the [Example Images Genera
 
 # Getting Started
 
-## Building Project within a Virtual Environment (Linux/MacOS/WSL Users Only):
-If wishing to build the project within a virtual environment on your local machine, you may the run the python3 `local_setup.py` file
-immediately after cloning the repository to build the .exe files of project's package dependencies within the virtual environment.
+## Building Project within a Virtual Environment (With CMake):
+If wishing to build the project within a virtual environment on your local machine, you have the option of running the python3 `virtual_setup.py` file
+immediately after cloning the repository to install the required package dependencies for the program and have the CMake project be built with the
+appropriate script.
 
-```
-# Generate virtual environment in <my_virtual_directory>
-python3 -m -venv <my_virtual_directory>
+Using this method for project setup requires that you have [python3](https://www.python.org/downloads/) and the correlating `venv` package
+installed beforehand.
 
-# Activate virtual environment before installing package dependencies using pip installer
-source ./<my_virtual_directory>/bin/activate
-
-# Run python file for installing package dependencies within virtual environment
-python3 ./graph_repo/local_setup.py
-```
-
-Then simply follow the set-up steps for [Linux Setup](#building-cmake-project-on-linux-or-wsl) or [MacOS Setup](#building-cmake-project-on-macos) 
+Please refer to the setup instructions specific to your local machine's OS below to properly build the project within a virtual environment
 
 **Due to required use of System Path in Powershell scripts, building this project within a virtual environment using Windows cannot be properly utilized at this time.**
 
@@ -69,6 +62,8 @@ This project can be built by either using:
 
 1. [CMake](https://www.kitware.com/cmake-3-30-1-available-for-download)
 2. [Provided Unix Makefile](./makefile)
+
+**It is highly recommended to build the project using CMake to fully utilize the program's available features**
 
 ## Setup Requirements for Mac OS Users
 
@@ -83,10 +78,11 @@ Notable Requirements:
 
 2. [Graphviz](https://www.graphviz.org/) is required to generate the graphical images from the information
    provided by the selected text file. This will be automatically installed by the `macOS_setup.sh` script,
-   but users who choose to build the project using the stand-alone Makefile MUST manually install Graphviz before
-   executing the program.
+   but users who choose to build the project using the stand-alone Makefile **MUST** manually install Graphviz before
+   executing the program. Visit [step 2](#setup-requirements-for-windows-users-msys2) of the windows setup section 
+   for possible ways to properly set this up for program use.
 
-3. GCC Compiler using standard of C++20 (or newer). This will be provided by Homebrew if it is installed.
+3. GCC Compiler using standard of C++17 (or newer). This will be provided by Homebrew if it is installed.
    If Homebrew is not installed, the Makefile may be modified to use another locally provided compiler on
    Mac systems, such as clang.
 
@@ -98,7 +94,7 @@ Notable Requirements:
    the use of the Bash environment in order to install package dependencies properly.
 
 > [!NOTE]
-> If your Linux distribution is **not Debian or Ubuntu**, `linux_setup.sh` will attempt to
+> If your Linux distribution is **not Debian or Ubuntu**, the appropriate Linux script will attempt to
 > build the CMake Project using the corresponding commands for any recognized Linux Distribution. 
 > These will be limited to those supported by [GraphViz](https://www.graphviz.org/download/)
 
@@ -107,11 +103,12 @@ Notable Requirements:
    the GoogleTest testing suite.
 
 2. [Graphviz](https://www.graphviz.org/) is required to generate the graphical images from the information
-   provided by the selected text file. This will be automatically installed by the `linux_setup.sh` script,
-   but users who choose to build the project using the stand-alone Makefile **MUST** manually install Graphviz before
-   executing the program.
+   provided by the selected text file. This will be automatically installed by the appropriate Linux script,
+   but users who choose to build the project using the stand-alone Makefile **MUST** either manually install
+   Graphviz before executing the program or place the downloaded contents into the corresponding empty directory
+   following the instructions provided in [step 2](#setup-requirements-for-windows-users-msys2) of the windows setup section.
 
-3. GCC Compiler using standard of C++20 (or newer). On most Linux distributions, this should be already
+3. GCC Compiler using standard of C++17 (or newer). On most Linux distributions, this should be already
    available and located for immediate use by the program and associated scripts.
 
 
@@ -135,7 +132,7 @@ Notable Requirements:
 > **If script execution is denied**, consult [this Microsoft documentation page](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4)
 > to change the permission policies.
 > 
-> Alternatively, if using an IDE, you may be able to resolve this by configuring the IDE's terminal
+> Alternatively, if using an IDE or text editor, you may be able to resolve this by configuring the IDE/text editor's terminal
 > settings for Powershell.
 
    **If you do not wish to install MYS2**, you may use the provided Makefile to build project
@@ -144,16 +141,22 @@ Notable Requirements:
    Alternatively, you may install the [Windows Subsystem for Linux(WSL)](https://learn.microsoft.com/en-us/windows/wsl/install),
    and then follow the instructions provided for Linux users instead.
 
-2. While the Powershell script `windows_setup.ps1` will automatically install all package dependencies
-   for the project, commands that utilize [Graphviz](https://www.graphviz.org/) (to build the graph images)
-   and [CMake](https://www.kitware.com/cmake-3-30-1-available-for-download) (to build the project)
-   **require the addition of their installation locations to the system PATH manually**. Instructions on how to
-   quickly accomplish this can be found [in the windows setup section](#building-cmake-project-on-windows-using-msys2).
+2. While the appropriate Powershell script will automatically build the project, the script issues commands to utilize 
+   [CMake](https://cmake.org/download/) to build the project and [Graphviz](https://www.graphviz.org/) to build the graph images.
+   during program execution. This requires that a direct path to each program's files to be pre-established before it can be built.
+   To simplify the setup process and eliminate the need for local installation and setup:
+
+      1. Download the archived zip file for the latest versions of [CMake](https://cmake.org/download/) and [Graphviz](https://www.graphviz.org/)
+      
+      2. Extract the contents (excluding the folder itself) of each zip file and place them within the empty 'CMake' and 'Graphviz' directories of
+      the cloned repository, respectively.
+      
+   The program will directly call on the files within these directories instead of requiring local installation and manual setup of the environment paths.
 
 3. To better optimize build/rebuild time of the program, the CMake project is configured to utilize [ninja](https://packages.msys2.org/base/mingw-w64-ninja).
    This package can be quickly installed using MSYS2 following the instructions [in the windows setup section](#building-cmake-project-on-windows-using-msys2).  
 
-4. GCC Compiler using standard of C++20 (or newer). This will be provided by MSYS2 if it is installed.
+4. GCC Compiler using standard of C++17 (or newer). This will be provided by MSYS2 if it is installed.
 
 
 # Building The Project Using CMake
@@ -193,13 +196,30 @@ of instructions based on this information.
    and your Linux distribution is supported. If the script does not execute the environment path listed at
    the top of the script may need to changed to match that found locally on your terminal
 
-4. Run the `linux_setup.sh` shell script to build the project by entering the following:
+4. Run the appropriate Linux shell script to build the project:
+
+   If wishing to build the project **within a virtual environment**, you can utilize the `virtual_setup.py` file
+   to build the project.
+
+      ```
+      # Generate virtual environment in <my_virtual_directory>
+      python3 -m -venv <my_virtual_directory>
+
+      # Activate virtual environment before installing package dependencies using pip installer
+      source ./<my_virtual_directory>/bin/activate
+
+      # Run python file for install requirements and building the project using CMake
+      python3 ./graph_repo/virtual_setup.py
+      ```
+
+   If wishing to build the project outside of a virtual environment, you can utilize the `linux_setup.sh` script to build
+   the project instead.
 
       ```
       source ./graph_repo/scripts/Linux/linux_setup.sh
       ```
 
-      `linux_setup.sh` will build a **Release** and **Debug** configuration of the project **Graph_TIProject**
+   Upon script completion, a **Release** and **Debug** configuration of the project **Graph_TIProject** will be built.
 
 5. Upon successful completion, the script will provide a list of commands that can be directly entered into
    the terminal to execute the program or the GoogleTest testing suite in either project configuration. They can be found within the readme:
@@ -236,13 +256,31 @@ of instructions based on this information.
    and Homebrew is properly installed. If the script does not execute, the path listed at the top of
    the script may need to be updated to match the local path to Homebrew's bash env folder on your machine.
 
-4. Run the `macOS_setup.sh` shell script to build the project by entering the following:
+4. Run the appropriate MacOS shell script to build the project:
+
+   If wishing to build the project **within a virtual environment**, you can utilize the `virtual_setup.py` file
+   to build the project.
+
+      ```
+      # Generate virtual environment in <my_virtual_directory>
+      python3 -m -venv <my_virtual_directory>
+
+      # Activate virtual environment before installing package dependencies using pip installer
+      source ./<my_virtual_directory>/bin/activate
+
+      # Run python file for install requirements and building the project using CMake
+      python3 ./graph_repo/virtual_setup.py
+      ```
+
+   If wishing to build the project outside of a virtual environment, you can utilize the `macOS_setup.sh` script to build
+   the project instead.
 
       ```
       source ./graph_repo/scripts/MacOS/macOS_setup.sh
       ```
 
-      `macOS_setup.sh` will build a **Release** and **Debug** configuration of the project **Graph_TIProject**
+   Upon script completion, a **Release** and **Debug** configuration of the project **Graph_TIProject** will be built.
+
 
 5. Upon successful completion, the script will provide a list of commands that can be directly entered into
    the terminal to execute the program or the GoogleTest testing suite in either project configuration. They can be found within the readme:
@@ -266,6 +304,9 @@ of instructions based on this information.
    at the end of the next execution of the main program, so ensure that any images that you wish to preserve are moved to a different folder
    after its creation.
 
+> [!NOTE]
+> If an error is encountered in completing the image generation or no images are generated, you may alternatively execute the `visualize_graph_MST_MAC.sh`
+> and `visualize_graph_SP_MAC.sh` scripts in the [MacOS scripts directory](./scripts/MacOS/) generate the MST and shortest path, respectively.
 
 ## Building CMake Project on Windows (using MSYS2)
 
@@ -296,23 +337,32 @@ of instructions based on this information.
       - If this fails, view the [windows requirements section listed within the readme](#setup-requirements-for-windows-users-msys2) to fix this
         before proceeding further
 
-7. Run the `install_reqs.ps1` script to install the windows-compatible versions of Graphviz and CMake using [winget](https://learn.microsoft.com/en-us/windows/package-manager/winget/):
-      - Upon completing downloading of each package, windows will prompt for user verification before installing the package.
-        If you are uncomfortable with this process, you may visit the linked sites below to manually install these directly instead.
-      - If the script indicates it failed to install either of these using winget, you may need to manually install them
-      - [Site for Graphviz](https://www.graphviz.org/)
-      - [Site for CMake](https://www.kitware.com/cmake-3-30-1-available-for-download)
-      - If the script succeeds it will provide the default paths for both packages (C:\Program Files\Name or C:\Program Files(x86)\Name)
+7. Ensure the CMake and Graphviz directories now contain the files extracted from the downloaded zip files by following the steps detailed in [step 2](#setup-requirements-for-windows-users-msys2)
+   of the windows setup section. 
 
-8. Copy the full paths to the 'bin' folders of both Graphviz and CMake and add each of them to the System Path (Repeat Step #2)
+8. Run the appropriate Windows Powershell script or python file to build the project:
 
-9. Run the `windows_setup.ps1` Powershell script to build the project by entering the following:
+   If wishing to build the project **within a virtual environment**, you can utilize the `virtual_setup.py` file
+   to build the project.
+   ```
+   # Generate virtual environment in <my_virtual_directory>
+   py -m -venv <my_virtual_directory>
+
+   # Activate virtual environment before installing package dependencies using pip installer
+   .\<my_virtual_directory>\scripts\activate
+
+   # Run python file for confirming virtual environment
+   py ./graph_repo/virtual_setup.py
+   ```
+
+   If wishing to build the project outside of a virtual environment, you can utilize the `windows_setup.ps1` script to build
+   the project instead.
 
       ```
-      ./graph_repo/scripts/Windows/windows_setup.sh
+      source ./graph_repo/scripts/Windows/windows_setup.ps1
       ```
 
-      `windows_setup.ps1` will build a **Release** and **Debug** configuration of the project **Graph_TIProject**
+   Upon script completion, a **Release** and **Debug** configuration of the project **Graph_TIProject** will be built.
 
 10. Upon successful completion, the script will provide a list of commands that can be directly entered into
    the terminal to execute the program or the GoogleTest testing suite in either project configuration. They can be found within the readme:
@@ -343,28 +393,36 @@ After the appropriate shell script has finished running, the main program can be
 **Debug** Configuration (Provides additional information reporting not visible in **Release**) 
 or **Release** Configuration.
 
+The following commands can be entered upon completion of the setup script.
+
 Execute the main program in **Debug** mode by entering the following in the terminal:
 
 ```
-./build/debug/Graph_TIProject
+cd ./debug; ./Graph_TIProject
 ```
 
 Execute the main program in **Release** mode by enter the following in the terminal:
 
 ```
-./build/release/Graph_TIProject
+cd ./release; ./Graph_TIProject
 ```
 
+
+
 > [!NOTE]
-> All provided commands ***with the exception of those for running `linux_setup.sh`, `macOS_setup.sh`, and `windows_setup.ps1`*** 
-> are intended to be run with `graph_repo` as the current working directory. If entering any of the other provided commands
-> ***verbatim***, please ensure the current working directory is `graph_repo` when entering these into the terminal.
+> All provided commands for running the setup scripts of `linux_setup.sh`, `macOS_setup.sh`, `windows_setup.ps1`,
+> and `virtual_setup.py` are intended to be executed within the directory that the cloned repository is placed into (one level above
+> the `graph_repo` directory).
+>
+> However, all commands for directly for executing the project itself are intended to be run **within** the same directory as the `Graph_TIProject.exe`. 
+> For example, this would be the `release` directory for running the project in the `Release` configuration
+> or the `debug` directory for running the project in the `Debug` configuration.
 
 
 ## Executing the CMake Project Configurations using the CMakeTools Extension
 
-After the appropriate initial setup script has finished running, any user using the **Microsoft Visual Studio/VSCode**
-text editor may utilize the [CMakeTools](https://code.visualstudio.com/docs/cpp/CMake-linux) extension to generate a UI for managing the CMake Project:
+After the appropriate initial setup script has finished running, any user using the **Microsoft VS Code** text editor
+may utilize the [CMakeTools](https://code.visualstudio.com/docs/cpp/CMake-linux) extension to generate a UI for managing the CMake Project:
 
 1. Reopen the `graph_repo` directory as the **root** directory in your text editor
    -  The highest level of your active directory must be `graph_repo` in order for CMakeTools
@@ -403,11 +461,12 @@ text editor may utilize the [CMakeTools](https://code.visualstudio.com/docs/cpp/
 
     - Click the Play Icon in the right-hand corner of the "Launch" Section to execute the selected configuration of the program.
 
+Users with **Microsoft Visual Studio** will be able to immediately build their project upon cloning the repository.
 
 # Building the Program Utilizing The Provided Makefile
 
 The following are required to build the project utilizing the provided standalone Makefile:
-1. GCC Compiler using standard of C++20 (or newer)
+1. GCC Compiler using standard of C++17 (or newer)
 2. [Graphviz](https://www.graphviz.org/)
 
 > [!NOTE]
@@ -417,13 +476,13 @@ The following are required to build the project utilizing the provided standalon
 > **If these images are not produced and/or result in script failure/error**:
 > **Confirm [Graphviz](https://www.graphviz.org/download/) has been installed before executing the program.**
 >
-> If Graphviz was already properly installed, the path to the local 'bin' folder for Graphviz on Windows Systems or the local
+> If Graphviz was already properly installed, the path to the local 'bin' folder for Graphviz on the local
 > bash env folder on Linux/MacOS may be invalid and needs to be corrected.
 >
 > On Linux/Mac systems, the commands from the appropriate script can be manually copied and pasted into the terminal to
 > generate the image of the requested type after the program has finished.
 >
-> On Windows systems, confirm that the path to the 'bin' folder of Graphviz in your System's environment variables is present and valid in
+> On Windows systems, confirm that the path to the 'bin' folder of Graphviz in present in the local 'Graphviz' directory and valid in
 > order for Powershell to be able to access Graphviz-supported commands for image generation.
 
 After cloning this repository in your preferred text editor, enter the commands into the terminal:
@@ -483,7 +542,7 @@ for different functional aspects of the program.
 After the appropriate initial setup shell script has completed, the file `tests.cc` can be executed in either configuration to run any tests defined within by entering:
 
 ```
-./build/debug/tests
+./debug/tests
 ```
 
 
@@ -491,7 +550,7 @@ OR
 
 
 ```
-./build/release/tests
+./release/tests
 ```
 
 
