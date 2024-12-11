@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "derived_hashmap.hpp"
 
 /**
@@ -78,3 +79,13 @@ extern int write_vertex_node (std::fstream& graph_file, const std::string& verte
  * @return 0 if successful, -1 upon failure
  */
 extern int write_edge(std::fstream& graph_file, const std::string& vertex1_name, const std::string& vertex2_name, double& weight, const std::string& graph_type);
+
+/**
+ * Parses the file referenced by relative or absolaute file path `filename` its contents for CRLF/carriage return characters found in Windows text files. If found
+ * in the file, these characters are replaced with a standard Linux-compliant newline character across all lines found in file referenced by `filename` to ensure
+ * file can be read by Linux/Unix systems.
+ * @param filename Relative or Absolute path to the file to have all CRLF lines modified to be Linux-compatible for reading operations
+ * @return 0 if file referenced by `filename` was either successfully replaced by a Linux-compliant version of itself or it was already Linux-compliant. Else, -1
+ * is returned upon reading errors or an invalid file is referenced by `filename`
+ */
+extern int check_for_CLRF(std::string& filename);
