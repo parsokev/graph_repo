@@ -56,8 +56,6 @@ installed beforehand.
 
 Please refer to the setup instructions specific to your local machine's OS below to properly build the project within a virtual environment
 
-**Due to required use of System Path in Powershell scripts, building this project within a virtual environment using Windows cannot be properly utilized at this time.**
-
 This project can be built by either using:
 
 1. [CMake](https://www.kitware.com/cmake-3-30-1-available-for-download)
@@ -78,8 +76,8 @@ Notable Requirements:
 
 2. [Graphviz](https://www.graphviz.org/) is required to generate the graphical images from the information
    provided by the selected text file. This will be automatically installed by the `macOS_setup.sh` script,
-   but users who choose to build the project using the stand-alone Makefile **MUST** manually install Graphviz before
-   executing the program. Visit [step 2](#setup-requirements-for-windows-users-msys2) of the windows setup section 
+   but **users who choose to build the project using the stand-alone Makefile MUST manually install Graphviz before**
+   **executing the program**. Visit [step 2](#setup-requirements-for-windows-users-msys2) of the windows setup section 
    for possible ways to properly set this up for program use.
 
 3. GCC Compiler using standard of C++17 (or newer). This will be provided by Homebrew if it is installed.
@@ -93,10 +91,10 @@ Notable Requirements:
 1. **If you wish to build the project using CMake**, the provided scripts used to build the CMake Project require
    the use of the Bash environment in order to install package dependencies properly.
 
-> [!NOTE]
-> If your Linux distribution is **not Debian or Ubuntu**, the appropriate Linux script will attempt to
-> build the CMake Project using the corresponding commands for any recognized Linux Distribution. 
-> These will be limited to those supported by [GraphViz](https://www.graphviz.org/download/)
+   > [!NOTE]
+   > If your Linux distribution is **not Debian or Ubuntu**, the appropriate Linux script will attempt to
+   > build the CMake Project using the corresponding commands for any recognized Linux Distribution. 
+   > These will be limited to those supported by [GraphViz](https://www.graphviz.org/download/)
 
    **If you do not wish to install CMake**, you may use the provided Makefile to build project
    instead, but this will still require the use of a Bash shell terminal and will prevent access to the
@@ -104,9 +102,8 @@ Notable Requirements:
 
 2. [Graphviz](https://www.graphviz.org/) is required to generate the graphical images from the information
    provided by the selected text file. This will be automatically installed by the appropriate Linux script,
-   but users who choose to build the project using the stand-alone Makefile **MUST** either manually install
-   Graphviz before executing the program or place the downloaded contents into the corresponding empty directory
-   following the instructions provided in [step 2](#setup-requirements-for-windows-users-msys2) of the windows setup section.
+   but **users who choose to build the project using the stand-alone Makefile MUST manually install**
+   **Graphviz before executing the program**.
 
 3. GCC Compiler using standard of C++17 (or newer). On most Linux distributions, this should be already
    available and located for immediate use by the program and associated scripts.
@@ -121,19 +118,19 @@ Notable Requirements:
    The provided scripts require the use of Windows Powershell and MSYS2 libraries on the local machine
    cloning the repository in order to install the required package dependencies and operate as intended.
 
-> [!IMPORTANT]
-> Due to reduced library support for older Windows Operating Systems, it is strongly recommended that
-> the repository is cloned on a machine operating on Windows 10 or newer.
->
-> Due to elevated permissions being required to execute scripts in the Powershell terminal, please ensure the terminal
-> being utilized to clone the repository has the required level of permission. You can test this by executing the
-> `os_check.ps1` script (Enter ```./graph_repo/scripts/os_check.ps1``` into the terminal).
-> 
-> **If script execution is denied**, consult [this Microsoft documentation page](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4)
-> to change the permission policies.
-> 
-> Alternatively, if using an IDE or text editor, you may be able to resolve this by configuring the IDE/text editor's terminal
-> settings for Powershell.
+   > [!IMPORTANT]
+   > Due to reduced library support for older Windows Operating Systems, it is strongly recommended that
+   > the repository is cloned on a machine operating on Windows 10 or newer.
+   >
+   > Due to elevated permissions being required to execute scripts in the Powershell terminal, please ensure the terminal
+   > being utilized to clone the repository has the required level of permission. You can test this by executing the
+   > `os_check.ps1` script (Enter ```./graph_repo/scripts/os_check.ps1``` into the terminal).
+   > 
+   > **If script execution is denied**, consult [this Microsoft documentation page](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4)
+   > to change the permission policies.
+   > 
+   > Alternatively, if using an IDE or text editor, you may be able to resolve this by configuring the IDE/text editor's terminal
+   > settings for Powershell.
 
    **If you do not wish to install MYS2**, you may use the provided Makefile to build project
    instead, but this will still require the installation of [MSYS2](https://www.msys2.org/) or
@@ -146,7 +143,7 @@ Notable Requirements:
    during program execution. This requires that a direct path to each program's files to be pre-established before it can be built.
    To simplify the setup process and eliminate the need for local installation and setup:
 
-      1. Download the archived zip file for the latest versions of [CMake](https://cmake.org/download/) and [Graphviz](https://www.graphviz.org/)
+      1. Download the archived zip files for the latest versions of [CMake](https://cmake.org/download/) and [Graphviz](https://graphviz.org/download/)
       
       2. Extract the contents (excluding the folder itself) of each zip file and place them within the empty 'CMake' and 'Graphviz' directories of
       the cloned repository, respectively.
@@ -203,7 +200,7 @@ of instructions based on this information.
 
       ```
       # Generate virtual environment in <my_virtual_directory>
-      python3 -m -venv <my_virtual_directory>
+      python3 -m venv <my_virtual_directory>
 
       # Activate virtual environment before installing package dependencies using pip installer
       source ./<my_virtual_directory>/bin/activate
@@ -263,7 +260,7 @@ of instructions based on this information.
 
       ```
       # Generate virtual environment in <my_virtual_directory>
-      python3 -m -venv <my_virtual_directory>
+      python3 -m venv <my_virtual_directory>
 
       # Activate virtual environment before installing package dependencies using pip installer
       source ./<my_virtual_directory>/bin/activate
@@ -346,7 +343,7 @@ of instructions based on this information.
    to build the project.
    ```
    # Generate virtual environment in <my_virtual_directory>
-   py -m -venv <my_virtual_directory>
+   py -m venv <my_virtual_directory>
 
    # Activate virtual environment before installing package dependencies using pip installer
    .\<my_virtual_directory>\scripts\activate
@@ -359,7 +356,7 @@ of instructions based on this information.
    the project instead.
 
       ```
-      source ./graph_repo/scripts/Windows/windows_setup.ps1
+      ./graph_repo/scripts/Windows/windows_setup.ps1
       ```
 
    Upon script completion, a **Release** and **Debug** configuration of the project **Graph_TIProject** will be built.
