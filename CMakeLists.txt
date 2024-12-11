@@ -1,7 +1,7 @@
 # Define minimum required versions of CMAKE and COMPILER
 cmake_minimum_required(VERSION 3.5.0)
 project(Graph_TIProject VERSION 1.0.0 LANGUAGES C CXX)
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Fetch Request for GoogleTest Testing Suite per instructions provided by GoogleTest Documentation 
