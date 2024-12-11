@@ -46,16 +46,6 @@ Several examples of images generated can be viewed in the [Example Images Genera
 
 # Getting Started
 
-## Building Project within a Virtual Environment (With CMake):
-If wishing to build the project within a virtual environment on your local machine, you have the option of running the python3 `virtual_setup.py` file
-immediately after cloning the repository to install the required package dependencies for the program and have the CMake project be built with the
-appropriate script.
-
-Using this method for project setup requires that you have [python3](https://www.python.org/downloads/) and the correlating `venv` package
-installed beforehand.
-
-Please refer to the setup instructions specific to your local machine's OS below to properly build the project within a virtual environment
-
 This project can be built by either using:
 
 1. [CMake](https://www.kitware.com/cmake-3-30-1-available-for-download)
@@ -138,14 +128,14 @@ Notable Requirements:
    Alternatively, you may install the [Windows Subsystem for Linux(WSL)](https://learn.microsoft.com/en-us/windows/wsl/install),
    and then follow the instructions provided for Linux users instead.
 
-2. While the appropriate Powershell script will automatically build the project, the script issues commands to utilize 
-   [CMake](https://cmake.org/download/) to build the project and [Graphviz](https://www.graphviz.org/) to build the graph images.
-   during program execution. This requires that a direct path to each program's files to be pre-established before it can be built.
+2. While the appropriate Powershell script will attempt to automate the project build, the script issues commands to 
+   [CMake](https://cmake.org/download/) to build the project and [Graphviz](https://www.graphviz.org/) to build the graph images
+   during program execution. This requires that a direct path to each program's files must be pre-established before it can be built.
    To simplify the setup process and eliminate the need for local installation and setup:
 
       1. Download the archived zip files for the latest versions of [CMake](https://cmake.org/download/) and [Graphviz](https://graphviz.org/download/)
       
-      2. Extract the contents (excluding the folder itself) of each zip file and place them within the empty 'CMake' and 'Graphviz' directories of
+      2. Extract the contents (excluding the main folder itself) of each zip file and place them within the empty 'CMake' and 'Graphviz' directories of
       the cloned repository, respectively.
       
    The program will directly call on the files within these directories instead of requiring local installation and manual setup of the environment paths.
@@ -193,24 +183,7 @@ of instructions based on this information.
    and your Linux distribution is supported. If the script does not execute the environment path listed at
    the top of the script may need to changed to match that found locally on your terminal
 
-4. Run the appropriate Linux shell script to build the project:
-
-   If wishing to build the project **within a virtual environment**, you can utilize the `virtual_setup.py` file
-   to build the project.
-
-      ```
-      # Generate virtual environment in <my_virtual_directory>
-      python3 -m venv <my_virtual_directory>
-
-      # Activate virtual environment before installing package dependencies using pip installer
-      source ./<my_virtual_directory>/bin/activate
-
-      # Run python file for install requirements and building the project using CMake
-      python3 ./graph_repo/virtual_setup.py
-      ```
-
-   If wishing to build the project outside of a virtual environment, you can utilize the `linux_setup.sh` script to build
-   the project instead.
+4. Execute the Linux shell script `linux_setup.sh` to build the project:
 
       ```
       source ./graph_repo/scripts/Linux/linux_setup.sh
@@ -253,24 +226,7 @@ of instructions based on this information.
    and Homebrew is properly installed. If the script does not execute, the path listed at the top of
    the script may need to be updated to match the local path to Homebrew's bash env folder on your machine.
 
-4. Run the appropriate MacOS shell script to build the project:
-
-   If wishing to build the project **within a virtual environment**, you can utilize the `virtual_setup.py` file
-   to build the project.
-
-      ```
-      # Generate virtual environment in <my_virtual_directory>
-      python3 -m venv <my_virtual_directory>
-
-      # Activate virtual environment before installing package dependencies using pip installer
-      source ./<my_virtual_directory>/bin/activate
-
-      # Run python file for install requirements and building the project using CMake
-      python3 ./graph_repo/virtual_setup.py
-      ```
-
-   If wishing to build the project outside of a virtual environment, you can utilize the `macOS_setup.sh` script to build
-   the project instead.
+4. Eexcute the MacOS shell script `macOS_setup.sh` to build the project:
 
       ```
       source ./graph_repo/scripts/MacOS/macOS_setup.sh
@@ -337,23 +293,7 @@ of instructions based on this information.
 7. Ensure the CMake and Graphviz directories now contain the files extracted from the downloaded zip files by following the steps detailed in [step 2](#setup-requirements-for-windows-users-msys2)
    of the windows setup section. 
 
-8. Run the appropriate Windows Powershell script or python file to build the project:
-
-   If wishing to build the project **within a virtual environment**, you can utilize the `virtual_setup.py` file
-   to build the project.
-   ```
-   # Generate virtual environment in <my_virtual_directory>
-   py -m venv <my_virtual_directory>
-
-   # Activate virtual environment before installing package dependencies using pip installer
-   .\<my_virtual_directory>\scripts\activate
-
-   # Run python file for confirming virtual environment
-   py ./graph_repo/virtual_setup.py
-   ```
-
-   If wishing to build the project outside of a virtual environment, you can utilize the `windows_setup.ps1` script to build
-   the project instead.
+8. Run the Windows Powershell script `windows_setup.ps1` to build the project:
 
       ```
       ./graph_repo/scripts/Windows/windows_setup.ps1
@@ -407,11 +347,11 @@ cd ./release; ./Graph_TIProject
 
 
 > [!NOTE]
-> All provided commands for running the setup scripts of `linux_setup.sh`, `macOS_setup.sh`, `windows_setup.ps1`,
-> and `virtual_setup.py` are intended to be executed within the directory that the cloned repository is placed into (one level above
+> All provided commands for running the setup scripts of `linux_setup.sh`, `macOS_setup.sh`, and `windows_setup.ps1`
+> are intended to be executed within the directory that the cloned repository is placed into (one level above
 > the `graph_repo` directory).
 >
-> However, all commands for directly for executing the project itself are intended to be run **within** the same directory as the `Graph_TIProject.exe`. 
+> However, all commands for directly executing the project itself are intended to be run **within** the same directory as the `Graph_TIProject.exe`. 
 > For example, this would be the `release` directory for running the project in the `Release` configuration
 > or the `debug` directory for running the project in the `Debug` configuration.
 
@@ -447,7 +387,8 @@ may utilize the [CMakeTools](https://code.visualstudio.com/docs/cpp/CMake-linux)
 
 > [!NOTE]
 > When building the project for the first time using the CMakeTools extension, the working directory within the terminal
-> may be moved to within the `build` folder, so if this happens, renavigate back to `graph_repo` before launching the program
+> may be moved to within the `build` folder, which will be the directory within which commands may be used to execute the
+> program as well.
 
 6. Select the Appropriate File to Execute/Run
 
