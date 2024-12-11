@@ -133,9 +133,10 @@ Notable Requirements:
    during program execution. This requires that a direct path to each program's files must be pre-established before it can be built.
    To simplify the setup process and eliminate the need for local installation and setup:
 
-      1. Download the archived zip files for the latest versions of [CMake](https://cmake.org/download/) and [Graphviz](https://graphviz.org/download/)
+      - Download the archived zip files for the latest versions of [CMake](https://cmake.org/download/) and [Graphviz](https://graphviz.org/download/)
+      that are compatible with your OS version and architecture.
       
-      2. Extract the contents (excluding the main folder itself) of each zip file and place them within the empty 'CMake' and 'Graphviz' directories of
+      - Extract the contents (excluding the main folder itself) of each zip file and place them within the empty 'CMake' and 'Graphviz' directories of
       the cloned repository, respectively.
       
    The program will directly call on the files within these directories instead of requiring local installation and manual setup of the environment paths.
