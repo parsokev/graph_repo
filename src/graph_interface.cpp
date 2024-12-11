@@ -226,7 +226,7 @@ int main(void) {
         perror("fork");
         break;
     case 0:
-        gprintf("Executing '%s' to overlay the '%s' using the processed graphical information...\n", script_path, request_type);
+        gprintf("Executing '%s' to overlay the '%s' using the processed graphical information...\n", script_path.c_str(), request_type.c_str());
         gprintf("\n=============================== IMAGE GENERATION RESULTS ====================================\n");
         execl(command_val.c_str(), command_val.c_str(), script_path.c_str(), nullptr);
         perror("execl");
@@ -234,8 +234,8 @@ int main(void) {
     default:
         pid = waitpid(pid, &child_status, 0);
     }
-    gprintf("Success!\nThe Image of the '%s' was placed within '%s'\n", request_type, destination_file);
-    gprintf("The Image of the Entire Graph was placed within:   '%s'", graph_path);
+    gprintf("Success!\nThe Image of the '%s' was placed within '%s'\n", request_type.c_str(), destination_file.c_str());
+    gprintf("The Image of the Entire Graph was placed within:   '%s'", graph_path.c_str());
 #else
     // Use popen(MacOS) or _popen (Windows), to Execute Commands/Scripts within a Pipeline and Read/Monitor its Output for Errors
     FILE *pipe_stream;
