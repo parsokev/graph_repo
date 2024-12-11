@@ -1,34 +1,17 @@
 $error_log = $True
 while ($error_log) {
-    # Confirm Graphviz and CMake have been placed within system PATH for Powershell access
-    $graphviz_path_detected = $False
-    $cmake_path_detected = $False
-    $path_list = $env:path -split ';'
-    Write-Output ""
-    foreach( $path in $path_list ) {
-        if ( $path -like '*Graphviz*' ) {
-            Write-Output "  Graphviz detected in PATH at:  $path"
-            $graphviz_path_detected = $True
-        }
-        if ( $path -like '*CMake*' ) {
-            Write-Output "  CMake detected in PATH at: $path"
-            $cmake_path_detected = $True
-        }
-        if ($cmake_path_detected -and $graphviz_path_detected) {
-            break
-        }
-    }
-    
-    # Notify user if either Package is not found in PATH and cease script execution
-    if ( !$graphviz_path_detected) {
-        Write-Warning "Graphviz was not detected in PATH!"
-        Write-Output  "  Please follow instructions provided after executing 'install_reqs.ps1' to set Graphviz within PATH`n"
+    # Check for bin directories in Graphviz and Cmake directories to verify user has added files to initially empty directories
+    $graphviz_bin_files = Test-Path -Path '.\graph_repo\Graphviz\*' -Include 'bin'
+    $cmake_bin_files = Test-Path -Path '.\graph_repo\Cmake\*' -Include 'bin'
+    if (!$graphviz_bin_files) {
+        Write-Warning "Graphviz does not include all the necessary files!"
+        Write-Output  "  Please follow instructions provided for setting up the Graphviz files in the README!`n"
         break
     }
-    
-    if ( !$cmake_path_detected) {
+
+    if (!$cmake_bin_files) {
         Write-Warning "CMake was not detected in PATH!"
-        Write-Output  "  Please follow instructions provided after executing 'install_reqs.ps1' to set CMake within PATH`n"
+        Write-Output  "  Please follow instructions provided for setting up the CMake files in the README!`n"
         break
     }
     
@@ -143,16 +126,19 @@ while ($error_log) {
         
     }
 
-    Set-Location ../../
+    Set-Location ..
     
     # Provide Usage Instructions
     Write-Output "`n  Both CMake projects have been successfully built and compiled!"
     Write-Output "`n  EXECUTING PROGRAM:"
-    Write-Output "      To Run the Program in Release Mode, Enter into the Terminal:    './build/release/Graph_TIProject'"
-    Write-Output "      To Run the Program in Debug Mode, Enter into the Terminal:      './build/debug/Graph_TIProject'"
+    Write-Output "When executing strictly through the command line, you must execute from WITHIN the directory containing the Graph_TIProject.exe file"
+    Write-Output "To Immediately Run the Program in Release Mode: "
+    Write-Output "      Enter into the Terminal: 'cd ./release; ./GraphTI_Project' "
+    Write-Output "To Immediately Run the Program in Debug Mode: "
+    Write-Output "      Enter into the Terminal: 'cd ./debug; ./GraphTI_Project' "
     Write-Output "`n  EXECUTING TESTING SUITE:"
-    Write-Output "      To Run all tests within GoogleTest testing suite in Release Mode, Enter:    './build/release/tests'"
-    Write-Output "      To Run all tests within GoogleTest testing suite in Debug Mode, Enter:      './build/debug/tests' (for additional reporting)"
+    Write-Output "      To Run all tests within GoogleTest testing suite in Release Mode, Enter:    './release/tests'"
+    Write-Output "      To Run all tests within GoogleTest testing suite in Debug Mode, Enter:      './debug/tests' (for additional reporting)"
     Write-Output "`n  Please view the README for further information on feature access and troubleshooting: https://github.com/parsokev/graph_repo`n"
     break
 }
