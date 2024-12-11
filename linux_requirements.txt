@@ -1,4 +1,0 @@
-make
-cmake
-build-essential gdb
-graphviz
