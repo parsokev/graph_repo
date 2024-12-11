@@ -1,2 +1,0 @@
-Kitware.CMake
-Graphviz.Graphviz
