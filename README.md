@@ -99,14 +99,17 @@ Notable Requirements:
    available and located for immediate use by the program and associated scripts.
 
 
-## Setup Requirements for Windows Users (MSYS2)
+## Setup Requirements for Windows Users (MSYS2/Visual Studio)
 
 Notable Requirements:
-1. **It is highly recommended to build the project using CMake and MSYS2**. 
+1. **It is required to have MSYS2 and/or Microsoft Visual Studio installed to build the project using CMake**. 
    Project-involved interaction is primarily conducted within a Windows Powershell terminal
-   and is intended to be built on Windows systems with [MSYS2](https://www.msys2.org/) installed.
-   The provided scripts require the use of Windows Powershell and MSYS2 libraries on the local machine
-   cloning the repository in order to install the required package dependencies and operate as intended.
+   and is intended to be built on Windows systems for:
+    - [Microsoft Visual Studio Code](https://code.visualstudio.com/) users with [MSYS2](https://www.msys2.org/) installed.
+
+    - [ Microsoft Visual Studio](https://visualstudio.microsoft.com/) users with the [CMake toolkit](https://learn.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-studio?view=msvc-170)
+      installed (having [MSYS2](https://www.msys2.org/) installed eliminates need to update compiler paths to VS's cl.exe compiler but is not required).
+
 
 > [!IMPORTANT]
 > Due to reduced library support for older Windows Operating Systems, it is strongly recommended that
@@ -119,17 +122,14 @@ Notable Requirements:
 > **If script execution is denied**, consult [this Microsoft documentation page](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4)
 > to change the permission policies.
 > 
-> Alternatively, if using an IDE or text editor, you may be able to resolve this by configuring the IDE/text editor's terminal
-> settings for Powershell.
+> You may be able to resolve this by configuring your preferred IDE/text editor's terminal settings for Powershell.
 
-   **If you do not wish to install MYS2**, you may use the provided Makefile to build project
-   instead, but this will still require the installation of [MSYS2](https://www.msys2.org/) or
-   related types of software to build/compile the project using the Makefile and the Powershell terminal.
-   Alternatively, you may install the [Windows Subsystem for Linux(WSL)](https://learn.microsoft.com/en-us/windows/wsl/install),
+   **If you do not wish to install MSYS2**, you may follow the [Microsoft Visual Studio setup](#using-cmaketools-extension-for-microsft-visual-studio)
+   to the build project instead. Alternatively, you may install the [Windows Subsystem for Linux(WSL)](https://learn.microsoft.com/en-us/windows/wsl/install),
    and then follow the instructions provided for Linux users instead.
 
-2. While the appropriate Powershell script will attempt to automate the project build, the script issues commands to 
-   [CMake](https://cmake.org/download/) to build the project and [Graphviz](https://www.graphviz.org/) to build the graph images
+2. **If you do not wish to not use Visual Studio**, the `windows_setup.ps1` Powershell script will be used to automate the initial project setup by issuing
+   commands to [CMake](https://cmake.org/download/) to build the project and [Graphviz](https://www.graphviz.org/) to build the graph images
    during program execution. This requires that a direct path to each program's files must be pre-established before it can be built.
    To simplify the setup process and eliminate the need for local installation and setup:
 
@@ -262,7 +262,11 @@ of instructions based on this information.
 > If an error is encountered in completing the image generation or no images are generated, you may alternatively execute the `visualize_graph_MST_MAC.sh`
 > and `visualize_graph_SP_MAC.sh` scripts in the [MacOS scripts directory](./scripts/MacOS/) generate the MST and shortest path, respectively.
 
-## Building CMake Project on Windows (using MSYS2)
+## Building CMake Project on Windows using MSYS2
+
+**If you have chosen to build the project with Microsoft Visual Studio**, follow the instructions specific to
+Visual Studio listed [here](#using-cmaketools-extension-for-microsft-visual-studio) instead. Otherwise, the following steps should
+be followed for all other Windows users.
 
 1. Install MSYS2 by visiting https://www.msys2.org/ and following the installation instructions to install the suggested version
 
@@ -291,10 +295,10 @@ of instructions based on this information.
 5. Clone the repository: `git clone <enter-the-repository-url-here>`
 
 6. Run the `os_check.ps1` script to confirm your local Powershell terminal has permission to execute the script.
-      - If this fails, view the [windows requirements section listed within the readme](#setup-requirements-for-windows-users-msys2) to fix this
+      - If this fails, view the [windows requirements section listed within the readme](#setup-requirements-for-windows-users-msys2visual-studio) to fix this
         before proceeding further
 
-7. Ensure the CMake and Graphviz directories now contain the files extracted from the downloaded zip files by following the steps detailed in [step 2](#setup-requirements-for-windows-users-msys2)
+7. Ensure the CMake and Graphviz directories now contain the files extracted from the downloaded zip files by following the steps detailed in [step 2](#setup-requirements-for-windows-users-msys2visual-studio)
    of the windows setup section. 
 
 8. Run the Windows Powershell script `windows_setup.ps1` to build the project:
@@ -408,9 +412,6 @@ the [**Microsoft Visual Studio**](https://visualstudio.microsoft.com/) IDE may u
 
 ### Using CMakeTools extension for Microsft Visual Studio
 
-Users with **Microsoft Visual Studio** will be most likely able to immediately build their project upon cloning the repository but
-it is recommended to follow the below steps to build and run the program as intended:
-
 1. Verify Visual Studio has the CMake toolchain/kit installed for intended OS to build and run the program in.
 For more information, visit the Visual Studio [exploration pages for CMake](https://learn.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-studio?view=msvc-170).
 
@@ -427,7 +428,7 @@ For more information, visit the Visual Studio [exploration pages for CMake](http
 4. Select the Folder for the cloned repository from the Solution Explore UI and click the 'Show all Files' icon from the set of icons at the top of the section
    - This will enable the ability to directly select/view the generated .png images of the generated graphs.
 
-5. Ensure you have filled the empty `Graphviz` directory as directed in [step 2 of the windows setup section](#building-cmake-project-on-windows-using-msys2)
+5. Ensure you have filled the empty `Graphviz` directory as directed in [step 2 of the windows setup section](#setup-requirements-for-windows-users-msys2visual-studio)
 
 6. Select the configurations that reflect environment you wish to build the project in and build the CMake project.
    - If wishing to build the project, ensure the `Graph_TIProject.exe` is selected.
