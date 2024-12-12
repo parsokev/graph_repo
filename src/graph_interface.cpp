@@ -29,11 +29,13 @@ int main(void) {
     std::string rel_path = "../../sample_graphs/";
     std::string path_filename = "../../dot_graphs/shortest_path_overlay.gv";
     std::string MST_filename = "../../dot_graphs/MST_overlay.gv";
-    std::string graph_path = "../../sample_graphs/full_graph.png";
-    #ifdef _WIN32
-    std::string graphviz_path = "../../Graphviz/bin/"
-    #endif
+    std::string graph_path = "../../graph_images/full_graph.png";
     std::string read_name;
+    #ifdef _WIN32
+    std::string graphviz_path = "../../Graphviz/bin/";
+    #endif
+
+
     
     // Determine and present acceptable files from designated directory for user-provided graph text files
     int file_output = 0;
@@ -108,6 +110,7 @@ int main(void) {
     }
 
 // Select Linux-Compatible Bash Script and set CLI command to environment path to linux bash if Linux is detected
+// BUILD COMMANDS FOR LINUX
 #ifdef __linux__
     // Preset Script Path and Graph Image Locations based on User Requested Information for Linux Users
     command_val = "/bin/bash";
@@ -124,11 +127,12 @@ int main(void) {
         return -1;
     }
 #endif
+    // BUILD COMMANDS FOR MACOS
     // If Preprocessor Conditional Detects MacOS, Directly Execute Multiple Bash Commands to Graphviz's Dot Executable through A Pipeline
     // Program Requires use of HomeBrew Executable to set Bash environment path and Graphviz bin path
 #ifdef __APPLE__
     command_val = "";
-    std::string dot_path = "dot"
+    std::string dot_path = "dot";
     // IF MANUALLY ADDING GRAPHVIZ TO GRAPHVIZ DIRECTORY INSTEAD OF BASH ENV PATH UNCOMMENT THIS AND DELETE ABOVE LINE
     // std::string dot_path = "./Graphviz/bin/dot.exe";
 
@@ -167,11 +171,11 @@ int main(void) {
         gprintf("Path for MST Solution Image is '%s'", MST_filename.c_str());
     }
 #endif
-
+    // BUILD COMMANDS FOR WINDOWS
 #ifdef _WIN32
     // If Preprocessor Conditional Detects Windows OS, Directly Execute Multiple Powershell Commands to Graphviz's Dot Executable through A Pipeline
     command_val = "powershell -Command \"";
-    if (requestedSolution == "S") {
+    if (algorithm_type.compare("S") == 0) {
         // Set Output Image File Path Designated for Shortest Path and Specify Output Format to Graphviz's Dot using Appropriate .gv files for Input
         script_path = graphviz_path;
         script_path.append("dot -Tpng:cairo ").append(graph_filename).append(" -o ").append(graph_path);
@@ -216,6 +220,7 @@ int main(void) {
     }
     gprintf("Attempting to Execute Script or Command of '%s'...", script_path.c_str());
 
+// EXECUTE LINUX SCRIPTS
 // Execute Bash Shell Scripts using Linux-Compliant <sys/wait.h> Library Functions for Image Generation if Linux OS is Detected
 #ifdef __linux__
     // Run Appropriate Bash Script for Generating Graph Images
@@ -237,13 +242,13 @@ int main(void) {
     gprintf("Success!\nThe Image of the '%s' was placed within '%s'\n", request_type.c_str(), destination_file.c_str());
     gprintf("The Image of the Entire Graph was placed within:   '%s'", graph_path.c_str());
 #else
+     // EXECUTE WINDOWS/MACOS COMMANDS USING PIPELINE
     // Use popen(MacOS) or _popen (Windows), to Execute Commands/Scripts within a Pipeline and Read/Monitor its Output for Errors
     FILE *pipe_stream;
     command_val.append(script_path);
     gprintf("Generating the '%s' using the processed graphical information...\n", request_type.c_str());
     gprintf("\n=============================== IMAGE GENERATION RESULTS ====================================\n");
 #ifdef _WIN32
-
     // Establish Stream with Intent to both Execute the Powershell Script and Read from Buffer containing the Command Line Output for Error Detection
     // Use _popen for compatibility over broader range of windows systems
     pipe_stream = _popen(command_val.c_str(), "r");
@@ -276,30 +281,7 @@ int main(void) {
         std::cerr << "ERROR: Failed to establish pipeline stream for executing shell commands using popen with '" << script_path << "'\n";
         return EXIT_FAILURE;
     }
-    // Establish Stream with Intent to both Execute the Powershell Script and Read from Buffer containing the Command Line Output for Error Detection
-    pipe_stream = _popen(command_val.c_str(), "r");
-    // If Stream is Successfully Established with Pipeline, Attempt to Execute Powershell Commands to Generate Requested Solution and Full Graph Images
-    if (pipe_stream != NULL) {
-        int script_error = _pclose(pipe_stream);
-        // If One or More Errors are Encountered in Execution of Powershell/Bash Commands, Notify User
-        if (script_error == -1) {
-            std::cerr << "ERROR: '" << script_path << "' encountered error(s) while executing to generate image of '" << request_type << "' \n";
-
-            return EXIT_FAILURE;
-        }
-        else {
-            // Else, Proceed with Indicating Images are Ready for Viewing
-            gprintf("Success!\nThe Image of the '%s' was placed within '%s'\n", request_type.c_str(), destination_file.c_str());
-            gprintf("The Image of the Entire Graph was placed within:   '%s'", graph_path.c_str());
-        }
-        _pclose(pipe_stream);
-    }
-    else {
-        // Exit if Internal Fork or Pipe Operations Fail
-        perror("pipe/fork");
-        std::cerr << "ERROR: Failed to establish pipeline stream for executing shell commands using popen with '" << script_path << "'\n";
-        return EXIT_FAILURE;
-    }
 #endif
     return EXIT_SUCCESS;
 }
+
