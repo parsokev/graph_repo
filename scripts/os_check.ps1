@@ -14,10 +14,10 @@ if ( $IsLinux ) {
 } elseif ( $IsWindows ) {
     if ( $pshl_mv -ge "7" -and $major_version -ge "10" ) {
         Write-Output "  Powershell version 7 and Windows OS Version 10 or newer detected. Local machine is fully supported by project!"
-        Write-Output "  Execute the 'install_reqs.ps1' script to install all package dependencies and follow the instructions printed to the terminal to proceed with completing the project setup`n"
+        Write-Output "  Execute the 'windows_setup.ps1' script to install all package dependencies and follow the instructions printed to the terminal to proceed with completing the project setup`n"
     } else {
         Write-Warning "Windows $major_version with Powershell version of $pshl_mv detected.`n Windows OS versions older than 10 and Powershell version older than 7 are not fully supported by this program."
-        Write-Output "If your Powershell version is less than 7, 'install_reqs.ps1' will attempt to update the newest supported version of Powershell."
+        Write-Output "If your Powershell version is less than 7, 'windows_setup.ps1' will attempt to update the newest supported version of Powershell."
         Write-Output "If your local machine OS version is less than 10, several features and package dependencies do not support use of Windows versions older than 10 at this time. It is not reccommended to proceed further in setup."
     }
 } else {
