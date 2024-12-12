@@ -10,7 +10,7 @@ while ($error_log) {
     }
 
     if (!$cmake_bin_files) {
-        Write-Warning "CMake was not detected in PATH!"
+        Write-Warning "CMake was not include all the necessary files!"
         Write-Output  "  Please follow instructions provided for setting up the CMake files in the README!`n"
         break
     }
@@ -69,9 +69,11 @@ while ($error_log) {
     Set-Location ./build/release
     Write-Output "  Building cmake project in debug and release configurations..."
     
+    # Set expected path to local CMake directory's cmake executable
+    $cmake_path = "..\..\Cmake\bin\cmake.exe"
     # Generate CMakefile for Release Configuration of CMake Project
-    cmake -G Ninja ../../ -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=C:\msys64\ucrt64\bin\gcc.exe -DCMAKE_CXX_COMPILER=C:\msys64\ucrt64\bin\g++.exe
-    cmake --build . 
+    powershell.exe -Command $cmake_path -G Ninja ../../ -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=C:\msys64\ucrt64\bin\gcc.exe -DCMAKE_CXX_COMPILER=C:\msys64\ucrt64\bin\g++.exe
+    powershell.exe -Command $cmake_path --build .
     if ( $? -ne 1 ) {
         Write-Warning "Failed to create CMake 'Release' Configuaration in 'build/release/' subdirectory in cloned repo directory."
         Write-Output "  Please ensure you are calling script from top level directory. Aborting setup process.."
@@ -99,8 +101,8 @@ while ($error_log) {
     
     Set-Location ../debug
     # Generate CMakefile for Debug Configuration of CMake Project
-    cmake -G Ninja ../../ -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=C:\msys64\ucrt64\bin\gcc.exe -DCMAKE_CXX_COMPILER=C:\msys64\ucrt64\bin\g++.exe
-    cmake --build .
+    powershell.exe -Command $cmake_path -G Ninja ../../ -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=C:\msys64\ucrt64\bin\gcc.exe -DCMAKE_CXX_COMPILER=C:\msys64\ucrt64\bin\g++.exe
+    powershell.exe -Command $cmake_path --build .
     if ( $? -ne 1 ) {
         Write-Warning "Failed to create CMake 'Debug' Configuaration in 'build/debug/' subdirectory in cloned repo directory."
         Write-Output "  Please ensure you are calling script from top level directory. Aborting setup process.."
