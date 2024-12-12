@@ -273,6 +273,9 @@ of instructions based on this information.
       - Click 'New' > Copy and Paste the full path to the 'bin' folder of MSYS
          - The default path after installation of the 64-bit version, for example, would be:  
             `C:\msys64\ucrt64\bin`
+         - **The above path is what is used for the compiler paths used by CMakeTools to build the project so it is recommended**
+           **to use the above path if installing MSYS2 and using its compilers to build the CMake project**.
+
 
       - Click 'Ok' in 'Edit Environment Variable' window AND in 'Environment Variables' window to confirm addition of path
 
@@ -359,17 +362,20 @@ cd ./release; ./Graph_TIProject
 
 ## Executing the CMake Project Configurations using the CMakeTools Extension
 
-After the appropriate initial setup script has finished running, any user using the **Microsoft VS Code** text editor
-may utilize the [CMakeTools](https://code.visualstudio.com/docs/cpp/CMake-linux) extension to generate a UI for managing the CMake Project:
+After the appropriate initial setup script has finished running, any user using the [**Microsoft Visual Studio Code**](https://code.visualstudio.com/) text editor or
+the [**Microsoft Visual Studio**](https://visualstudio.microsoft.com/) IDE may utilize the [CMakeTools](https://code.visualstudio.com/docs/cpp/CMake-linux) extension
+ to generate a UI for managing the CMake Project
 
-1. Reopen the `graph_repo` directory as the **root** directory in your text editor
+### Using CMakeTools extension for Microsoft Visual Studio Code 
+
+1. Reopen the `graph_repo` directory as the **root** directory (displays as name at top the file explorer in MVSC).
    -  The highest level of your active directory must be `graph_repo` in order for CMakeTools
       to recognize `graph_repo` as the active folder for configuration.
 
 2. Ensure You have the CMakeTools extension installed and enabled. 
-   - As this extension is specific to the **Microsoft VS/VSCode** editor, the CMakeTools option is only 
-     accessible to Microsoft VS/VSCode users. If you have Microsoft VS/VSCode installed but do not have the CMakeTools
-     extension, please install and setup the CMakeTools extension before proceeding further.
+   - Upon reopening `graph_repo` as the root directory completed in step 1, the CMakeTools extension icon should
+     appear on the left hand menu bar next to the file explorer UI. If this does not appear ensure you have the
+     [CMakeTools extension](https://code.visualstudio.com/docs/cpp/cmake-linux) installed and enabled.
 
 3. Click on The CMakeTools Extension Icon on Extension Bar on the far left-hand side of editor.
 
@@ -388,7 +394,7 @@ may utilize the [CMakeTools](https://code.visualstudio.com/docs/cpp/CMake-linux)
 
 > [!NOTE]
 > When building the project for the first time using the CMakeTools extension, the working directory within the terminal
-> may be moved to within the `build` folder, which will be the directory within which commands may be used to execute the
+> may be moved to within the `build` folder, which will be the directory within which commands may be used to directly execute the
 > program as well.
 
 6. Select the Appropriate File to Execute/Run
@@ -400,7 +406,34 @@ may utilize the [CMakeTools](https://code.visualstudio.com/docs/cpp/CMake-linux)
 
     - Click the Play Icon in the right-hand corner of the "Launch" Section to execute the selected configuration of the program.
 
-Users with **Microsoft Visual Studio** will be able to immediately build their project upon cloning the repository.
+### Using CMakeTools extension for Microsft Visual Studio
+
+Users with **Microsoft Visual Studio** will be most likely able to immediately build their project upon cloning the repository but
+it is recommended to follow the below steps to build and run the program as intended:
+
+1. Verify Visual Studio has the CMake toolchain/kit installed for intended OS to build and run the program in.
+For more information, visit the Visual Studio [exploration pages for CMake](https://learn.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-studio?view=msvc-170).
+
+2. Ensure the `CMAKE_C_COMPILER` and `CMAKE_CXX_COMPILER` values in the `CMakeUserPresets.json` file match the indicated paths to your local compilers:
+   - If you installed MSYS2 according to the setup instructions listed in the [windows setup section](#building-cmake-project-on-windows-using-msys2), 
+     then Visual Studio will be able to immediately build the project using the C/C++ compilers provided by MSYS at the preset paths in `CMakeUserPresets.json`
+   
+   - If you decided to use the set of C/C++ compilers provided by Visual Studio itself (cl.exe), then you will need to manually update the `CMAKE_C_COMPILER` 
+     and `CMAKE_CXX_COMPILER` values for your target configurations within the `CMakePresets.json` file to reference the paths to the cl.exe compilers.
+     For further information, visit [Visual Studio's project buildsystem page](https://learn.microsoft.com/en-us/cpp/build/projects-and-build-systems-cpp?view=msvc-170)
+
+3. Clone the repository into the preferred empty directory.
+
+4. Select the Folder for the cloned repository from the Solution Explore UI and click the 'Show all Files' icon from the set of icons at the top of the section
+   - This will enable the ability to directly select/view the generated .png images of the generated graphs.
+
+5. Ensure you have filled the empty `Graphviz` directory as directed in [step 2 of the windows setup section](#building-cmake-project-on-windows-using-msys2)
+
+6. Select the configurations that reflect environment you wish to build the project in and build the CMake project.
+   - If wishing to build the project, ensure the `Graph_TIProject.exe` is selected.
+   - If wishing to build the testing suite, select the `test.exe`.
+
+7. Select .exe to run (`tests.exe` or `Graph_TIProject.exe`) and execute to generate an interactive console in a separate window.
 
 # Building the Program Utilizing The Provided Makefile
 
@@ -495,6 +528,7 @@ OR
 
 ## Executing The GoogleTest Testing Suite using the CMakeTools Extension
 
+### Visual Studio Code
 After the appropriate initial setup shell script has completed, the file `tests.cc` can be executed to run any tests defined within using
 CMakeTools:
   1. Click the Icon to the right of the `Configure` Section Bar under the `Project Status` Section. 
@@ -503,6 +537,10 @@ CMakeTools:
   4. Click ***Icon that appears immediately below the Play Icon*** in the right-hand corner of the `Launch` Section under the `Project Status` Section.
   5. Select the `tests` executable from Dropdown Command Palette to set it as the Launch Target.
   6. Click the Play Icon in the right-hand corner of the `Launch` Section to execute the GoogleTest Testing Suite.
+
+
+### Visual Studio
+View [steps 6 and 7](#using-cmaketools-extension-for-microsft-visual-studio) of the section for using CMakeTools for Visual Studio
 
 
 # Example Images Generated from Text Files
