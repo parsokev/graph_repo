@@ -32,8 +32,15 @@ add_executable( ${TARGET} ${CPPS} ${HPPS} )
 target_include_directories( ${TARGET} PUBLIC ${INCLUDE_PATH} )
 
 # Define compiler flags and g++ compiler version to use for compiling project executable
-target_compile_options( ${TARGET} PRIVATE -O3 -Wall -Wextra -Wshadow -Wconversion -Wsign-conversion -Wunused-parameter -Wno-long-long -pedantic )
-target_compile_features( ${TARGET} PRIVATE cxx_std_17 )
+# Set compiler flags
+if (CMAKE_CXX_COMPILER MATCHES "gcc.exe")
+    target_compile_options( ${TARGET} PRIVATE -Wall -O3 -Wextra -Wshadow -Wconversion -Wsign-conversion -Wunused-parameter -Wno-long-long -pedantic )
+    target_compile_features( ${TARGET} PRIVATE cxx_std_17 )
+elseif (CMAKE_CXX_COMPILER MATCHES "cl.exe")
+    target_compile_options( ${TARGET} PRIVATE /Wall /EHsc /Qspectre )
+    target_compile_features( ${TARGET} PRIVATE cxx_std_17 )
+    target_compile_definitions( ${TARGET} PRIVATE VS_PRESENT )
+endif()
 
 # Have CMake send different definitions to compiler based on its build type value/configuration
 target_compile_definitions(${PROJECT_NAME} PRIVATE
