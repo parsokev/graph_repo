@@ -1,3 +1,8 @@
+// Suppress non-critical compiler warnings if using Microsoft Visual Studio compiler
+#ifdef VS_PRESENT
+#pragma warning(disable : 4265 4625 4626 4688 4710 4711 4866 4820 5045 )
+#endif
+
 #include <iostream>
 #include <vector>
 #include <iosfwd>
@@ -160,7 +165,7 @@ int get_graph_filename(std::string& directory_name, std::string& user_file) {
     } else {
         // Exit program and Notify user if program is launched from an invalid path in terminal
         std::cerr << "\nERROR: Relative path to '" << directory_name << "' is invalid from current working directory\n";
-        std::cerr << "Please ensure you are executing the program from within the 'build' directory if choosing to execute the program using the command line\n";
+        std::cerr << "Please ensure you are either within the 'release' or 'debug' directory when executing the program.\n";
         return -1;
     }
 

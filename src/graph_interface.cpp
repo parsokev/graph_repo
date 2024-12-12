@@ -232,7 +232,7 @@ int main(void) {
         break;
     case 0:
         gprintf("Executing '%s' to overlay the '%s' using the processed graphical information...\n", script_path.c_str(), request_type.c_str());
-        gprintf("\n=============================== IMAGE GENERATION RESULTS ====================================\n");
+        std::cout << "\n=============================== IMAGE GENERATION RESULTS ====================================\n";
         execl(command_val.c_str(), command_val.c_str(), script_path.c_str(), nullptr);
         perror("execl");
         break;
@@ -247,7 +247,7 @@ int main(void) {
     FILE *pipe_stream;
     command_val.append(script_path);
     gprintf("Generating the '%s' using the processed graphical information...\n", request_type.c_str());
-    gprintf("\n=============================== IMAGE GENERATION RESULTS ====================================\n");
+    std::cout << "\n=============================== IMAGE GENERATION RESULTS ====================================\n";
 #ifdef _WIN32
     // Establish Stream with Intent to both Execute the Powershell Script and Read from Buffer containing the Command Line Output for Error Detection
     // Use _popen for compatibility over broader range of windows systems
@@ -271,8 +271,8 @@ int main(void) {
             return EXIT_FAILURE;
         } else {
             // Else, Proceed with Indicating Images are Ready for Viewing, report to debugging for status checking
-            gprintf("Success!\nThe Image of the '%s' was placed within '%s'\n", request_type.c_str(), destination_file.c_str());
-            gprintf("The Image of the Entire Graph was placed within:   '%s'", graph_path.c_str());
+            std::cout << "Success!\nThe Image of the '" << request_type << "' was placed within '" << destination_file << "'\n";
+            std::cout << "The Image of the Entire Graph was placed within:   '" << graph_path << '\n';
         }
 
     } else {
